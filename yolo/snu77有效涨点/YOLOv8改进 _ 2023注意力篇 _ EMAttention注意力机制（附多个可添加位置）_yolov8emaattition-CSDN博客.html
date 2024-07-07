@@ -1,0 +1,2447 @@
+    <!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <link rel="canonical" href="https://blog.csdn.net/java1314777/article/details/135248908"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="renderer" content="webkit"/>
+    <meta name="force-rendering" content="webkit"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="report" content='{"pid": "blog", "spm":"1001.2101"}'>
+    <meta name="referrer" content="always">
+    <meta http-equiv="Cache-Control" content="no-siteapp" /><link rel="alternate" media="handheld" href="#" />
+    <meta name="shenma-site-verification" content="5a59773ab8077d4a62bf469ab966a63b_1497598848">
+    <meta name="applicable-device" content="pc">
+    <link  href="https://g.csdnimg.cn/static/logo/favicon32.ico"  rel="shortcut icon" type="image/x-icon" />
+    <title>YOLOv8改进 | 2023注意力篇 | EMAttention注意力机制（附多个可添加位置）_yolov8emaattition-CSDN博客</title>
+    <script>
+      (function(){ 
+        var el = document.createElement("script"); 
+        el.src = "https://s3a.pstatp.com/toutiao/push.js?1abfa13dfe74d72d41d83c86d240de427e7cac50c51ead53b2e79d40c7952a23ed7716d05b4a0f683a653eab3e214672511de2457e74e99286eb2c33f4428830"; 
+        el.id = "ttzz"; 
+        var s = document.getElementsByTagName("script")[0]; 
+        s.parentNode.insertBefore(el, s);
+      })(window)
+    </script>
+        <meta name="keywords" content="yolov8emaattition">
+        <meta name="csdn-baidu-search"  content='{"autorun":true,"install":true,"keyword":"yolov8emaattition"}'>
+    <meta name="description" content="文章浏览阅读2.4k次，点赞27次，收藏43次。本文给大家带来的改进机制是EMAttention注意力机制，它的核心思想是，重塑部分通道到批次维度，并将通道维度分组为多个子特征，以保留每个通道的信息并减少计算开销。EMA模块通过编码全局信息来重新校准每个并行分支中的通道权重，并通过跨维度交互来捕获像素级别的关系。本文首先给大家提供效果图(由基础版本未作任何修改和修改了本文的改进机制的效果对比图)，然后介绍其主要的原理，最后手把手教大家如何添加该注意力机制。_yolov8emaattition">
+        <link rel="stylesheet" type="text/css" href="https://csdnimg.cn/release/blogv2/dist/pc/css/detail_enter-38ddee24dc.min.css">
+    <style>
+        #content_views{
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none; 
+            user-select: none; 
+        }
+    </style>
+    <script type="application/ld+json">{"@context":"https://ziyuan.baidu.com/contexts/cambrian.jsonld","@id":"https://blog.csdn.net/java1314777/article/details/135248908","appid":"1638831770136827","pubDate":"2023-12-27T16:11:14","title":"YOLOv8改进 | 2023注意力篇 | EMAttention注意力机制（附多个可添加位置）_yolov8emaattition-CSDN博客","upDate":"2023-12-31T06:00:00"}</script>
+        <link rel="stylesheet" type="text/css" href="https://csdnimg.cn/release/blogv2/dist/pc/themesSkin/skin-blackwhale/skin-blackwhale-fcd12bc8ae.min.css">
+    <script src="https://csdnimg.cn/public/common/libs/jquery/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        var isCorporate = false;//注释删除enterprise
+        var username =  "java1314777";
+        var skinImg = "white";
+        var blog_address = "https://snu77.blog.csdn.net";
+        var currentUserName = "DreamSun527";
+        var isOwner = false;
+        var loginUrl = "http://passport.csdn.net/account/login?from=https://blog.csdn.net/java1314777/article/details/135248908";
+        var blogUrl = "https://blog.csdn.net/";
+        var avatar = "https://profile-avatar.csdnimg.cn/27160f4941a54d07b535ceabcfa4a800_java1314777.jpg!1";
+        var articleTitle = "YOLOv8改进 | 2023注意力篇 | EMAttention注意力机制（附多个可添加位置）";
+        var articleDesc = "文章浏览阅读2.4k次，点赞27次，收藏43次。本文给大家带来的改进机制是EMAttention注意力机制，它的核心思想是，重塑部分通道到批次维度，并将通道维度分组为多个子特征，以保留每个通道的信息并减少计算开销。EMA模块通过编码全局信息来重新校准每个并行分支中的通道权重，并通过跨维度交互来捕获像素级别的关系。本文首先给大家提供效果图(由基础版本未作任何修改和修改了本文的改进机制的效果对比图)，然后介绍其主要的原理，最后手把手教大家如何添加该注意力机制。_yolov8emaattition";
+        var articleTitles = "YOLOv8改进 | 2023注意力篇 | EMAttention注意力机制（附多个可添加位置）_yolov8emaattition-CSDN博客";
+        var nickName = "Snu77";
+        var articleDetailUrl = "https://snu77.blog.csdn.net/article/details/135248908";
+        var vipUrlV = "https://mall.csdn.net/svip?utm_source=learningVIPX";
+        if(window.location.host.split('.').length == 3) {
+            blog_address = blogUrl + username;
+        }
+        var skinStatus = "Black";
+        var robotModule = '';
+        var robotModuleJs = '';
+        var blogStaticHost = "https://csdnimg.cn/release/blogv2/"
+        var mallTestStyle = "control"
+    </script>
+        <meta name="toolbar" content='{"type":"1","fixModel":"1"}'>
+        <script>
+            window.csdn = window.csdn ? window.csdn : {};
+            window.csdn.toolbarIsBlack = true;
+            window.csdn.sideToolbar = {
+                options: {
+                    theme : "black"
+                }
+            }
+        </script>
+    <script src="https://g.csdnimg.cn/??fixed-sidebar/1.1.7/fixed-sidebar.js" type="text/javascript"></script>
+    <script src='//g.csdnimg.cn/common/csdn-report/report.js' type='text/javascript'></script>
+    <link rel="stylesheet" type="text/css" href="https://csdnimg.cn/public/sandalstrap/1.4/css/sandalstrap.min.css">
+    <style>
+        .MathJax, .MathJax_Message, .MathJax_Preview{
+            display: none
+        }
+    </style>
+    <script src="https://dup.baidustatic.com/js/ds.js"></script>
+</head>
+  <body class="nodata is_black_skin " style="">
+    <div id="toolbarBox" style="min-height: 48px;"></div>
+        <script>
+            var toolbarSearchExt = '{"landingWord":["yolov8emaattition"],"queryWord":"","tag":["YOLO","深度学习","人工智能","pytorch","python","计算机视觉","神经网络"],"title":"YOLOv8改进 | 2023注意力篇 | EMAttention注意力机制（附多个可添加位置）"}';
+        </script>
+    <script src="https://g.csdnimg.cn/common/csdn-toolbar/csdn-toolbar.js" type="text/javascript"></script>
+    <script>
+    (function(){
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        }
+        else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+    </script>
+
+    <link rel="stylesheet" href="https://csdnimg.cn/release/blogv2/dist/pc/css/blog_code-01256533b5.min.css">
+    <link rel="stylesheet" href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/editerView/chart-3456820cac.css" />
+    <link rel="stylesheet" href="https://g.csdnimg.cn/lib/swiper/6.0.4/css/swiper.css" />
+    <script src="https://g.csdnimg.cn/lib/swiper/6.0.4/js/swiper.js" async></script>
+    <script>
+      var articleId = 135248908;
+      var commentscount = 5;
+      var commentAuth = 2;
+      var curentUrl = "https://blog.csdn.net/java1314777/article/details/135248908";
+      var myUrl = "https://my.csdn.net/";
+        var highlight = ["pytorch","python","注意力机制","计算机视觉","tent","yolo","深度学习","2023","神经网络","人工智能","att","mat","ion","注意力","ema","v8","添加","位置","改进","多个","附","篇"];//高亮数组
+        var isRecommendModule = true;
+          var isBaiduPre = true;
+          var baiduCount = 2;
+          var setBaiduJsCount = 10;
+      var share_card_url = "https://app-blog.csdn.net/share?article_id=135248908&username=java1314777"
+      var mallVipUrl = "https://mall.csdn.net/vip?vipSource=article"
+      var vipArticleAbStyle = "t_2"
+      var vipArticleCpStyle = "t_2"
+      var articleType = 1;
+      var baiduKey = "yolov8emaattition";
+      var copyPopSwitch = true;
+      var needInsertBaidu = true;
+      var recommendRegularDomainArr = ["blog.csdn.net/.+/article/details/","download.csdn.net/download/","edu.csdn.net/course/detail/","ask.csdn.net/questions/","bbs.csdn.net/topics/","www.csdn.net/gather_.+/"]
+      var codeStyle = "tomorrow-night";
+      var baiduSearchType = "baidulandingword";
+      var sharData = "{\"hot\":[{\"id\":1,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/a5f4260710904e538002a6ab337939b3.png\"},{\"id\":2,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/188b37199a2c4b74b1d9ffc39e0d52de.png\"},{\"id\":3,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/14ded358b631444581edd98a256bc5af.png\"},{\"id\":4,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/1470f23a770444d986ad551b9c33c5be.png\"},{\"id\":5,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/c329f5181dc74f6c9bd28c982bb9f91d.png\"},{\"id\":6,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/ccd8a3305e81460f9c505c95b432a65f.png\"},{\"id\":7,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/bc89d8283389440d97fc4d30e30f45e1.png\"},{\"id\":8,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/452d485b4a654f5592390550d2445edf.png\"},{\"id\":9,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/f8b9939db2ed474a8f43a643015fc8b7.png\"},{\"id\":10,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/6de8864187ab4ed3b1db0856369c36ff.png\"},{\"id\":11,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/673cc3470ff74072acba958dc0c46e2d.png\"},{\"id\":12,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/930c119760ac4491804db80f9c6d4e3f.png\"},{\"id\":13,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/15e6befb05a24233bc2b65e96aa8d972.png\"},{\"id\":14,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/2075fd6822184b95a41e214de4daec13.png\"},{\"id\":15,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/859b1552db244eb6891a809263a5c657.png\"},{\"id\":16,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/0be2f920f1f74290a98921974a9613fd.png\"},{\"id\":17,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/2e97e00b43f14afab494ea55ef3f4a6e.png\"},{\"id\":18,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/ff4ab252f46e444686f5135d6ebbfec0.png\"},{\"id\":19,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/ae029bbe99564e79911657912d36524f.png\"},{\"id\":20,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/b3ece39963de440388728e9e7b9bf427.png\"},{\"id\":21,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/6f14651a99ba486e926d63b6fa692997.png\"},{\"id\":22,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/83ceddf050084875a341e32dcceca721.png\"},{\"id\":23,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/b90368b8fd5d4c6c8c79a707d877cf7c.png\"},{\"id\":24,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/aeffae14ecf14e079b2616528c9a393b.png\"},{\"id\":25,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/c5a06b5a13d44d16bed868fc3384897a.png\"},{\"id\":26,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/08b697658b844b318cea3b119e9541ef.png\"},{\"id\":27,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/68ccb0b8d09346ac961d2b5c1a8c77bf.png\"},{\"id\":28,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/a2227a247e37418cbe0ea972ba6a859b.png\"},{\"id\":29,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/3a42825fede748f9993e5bb844ad350d.png\"},{\"id\":30,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/8882abc1dd484224b636966ea38555c3.png\"},{\"id\":31,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/4f6a5f636a3e444d83cf8cc06d87a159.png\"},{\"id\":32,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/1953ef79c56b4407b78d7181bdff11c3.png\"},{\"id\":33,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/c04a2a4f772948ed85b5b0380ed36287.png\"},{\"id\":34,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/5b4fecd05091405ea04d8c0f53e9f2c7.png\"},{\"id\":35,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/b89f576d700344e280d6ceb2a66c2420.png\"},{\"id\":36,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/1c65780e11804bbd9971ebadb3d78bcf.png\"},{\"id\":37,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/d590db2055f345db9706eb68a7ec151a.png\"},{\"id\":38,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/fe602f80700b4f6fb3c4a9e4c135510e.png\"},{\"id\":39,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/39ff2fcd31e04feba301a071976a0ba7.png\"},{\"id\":40,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/f9b61b3d113f436b828631837f89fb39.png\"},{\"id\":41,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/df1aca5f610c4ad48cd16da88c9c8499.png\"},{\"id\":42,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/d7acf73a1e6b41399a77a85040e10961.png\"},{\"id\":43,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/b7f1b63542524b97962ff649ab4e7e23.png\"}],\"vip\":[{\"id\":1,\"vipUrl\":\"https:\\/\\/img-home.csdnimg.cn\\/images\\/20220920101150.png\",\"url\":\"https:\\/\\/img-home.csdnimg.cn\\/images\\/20220920101154.png\"},{\"id\":2,\"vipUrl\":\"https:\\/\\/img-home.csdnimg.cn\\/images\\/20220920101204.png\",\"url\":\"https:\\/\\/img-home.csdnimg.cn\\/images\\/20220920101208.png\"},{\"id\":3,\"vipUrl\":\"https:\\/\\/img-home.csdnimg.cn\\/images\\/20220920101211.png\",\"url\":\"https:\\/\\/img-home.csdnimg.cn\\/images\\/20220920101215.png\"},{\"id\":4,\"vipUrl\":\"https:\\/\\/img-home.csdnimg.cn\\/images\\/20220920101218.png\",\"url\":\"https:\\/\\/img-home.csdnimg.cn\\/images\\/20220920101220.png\"},{\"id\":5,\"vipUrl\":\"https:\\/\\/img-home.csdnimg.cn\\/images\\/20220920101223.png\",\"url\":\"https:\\/\\/img-home.csdnimg.cn\\/images\\/20220920101226.png\"},{\"id\":6,\"vipUrl\":\"https:\\/\\/img-home.csdnimg.cn\\/images\\/20220922100635.png\",\"url\":\"https:\\/\\/img-home.csdnimg.cn\\/images\\/20220922100639.png\"},{\"id\":7,\"vipUrl\":\"https:\\/\\/img-home.csdnimg.cn\\/images\\/20220922100642.png\",\"url\":\"https:\\/\\/img-home.csdnimg.cn\\/images\\/20220922100644.png\"},{\"id\":8,\"vipUrl\":\"https:\\/\\/img-home.csdnimg.cn\\/images\\/20220922100647.png\",\"url\":\"https:\\/\\/img-home.csdnimg.cn\\/images\\/20220922100649.png\"},{\"id\":9,\"vipUrl\":\"https:\\/\\/img-home.csdnimg.cn\\/images\\/20220922100652.png\",\"url\":\"https:\\/\\/img-home.csdnimg.cn\\/images\\/20220922100655.png\"},{\"id\":10,\"vipUrl\":\"https:\\/\\/img-blog.csdnimg.cn\\/55de67481fde4b04b97ad78f11fe369a.png\",\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/bb2418fb537e4d78b10d8765ccd810c5.png\"},{\"id\":11,\"vipUrl\":\"https:\\/\\/img-blog.csdnimg.cn\\/579c713394584d128104ef1044023954.png\",\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/f420d9fbcf5548079d31b5e809b6d6cd.png\"},{\"id\":12,\"vipUrl\":\"https:\\/\\/img-blog.csdnimg.cn\\/75b7f3155ba642f5a4cc16b7baf44122.png\",\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/a9030f5877be401f8b340b80b0d91e64.png\"},{\"id\":13,\"vipUrl\":\"https:\\/\\/img-blog.csdnimg.cn\\/0903d33cafa54934be3780aa54ae958d.png\",\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/2cd8c8929f5a42fca5da2a0aeb456203.png\"},{\"id\":14,\"vipUrl\":\"https:\\/\\/img-blog.csdnimg.cn\\/949fd7c22884439fbfc3c0e9c3b8dee7.png\",\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/dafbea9bd9eb4f3b962b48dc41657f89.png\"},{\"id\":15,\"vipUrl\":\"https:\\/\\/img-blog.csdnimg.cn\\/4119cfddd71d4e6a8a27a18dbb74d90e.png\",\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/c56310c8b6384d9e85388e4e342ce508.png\"},{\"id\":16,\"vipUrl\":\"https:\\/\\/img-blog.csdnimg.cn\\/121575274da142bcbbbbc2e8243dd411.png\",\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/5013993de06542f881018bb9abe2edf7.png\"},{\"id\":17,\"vipUrl\":\"https:\\/\\/img-blog.csdnimg.cn\\/4d97aa6dd4fe4f09a6bef5bdf8a6abcd.png\",\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/76f23877b6ad4066ad45ce8e31b4b977.png\"},{\"id\":18,\"vipUrl\":\"https:\\/\\/img-blog.csdnimg.cn\\/fdb619daf21b4c829de63b9ebc78859d.png\",\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/a1abe5d27a5441f599adfe662f510243.png\"},{\"id\":19,\"vipUrl\":\"https:\\/\\/img-blog.csdnimg.cn\\/676b7707bb11410f8f56bc0ed2b2345c.png\",\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/7ac5b467fbf24e1d8c2de3f3332c4f54.png\"},{\"id\":20,\"vipUrl\":\"https:\\/\\/img-blog.csdnimg.cn\\/0becb8cc227e4723b765bdd69a20fd4a.png\",\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/fdec85b26091486b9a89d0b8d45c3749.png\"},{\"id\":21,\"vipUrl\":\"https:\\/\\/img-blog.csdnimg.cn\\/1a6c06235ad44941b38c54cbc25a370c.png\",\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/410a06cda2d44b0c84578f88275caf70.png\"}],\"map\":{\"hot\":\"热门\",\"vip\":\"VIP\"}}";
+      
+      var canRead = true;
+      var blogMoveHomeArticle = false;
+      var showSearchText = "";
+      var articleSource = 1;
+      var articleReport = '{"pid": "blog", "spm":"1001.2101"}';
+        var baiduSearchChannel = 'pc_relevant'
+        var baiduSearchIdentification = '.235^v43^pc_blog_bottom_relevance_base5'
+        var distRequestId = '1709120162315_29401'
+        var initRewardObject = {
+          giver: "DreamSun527",
+          anchor: "java1314777",
+          articleId: "135248908",
+          sign: "80d7df1456b0be294f05aa21b8a6cd6d",
+        }
+        var isLikeStatus = false;
+        var isUnLikeStatus = false;
+        var studyLearnWord = "";
+        var unUseCount = 0;
+        var codeMaxSize = 0;
+        var overCost = true;
+        var isCurrentUserVip = false;
+        var contentViewsHeight = 0;
+        var contentViewsCount = 0;
+        var contentViewsCountLimit = 5;
+        var isShowConcision = true
+      var isCookieConcision = false
+      var isHasDirectoryModel = false
+      var isShowSideModel = false
+      var isShowDirectoryModel = true
+      function getCookieConcision(sName){
+        var allCookie = document.cookie.split("; ");
+        for (var i=0; i < allCookie.length; i++){
+          var aCrumb = allCookie[i].split("=");
+          if (sName == aCrumb[0])
+            return aCrumb[1];
+        }
+        return null;
+      }
+      if (getCookieConcision('blog_details_concision') && getCookieConcision('blog_details_concision') == 0){
+        isCookieConcision = true
+        isShowSideModel = true
+        isShowDirectoryModel = false
+      }
+    </script>
+        <div class="main_father clearfix d-flex justify-content-center mainfather-concision" style="height:100%;">
+          <div class="container clearfix container-concision" id="mainBox">
+          <script>
+          if (!isCookieConcision) {
+            $('.main_father').removeClass('mainfather-concision')
+            $('.main_father .container').removeClass('container-concision')
+          } else {
+            $('#mainBox').css('margin-right', '0')
+          }
+          </script>
+          <main>
+<script type="text/javascript">
+    var resourceId =  "";
+    function getQueryString(name) {   
+      var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象  
+      var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+      if( r != null ) return decodeURIComponent( r[2] ); return '';   
+    }
+    function stripscript(s){ 
+      var pattern = new RegExp("[`~!@#$^&*()=|{}':;',\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？%]") 
+      var rs = ""; 
+      for (var i = 0; i < s.length; i++) { 
+        rs = rs+s.substr(i, 1).replace(pattern, ''); 
+      } 
+      return rs;
+    }
+    var blogHotWords = stripscript(getQueryString('utm_term')).length > 1 ? stripscript(getQueryString('utm_term')) : ''
+</script>
+<div class="blog-content-box">
+    <div class="article-header-box">
+        <div class="article-header">
+            <div class="article-title-box">
+                <h1 class="title-article" id="articleContentId">YOLOv8改进 | 2023注意力篇 | EMAttention注意力机制（附多个可添加位置）</h1>
+            </div>
+            <div class="article-info-box">
+                <div class="article-bar-top">
+                    <img class="article-type-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/original.png" alt="">
+                    <div class="bar-content">
+                      <a class="follow-nickName vip-name" href="https://snu77.blog.csdn.net" target="_blank" rel="noopener" title="Snu77">Snu77</a>
+                    <img class="article-time-img article-heard-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newUpTime2.png" alt="">
+                    <span class="time">已于&nbsp;2024-01-16 16:09:50&nbsp;修改</span>
+                   <div class="read-count-box">
+                      <img class="article-read-img article-heard-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/articleReadEyes2.png" alt="">
+                      <span class="read-count">阅读量2.4k</span>
+                      <a id="blog_detail_zk_collection" class="un-collection" data-report-click='{"mod":"popu_823","spm":"1001.2101.3001.4232","ab":"new"}'>
+                          <img class="article-collect-img article-heard-img un-collect-status isdefault" style="display:inline-block" src="https://csdnimg.cn/release/blogv2/dist/pc/img/tobarCollect2.png" alt="">
+                          <img class="article-collect-img article-heard-img collect-status isactive" style="display:none" src="https://csdnimg.cn/release/blogv2/dist/pc/img/tobarCollectionActive2.png" alt="">
+                          <span class="name">收藏</span>
+                          <span class="get-collection">
+                              43
+                          </span>
+                      </a>
+                      <div class="read-count-box is-like">
+                        <img class="article-read-img article-heard-img" style="display:none" id="is-like-imgactive-new" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newHeart2023Active.png" alt="">
+                        <img class="article-read-img article-heard-img" style="display:block" id="is-like-img-new" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newHeart2023Black.png" alt="">
+                        <span class="read-count" id="blog-digg-num">点赞数
+                            27
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="blog-tags-box">
+                    <div class="tags-box artic-tag-box">
+                            <span class="label">分类专栏：</span>
+                                <a class="tag-link" href="https://blog.csdn.net/java1314777/category_12483754.html" target="_blank" rel="noopener">YOLOv8有效涨点专栏</a>
+                            <span class="label">文章标签：</span>
+                                <a rel="nofollow" data-report-click='{"mod":"popu_626","spm":"1001.2101.3001.4223","strategy":"YOLO","ab":"new","extra":"{\"searchword\":\"YOLO\"}"}' class="tag-link" href="https://so.csdn.net/so/search/s.do?q=YOLO&amp;t=all&amp;o=vip&amp;s=&amp;l=&amp;f=&amp;viparticle=" target="_blank" rel="noopener">YOLO</a>
+                                <a rel="nofollow" data-report-click='{"mod":"popu_626","spm":"1001.2101.3001.4223","strategy":"深度学习","ab":"new","extra":"{\"searchword\":\"深度学习\"}"}' class="tag-link" href="https://so.csdn.net/so/search/s.do?q=%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0&amp;t=all&amp;o=vip&amp;s=&amp;l=&amp;f=&amp;viparticle=" target="_blank" rel="noopener">深度学习</a>
+                                <a rel="nofollow" data-report-click='{"mod":"popu_626","spm":"1001.2101.3001.4223","strategy":"人工智能","ab":"new","extra":"{\"searchword\":\"人工智能\"}"}' class="tag-link" href="https://so.csdn.net/so/search/s.do?q=%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD&amp;t=all&amp;o=vip&amp;s=&amp;l=&amp;f=&amp;viparticle=" target="_blank" rel="noopener">人工智能</a>
+                                <a rel="nofollow" data-report-click='{"mod":"popu_626","spm":"1001.2101.3001.4223","strategy":"pytorch","ab":"new","extra":"{\"searchword\":\"pytorch\"}"}' class="tag-link" href="https://so.csdn.net/so/search/s.do?q=pytorch&amp;t=all&amp;o=vip&amp;s=&amp;l=&amp;f=&amp;viparticle=" target="_blank" rel="noopener">pytorch</a>
+                                <a rel="nofollow" data-report-click='{"mod":"popu_626","spm":"1001.2101.3001.4223","strategy":"python","ab":"new","extra":"{\"searchword\":\"python\"}"}' class="tag-link" href="https://so.csdn.net/so/search/s.do?q=python&amp;t=all&amp;o=vip&amp;s=&amp;l=&amp;f=&amp;viparticle=" target="_blank" rel="noopener">python</a>
+                                <a rel="nofollow" data-report-click='{"mod":"popu_626","spm":"1001.2101.3001.4223","strategy":"计算机视觉","ab":"new","extra":"{\"searchword\":\"计算机视觉\"}"}' class="tag-link" href="https://so.csdn.net/so/search/s.do?q=%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89&amp;t=all&amp;o=vip&amp;s=&amp;l=&amp;f=&amp;viparticle=" target="_blank" rel="noopener">计算机视觉</a>
+                                <a rel="nofollow" data-report-click='{"mod":"popu_626","spm":"1001.2101.3001.4223","strategy":"神经网络","ab":"new","extra":"{\"searchword\":\"神经网络\"}"}' class="tag-link" href="https://so.csdn.net/so/search/s.do?q=%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C&amp;t=all&amp;o=vip&amp;s=&amp;l=&amp;f=&amp;viparticle=" target="_blank" rel="noopener">神经网络</a>
+                    </div>
+                </div>
+                <div class="up-time"><span>于&nbsp;2023-12-31 06:00:00&nbsp;首次发布</span></div>
+                <div class="slide-content-box">
+                    <div class="article-copyright">
+                        <div class="creativecommons">
+                            版权声明：本文为博主原创文章，遵循<a href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener"> CC 4.0 BY-SA </a>版权协议，转载请附上原文出处链接和本声明。
+                        </div>
+                        <div class="article-source-link">
+                            本文链接：<a href="https://blog.csdn.net/java1314777/article/details/135248908" target="_blank">https://blog.csdn.net/java1314777/article/details/135248908</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="operating">
+                    <a class="href-article-edit slide-toggle">版权</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="blogHuaweiyunAdvert"></div>
+        <div id="blogColumnPayAdvert">
+            <div class="column-group">
+                <div class="column-group-item column-group0 column-group-item-one">
+                    <div class="item-l">
+                        <a class="item-target" href="https://blog.csdn.net/java1314777/category_12483754.html" target="_blank" title="YOLOv8有效涨点专栏"
+                        data-report-view='{"spm":"1001.2101.3001.6332"}'
+                        data-report-click='{"spm":"1001.2101.3001.6332"}'>
+                            <img class="item-target" src="https://img-blog.csdnimg.cn/direct/d0d498bd4f0c4e17b48ff54e86b67668.png?x-oss-process=image/resize,m_fixed,h_224,w_224" alt="">
+                            <span class="title item-target">
+                                <span>
+                                <span class="tit">YOLOv8有效涨点专栏</span>
+                                    <span class="dec">专栏收录该内容</span>
+                                </span>
+                                <span class="rank"><img src="https://csdnimg.cn/release/blogv2/dist/pc/img/columnHotIcon2.png" alt="">该专栏为热销专栏榜&nbsp;第1名</span>
+                            </span>
+                        </a>
+                    </div>
+                    <div class="item-m">
+                        <span>125 篇文章</span>
+                        <span>340 订阅</span>
+                        <span class="old-add-new-box">
+                            <span class="price price-style">¥199.90</span>
+                            <span class="oldprice price-style">¥99.00</span>
+                        </span>
+                    </div>
+                    <div class="item-r">
+                                <a class="item-target article-column-subscribe">已订阅</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <article class="baidu_pl">
+        <div id="article_content" class="article_content clearfix">
+        <link rel="stylesheet" href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/editerView/kdoc_html_views-1a98987dfd.css">
+        <link rel="stylesheet" href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/editerView/ck_htmledit_views-044f2cf1dc.css">
+                <div id="content_views" class="htmledit_views">
+                    <h2 id="%E4%B8%80%E3%80%81%E6%9C%AC%E6%96%87%E4%BB%8B%E7%BB%8D">一、本文介绍</h2> 
+<p>本文给大家带来的改进机制是<span style="color:#1a439c;"><strong>EMAttention注意力机制</strong></span>&#xff0c;它的<span style="color:#1c7892;"><strong>核心思想是</strong></span>&#xff0c;重塑部分通道到批次维度&#xff0c;并将通道维度分组为多个子特征&#xff0c;以保留每个通道的信息并减少计算开销。EMA模块通过编码全局信息来重新校准每个并行分支中的通道权重&#xff0c;并通过跨维度交互来捕获像素级别的关系。本文首先给大家提供效果图<span style="color:#956fe7;"><strong>(由基础版本未作任何修改和修改了本文的改进机制的效果对比图)</strong></span>&#xff0c;然后介绍其主要的原理&#xff0c;<span style="color:#b95514;"><strong>最后手把手教大家如何添加该注意力机制</strong></span>。</p> 
+<p><img alt="" height="629" src="https://img-blog.csdnimg.cn/direct/ad77f023b69e4fa5a9a4fa4d90be8dda.png" width="1049" /></p> 
+<p><span style="color:#fe2c24;"><strong>推荐指数&#xff1a;⭐⭐⭐⭐⭐</strong></span></p> 
+<p><span style="color:#fe2c24;"><strong>涨点效果&#xff1a;⭐⭐⭐⭐⭐</strong></span></p> 
+<blockquote> 
+ <p><strong><span style="color:#fe2c24;">专栏回顾&#xff1a;</span><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><a href="https://blog.csdn.net/java1314777/category_12483754.html" title="YOLOv8改进系列专栏——本专栏持续复习各种顶会内容——科研必备">YOLOv8改进系列专栏——本专栏持续复习各种顶会内容——科研必备</a></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong>    </strong></p> 
+</blockquote> 
+<p></p> 
+<p id="main-toc"><strong>目录</strong></p> 
+<p id="%E4%B8%80%E3%80%81%E6%9C%AC%E6%96%87%E4%BB%8B%E7%BB%8D-toc" style="margin-left:0px;"><strong><a href="#%E4%B8%80%E3%80%81%E6%9C%AC%E6%96%87%E4%BB%8B%E7%BB%8D" rel="nofollow">一、本文介绍</a></strong></p> 
+<p id="%E4%BA%8C%E3%80%81ACmix%E7%9A%84%E6%A1%86%E6%9E%B6%E5%8E%9F%E7%90%86-toc" style="margin-left:0px;"><strong><a href="#%E4%BA%8C%E3%80%81ACmix%E7%9A%84%E6%A1%86%E6%9E%B6%E5%8E%9F%E7%90%86" rel="nofollow">二、EMAttention的框架原理</a></strong></p> 
+<p id="%E4%B8%89%E3%80%81ACmix%E7%9A%84%E6%A0%B8%E5%BF%83%E4%BB%A3%E7%A0%81%C2%A0-toc" style="margin-left:0px;"><strong><a href="#%E4%B8%89%E3%80%81ACmix%E7%9A%84%E6%A0%B8%E5%BF%83%E4%BB%A3%E7%A0%81%C2%A0" rel="nofollow">三、EMAttention的核心代码 </a></strong></p> 
+<p id="%E5%9B%9B%E3%80%81%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E6%B7%BB%E5%8A%A0ACmix-toc" style="margin-left:0px;"><strong><a href="#%E5%9B%9B%E3%80%81%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E6%B7%BB%E5%8A%A0ACmix" rel="nofollow">四、手把手教你添加EMAttention</a></strong></p> 
+<p id="4.1%C2%A0RCS-OSA%E6%B7%BB%E5%8A%A0%E6%AD%A5%E9%AA%A4-toc" style="margin-left:40px;"><strong><a href="#4.1%C2%A0RCS-OSA%E6%B7%BB%E5%8A%A0%E6%AD%A5%E9%AA%A4" rel="nofollow">4.1 EMAttention添加步骤</a></strong></p> 
+<p id="4.1.1%20%E6%AD%A5%E9%AA%A4%E4%B8%80-toc" style="margin-left:80px;"><strong><a href="#4.1.1%20%E6%AD%A5%E9%AA%A4%E4%B8%80" rel="nofollow">4.1.1 步骤一</a></strong></p> 
+<p id="4.1.2%20%E6%AD%A5%E9%AA%A4%E4%BA%8C-toc" style="margin-left:80px;"><strong><a href="#4.1.2%20%E6%AD%A5%E9%AA%A4%E4%BA%8C" rel="nofollow">4.1.2 步骤二</a></strong></p> 
+<p id="4.1.3%20%E6%AD%A5%E9%AA%A4%E4%B8%89-toc" style="margin-left:80px;"><strong><a href="#4.1.3%20%E6%AD%A5%E9%AA%A4%E4%B8%89" rel="nofollow">4.1.3 步骤三</a></strong></p> 
+<p id="%E4%BA%94%E3%80%81ACmix%E7%9A%84yaml%E6%96%87%E4%BB%B6%E5%92%8C%E8%BF%90%E8%A1%8C%E8%AE%B0%E5%BD%95-toc" style="margin-left:0px;"><strong><a href="#%E4%BA%94%E3%80%81ACmix%E7%9A%84yaml%E6%96%87%E4%BB%B6%E5%92%8C%E8%BF%90%E8%A1%8C%E8%AE%B0%E5%BD%95" rel="nofollow">五、EMAttention的yaml文件和运行记录</a></strong></p> 
+<p id="4.2.1%20SPD-Conv%E7%9A%84yaml%E6%96%87%E4%BB%B6-toc" style="margin-left:40px;"><strong><a href="#4.2.1%20SPD-Conv%E7%9A%84yaml%E6%96%87%E4%BB%B6" rel="nofollow">5.1 EMAttention的yaml版本一(推荐)</a></strong></p> 
+<p id="4.2.2%20D-LKA%E7%9A%84yaml%E6%96%87%E4%BB%B6%E4%BA%8C-toc" style="margin-left:40px;"><strong><a href="#4.2.2%20D-LKA%E7%9A%84yaml%E6%96%87%E4%BB%B6%E4%BA%8C" rel="nofollow">5.2 EMAttention的yaml版本二</a></strong></p> 
+<p id="5.1%20%E6%8E%A8%E8%8D%90SPD-Conv%E5%8F%AF%E6%B7%BB%E5%8A%A0%E7%9A%84%E4%BD%8D%E7%BD%AE%C2%A0-toc" style="margin-left:40px;"><strong><a href="#5.1%20%E6%8E%A8%E8%8D%90SPD-Conv%E5%8F%AF%E6%B7%BB%E5%8A%A0%E7%9A%84%E4%BD%8D%E7%BD%AE%C2%A0" rel="nofollow">5.3 推荐EMAttention可添加的位置 </a></strong></p> 
+<p id="4.2.2%20SPD-Conv%E7%9A%84%E8%AE%AD%E7%BB%83%E8%BF%87%E7%A8%8B%E6%88%AA%E5%9B%BE%C2%A0-toc" style="margin-left:40px;"><strong><a href="#4.2.2%20SPD-Conv%E7%9A%84%E8%AE%AD%E7%BB%83%E8%BF%87%E7%A8%8B%E6%88%AA%E5%9B%BE%C2%A0" rel="nofollow">5.4 EMAttention的训练过程截图 </a></strong></p> 
+<p id="%E5%85%AD%E3%80%81%E6%9C%AC%E6%96%87%E6%80%BB%E7%BB%93-toc" style="margin-left:0px;"><strong><a href="#%E5%85%AD%E3%80%81%E6%9C%AC%E6%96%87%E6%80%BB%E7%BB%93" rel="nofollow">五、本文总结</a></strong></p> 
+<hr id="hr-toc" /> 
+<p></p> 
+<h2 id="%E4%BA%8C%E3%80%81ACmix%E7%9A%84%E6%A1%86%E6%9E%B6%E5%8E%9F%E7%90%86">二、EMAttention的框架原理</h2> 
+<h2 id="%E2%80%8B%E7%BC%96%E8%BE%91"><img alt="" height="256" src="https://img-blog.csdnimg.cn/direct/4f04a633b2fb455cadb3453726eb3c58.png" width="976" /></h2> 
+<p><span style="color:#fe2c24;"><strong>官方论文地址&#xff1a;<a class="link-info" href="https://arxiv.org/vc/arxiv/papers/2305/2305.13563v1.pdf" rel="nofollow" title=" 官方论文地址"> 官方论文地址</a></strong></span></p> 
+<p><span style="color:#fe2c24;"><strong>官方代码地址&#xff1a; <a class="link-info" href="https://github.com/YOLOonMe/EMA-attention-module" title="官方代码地址">官方代码地址</a></strong></span></p> 
+<p><img alt="" height="255" src="https://img-blog.csdnimg.cn/direct/4715cea2d14d427a8c945b48060af548.png" width="1200" /></p> 
+<hr /> 
+<p>主要原理是一个新型的高效多尺度注意力&#xff08;EMA&#xff09;这个模块通过重塑部分通道到批次维度&#xff0c;并将通道维度分组为多个子特征&#xff0c;以保留每个通道的信息并减少计算开销。EMA模块通过编码全局信息来重新校准每个并行分支中的通道权重&#xff0c;并通过跨维度交互来捕获像素级别的关系。</p> 
+<p><strong>提出的创新点主要包括&#xff1a;</strong></p> 
+<p>1. 高效多尺度注意力&#xff08;EMA&#xff09;模&#xff1a;这是一种新型的注意力机制&#xff0c;专为计算机视觉任务设计&#xff0c;旨在同时减少计算开销和保留每个通道的关键信息。</p> 
+<p>2. 通道和批次维度的重组&#xff1a;EMA通过重新组织通道维度和批次维度&#xff0c;提高了模型处理特征的能力。</p> 
+<p>3. 跨维度交互&#xff1a;模块利用跨维度的交互来捕捉像素级别的关系&#xff0c;这在传统的注意力模型中较为少见。</p> 
+<p>4. 全局信息编码和通道权重校准&#xff1a;EMA模块在并行分支中编码全局信息&#xff0c;用于通道权重的重新校准&#xff0c;增强了特征表示的能力。</p> 
+<p><img alt="" height="446" src="https://img-blog.csdnimg.cn/direct/d829696be3b044e9b2d8e78aa76e0469.png" width="1200" /></p> 
+<p>这张图片是文章中提出的高效多尺度注意力&#xff08;EMA&#xff09;模块的示意图。&#34;g&#34;表示输入通道被分成的组数。&#34;X Avg Pool&#34;和&#34;Y Avg Pool&#34;分别代表一维水平和垂直的全局池化操作。在EMA模块中&#xff0c;输入首先被分组&#xff0c;然后通过不同的分支进行处理&#xff1a;一个分支进行一维全局池化&#xff0c;另一个通过3x3的卷积进行特征提取。两个分支的输出特征之后通过sigmoid函数和归一化操作进行调制&#xff0c;最终通过跨维度交互模块合并&#xff0c;以捕捉像素级的成对关系。经过最终的sigmoid调节后&#xff0c;输出特征映射以增强或减弱原始输入特征&#xff0c;从而得到最终输出。</p> 
+<p></p> 
+<hr /> 
+<h2 id="%E4%B8%89%E3%80%81ACmix%E7%9A%84%E6%A0%B8%E5%BF%83%E4%BB%A3%E7%A0%81%C2%A0">三、EMAttention的核心代码 </h2> 
+<p><span style="color:#fe2c24;"><strong>使用方法看章节四。</strong></span></p> 
+<pre><code>import torch
+from torch import nn
+
+class EMA(nn.Module):
+    def __init__(self, channels, factor&#61;32):
+        super(EMA, self).__init__()
+        self.groups &#61; factor
+        assert channels // self.groups &gt; 0
+        self.softmax &#61; nn.Softmax(-1)
+        self.agp &#61; nn.AdaptiveAvgPool2d((1, 1))
+        self.pool_h &#61; nn.AdaptiveAvgPool2d((None, 1))
+        self.pool_w &#61; nn.AdaptiveAvgPool2d((1, None))
+        self.gn &#61; nn.GroupNorm(channels // self.groups, channels // self.groups)
+        self.conv1x1 &#61; nn.Conv2d(channels // self.groups, channels // self.groups, kernel_size&#61;1, stride&#61;1, padding&#61;0)
+        self.conv3x3 &#61; nn.Conv2d(channels // self.groups, channels // self.groups, kernel_size&#61;3, stride&#61;1, padding&#61;1)
+
+    def forward(self, x):
+        b, c, h, w &#61; x.size()
+        group_x &#61; x.reshape(b * self.groups, -1, h, w)  # b*g,c//g,h,w
+        x_h &#61; self.pool_h(group_x)
+        x_w &#61; self.pool_w(group_x).permute(0, 1, 3, 2)
+        hw &#61; self.conv1x1(torch.cat([x_h, x_w], dim&#61;2))
+        x_h, x_w &#61; torch.split(hw, [h, w], dim&#61;2)
+        x1 &#61; self.gn(group_x * x_h.sigmoid() * x_w.permute(0, 1, 3, 2).sigmoid())
+        x2 &#61; self.conv3x3(group_x)
+        x11 &#61; self.softmax(self.agp(x1).reshape(b * self.groups, -1, 1).permute(0, 2, 1))
+        x12 &#61; x2.reshape(b * self.groups, c // self.groups, -1)  # b*g, c//g, hw
+        x21 &#61; self.softmax(self.agp(x2).reshape(b * self.groups, -1, 1).permute(0, 2, 1))
+        x22 &#61; x1.reshape(b * self.groups, c // self.groups, -1)  # b*g, c//g, hw
+        weights &#61; (torch.matmul(x11, x12) &#43; torch.matmul(x21, x22)).reshape(b * self.groups, 1, h, w)
+        return (group_x * weights.sigmoid()).reshape(b, c, h, w)</code></pre> 
+<p></p> 
+<hr /> 
+<h2 id="%E5%9B%9B%E3%80%81%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E6%B7%BB%E5%8A%A0ACmix">四、手把手教你添加EMAttention</h2> 
+<h3 id="4.1%C2%A0RCS-OSA%E6%B7%BB%E5%8A%A0%E6%AD%A5%E9%AA%A4">4.1 EMAttention添加步骤</h3> 
+<h4 id="4.1.1%20%E6%AD%A5%E9%AA%A4%E4%B8%80">4.1.1 步骤一</h4> 
+<p>首先我们找到如下的目录&#39;ultralytics/nn/modules&#39;&#xff0c;然后在这个目录下创建一个py文件&#xff0c;名字可以根据你自己的习惯起&#xff0c;然后将EMAttention的核心代码复制进去。</p> 
+<p></p> 
+<h4 id="4.1.2%20%E6%AD%A5%E9%AA%A4%E4%BA%8C">4.1.2 步骤二</h4> 
+<p>之后我们找到&#39;ultralytics/nn/tasks.py&#39;文件&#xff0c;在其中注册我们的EMAttention模块。</p> 
+<p>首先我们需要在文件的开头导入我们的EMAttention模块&#xff0c;<strong>如下图所示-&gt;</strong></p> 
+<p><img alt="" height="284" src="https://img-blog.csdnimg.cn/direct/04b6fa8732344eaf886ce51f41282aa8.png" width="986" /></p> 
+<p></p> 
+<h4 id="4.1.3%20%E6%AD%A5%E9%AA%A4%E4%B8%89">4.1.3 步骤三</h4> 
+<p>我们找到parse_model这个方法&#xff0c;可以用搜索也可以自己手动找&#xff0c;大概在六百多行吧。 我们找到如下的地方&#xff0c;然后将EMA添加进去即可&#xff0c;模仿我添加即可。</p> 
+<p><img alt="" height="423" src="https://img-blog.csdnimg.cn/direct/4ef52e654be04e0288ee44cb5a5d0cd5.png" width="1053" /></p> 
+<p><strong>到此我们就注册成功了&#xff0c;可以修改yaml文件中输入</strong>EMAttention<strong>使用这个模块了。</strong></p> 
+<p></p> 
+<hr /> 
+<h2 id="%E4%BA%94%E3%80%81ACmix%E7%9A%84yaml%E6%96%87%E4%BB%B6%E5%92%8C%E8%BF%90%E8%A1%8C%E8%AE%B0%E5%BD%95">五、EMAttention的yaml文件和运行记录</h2> 
+<p><strong>下面推荐几个版本的yaml文件给大家&#xff0c;大家可以复制进行训练&#xff0c;但是组合用很多具体那种最有效果都不一定&#xff0c;针对不同的数据集效果也不一样&#xff0c;我不可每一种都做实验&#xff0c;所以我下面推荐了几种我自己认为可能有效果的配合方式&#xff0c;你也可以自己进行组合。</strong></p> 
+<p></p> 
+<hr /> 
+<h3 id="4.2.1%20SPD-Conv%E7%9A%84yaml%E6%96%87%E4%BB%B6">5.1 EMAttention的yaml版本一(推荐)</h3> 
+<p>下面的添加EMAttention是我实验结果的版本。</p> 
+<div> 
+ <pre><code># Ultralytics YOLO &#x1f680;, AGPL-3.0 license
+# YOLOv8 object detection model with P3-P5 outputs. For Usage examples see https://docs.ultralytics.com/tasks/detect
+
+# Parameters
+nc: 80  # number of classes
+scales: # model compound scaling constants, i.e. &#39;model&#61;yolov8n.yaml&#39; will call yolov8.yaml with scale &#39;n&#39;
+  # [depth, width, max_channels]
+  n: [0.33, 0.25, 1024]  # YOLOv8n summary: 225 layers,  3157200 parameters,  3157184 gradients,   8.9 GFLOPs
+  s: [0.33, 0.50, 1024]  # YOLOv8s summary: 225 layers, 11166560 parameters, 11166544 gradients,  28.8 GFLOPs
+  m: [0.67, 0.75, 768]   # YOLOv8m summary: 295 layers, 25902640 parameters, 25902624 gradients,  79.3 GFLOPs
+  l: [1.00, 1.00, 512]   # YOLOv8l summary: 365 layers, 43691520 parameters, 43691504 gradients, 165.7 GFLOPs
+  x: [1.00, 1.25, 512]   # YOLOv8x summary: 365 layers, 68229648 parameters, 68229632 gradients, 258.5 GFLOP
+
+# YOLOv8.0n backbone
+backbone:
+  # [from, repeats, module, args]
+  - [-1, 1, Conv, [64, 3, 2]]  # 0-P1/2
+  - [-1, 1, Conv, [128, 3, 2]]  # 1-P2/4
+  - [-1, 3, C2f, [128, True]]
+  - [-1, 1, Conv, [256, 3, 2]]  # 3-P3/8
+  - [-1, 6, C2f, [256, True]]
+  - [-1, 1, Conv, [512, 3, 2]]  # 5-P4/16
+  - [-1, 6, C2f, [512, True]]
+  - [-1, 1, Conv, [1024, 3, 2]]  # 7-P5/32
+  - [-1, 3, C2f, [1024, True]]
+  - [-1, 1, SPPF, [1024, 5]]  # 9
+
+# YOLOv8.0n head
+head:
+  - [-1, 1, nn.Upsample, [None, 2, &#39;nearest&#39;]]
+  - [[-1, 6], 1, Concat, [1]]  # cat backbone P4
+  - [-1, 3, C2f, [512]]  # 12
+
+  - [-1, 1, nn.Upsample, [None, 2, &#39;nearest&#39;]]
+  - [[-1, 4], 1, Concat, [1]]  # cat backbone P3
+  - [-1, 3, C2f, [256]]  # 15 (P3/8-small)
+  - [-1, 1, EMA, []]  # 16
+
+  - [-1, 1, Conv, [256, 3, 2]]
+  - [[-1, 12], 1, Concat, [1]]  # cat head P4
+  - [-1, 3, C2f, [512]]  # 19 (P4/16-medium)
+  - [-1, 1, EMA, []]  # 20
+
+  - [-1, 1, Conv, [512, 3, 2]]
+  - [[-1, 9], 1, Concat, [1]]  # cat head P5
+  - [-1, 3, C2f, [1024]]  # 23 (P5/32-large)
+  - [-1, 1, EMA, []]  # 24
+
+  - [[16, 20, 24], 1, Detect, [nc]]  # Detect(P3, P4, P5)
+</code></pre> 
+</div> 
+<p></p> 
+<hr /> 
+<h3 id="4.2.2%20D-LKA%E7%9A%84yaml%E6%96%87%E4%BB%B6%E4%BA%8C">5.2 <strong>EMAttention</strong>的yaml版本二</h3> 
+<p><strong>添加的版本二具体那种适合你需要大家自己多做实验来尝试。</strong></p> 
+<div> 
+ <pre><code># Ultralytics YOLO &#x1f680;, AGPL-3.0 license
+# YOLOv8 object detection model with P3-P5 outputs. For Usage examples see https://docs.ultralytics.com/tasks/detect
+
+# Parameters
+nc: 80  # number of classes
+scales: # model compound scaling constants, i.e. &#39;model&#61;yolov8n.yaml&#39; will call yolov8.yaml with scale &#39;n&#39;
+  # [depth, width, max_channels]
+  n: [0.33, 0.25, 1024]  # YOLOv8n summary: 225 layers,  3157200 parameters,  3157184 gradients,   8.9 GFLOPs
+  s: [0.33, 0.50, 1024]  # YOLOv8s summary: 225 layers, 11166560 parameters, 11166544 gradients,  28.8 GFLOPs
+  m: [0.67, 0.75, 768]   # YOLOv8m summary: 295 layers, 25902640 parameters, 25902624 gradients,  79.3 GFLOPs
+  l: [1.00, 1.00, 512]   # YOLOv8l summary: 365 layers, 43691520 parameters, 43691504 gradients, 165.7 GFLOPs
+  x: [1.00, 1.25, 512]   # YOLOv8x summary: 365 layers, 68229648 parameters, 68229632 gradients, 258.5 GFLOP
+
+# YOLOv8.0n backbone
+backbone:
+  # [from, repeats, module, args]
+  - [-1, 1, Conv, [64, 3, 2]]  # 0-P1/2
+  - [-1, 1, Conv, [128, 3, 2]]  # 1-P2/4
+  - [-1, 3, C2f, [128, True]]
+  - [-1, 1, Conv, [256, 3, 2]]  # 3-P3/8
+  - [-1, 6, C2f, [256, True]]
+  - [-1, 1, Conv, [512, 3, 2]]  # 5-P4/16
+  - [-1, 6, C2f, [512, True]]
+  - [-1, 1, Conv, [1024, 3, 2]]  # 7-P5/32
+  - [-1, 3, C2f, [1024, True]]
+  - [-1, 1, SPPF, [1024, 5]]  # 9
+
+# YOLOv8.0n head
+head:
+  - [-1, 1, nn.Upsample, [None, 2, &#39;nearest&#39;]]
+  - [[-1, 6], 1, Concat, [1]]  # cat backbone P4
+  - [-1, 3, C2f, [512]]  # 12
+
+  - [-1, 1, nn.Upsample, [None, 2, &#39;nearest&#39;]]
+  - [[-1, 4], 1, Concat, [1]]  # cat backbone P3
+  - [-1, 3, C2f, [256]]  # 15 (P3/8-small)
+
+
+  - [-1, 1, Conv, [256, 3, 2]]
+  - [[-1, 12], 1, Concat, [1]]  # cat head P4
+  - [-1, 3, C2f, [512]]  # 18 (P4/16-medium)
+
+
+  - [-1, 1, Conv, [512, 3, 2]]
+  - [[-1, 9], 1, Concat, [1]]  # cat head P5
+  - [-1, 3, C2f, [1024]]  # 21 (P5/32-large)
+  - [-1, 1, EMA, []]  # 22
+
+  - [[15, 18, 22], 1, Detect, [nc]]  # Detect(P3, P4, P5)
+</code></pre> 
+</div> 
+<h3 id="5.1%20%E6%8E%A8%E8%8D%90SPD-Conv%E5%8F%AF%E6%B7%BB%E5%8A%A0%E7%9A%84%E4%BD%8D%E7%BD%AE%C2%A0">5.3 推荐EMAttention可添加的位置 </h3> 
+<p>EMAttention<strong>是一种即插即用的可替换卷积的模块&#xff0c;</strong>其可以添加的位置有很多&#xff0c;添加的位置不同效果也不同&#xff0c;所以我下面推荐几个添加的位&#xff0c;置大家可以进行参考&#xff0c;当然不一定要按照我推荐的地方添加。</p> 
+<blockquote> 
+ <ol><li> <p><strong>残差连接中</strong>&#xff1a;在残差网络的残差连接中加入EMAttention<strong>。</strong></p> </li><li> <p><strong>Neck部分</strong>&#xff1a;YOLOv8的Neck部分负责特征融合&#xff0c;这里添加EMAttention可以帮助模型更有效地融合不同层次的特征<strong>(yaml文件一和二)</strong>。</p> </li><li> <p><strong>Backbone&#xff1a;</strong>可以替换中干网络中的卷积部分</p> </li><li> <p>能添加的位置很多&#xff0c;一篇文章很难全部介绍到&#xff0c;后期我会发文件里面集成上百种的改进机制&#xff0c;然后还有许多融合模块&#xff0c;给大家。</p> </li></ol> 
+</blockquote> 
+<p></p> 
+<hr /> 
+<h3 id="4.2.2%20SPD-Conv%E7%9A%84%E8%AE%AD%E7%BB%83%E8%BF%87%E7%A8%8B%E6%88%AA%E5%9B%BE%C2%A0">5.4 <strong>EMAttention</strong>的训练过程截图 </h3> 
+<p><strong>下面是添加了EMAttention的训练截图。</strong></p> 
+<p>大家可以看下面的运行结果和添加的位置所以不存在我发的代码不全或者运行不了的问题大家有问题也可以在评论区评论我看到都会为大家解答(我知道的)。</p> 
+<p><img alt="" height="806" src="https://img-blog.csdnimg.cn/direct/5512bce01e2e452bb96826b726d054c5.png" width="1200" /></p> 
+<hr /> 
+<h2 id="%E5%85%AD%E3%80%81%E6%9C%AC%E6%96%87%E6%80%BB%E7%BB%93">五、本文总结</h2> 
+<p>到此本文的正式分享内容就结束了&#xff0c;在这里给大家推荐我的YOLOv8改进有效涨点专栏&#xff0c;本专栏目前为新开的平均质量分98分&#xff0c;后期我会根据各种最新的前沿顶会进行论文复现&#xff0c;也会对一些老的改进机制进行补充&#xff0c;<strong>目前本专栏免费阅读(暂时&#xff0c;大家尽早关注不迷路~)</strong>&#xff0c;如果大家觉得本文帮助到你了&#xff0c;订阅本专栏&#xff0c;关注后续更多的更新~</p> 
+<blockquote> 
+ <p><strong><span style="color:#fe2c24;">专栏回顾&#xff1a;</span><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><a href="https://blog.csdn.net/java1314777/category_12483754.html" title="YOLOv8改进系列专栏——本专栏持续复习各种顶会内容——科研必备">YOLOv8改进系列专栏——本专栏持续复习各种顶会内容——科研必备</a></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></p> 
+</blockquote> 
+<p><img alt="" height="396" src="https://img-blog.csdnimg.cn/direct/bd80c2385d0548e9a87edc73f9261794.gif" width="1200" />​​​​</p>
+                </div>
+        </div>
+        <div id="treeSkill"></div>
+        <div id="blogExtensionBox" style="width:400px;margin:auto;margin-top:12px" class="blog-extension-box"></div>
+    </article>
+<script>
+  $(function() {
+    setTimeout(function () {
+      var mathcodeList = document.querySelectorAll('.htmledit_views img.mathcode');
+      if (mathcodeList.length > 0) {
+        for (let i = 0; i < mathcodeList.length; i++) {
+          if (mathcodeList[i].naturalWidth === 0 || mathcodeList[i].naturalHeight === 0) {
+            var alt = mathcodeList[i].alt;
+            alt = '\\(' + alt + '\\)';
+            var curSpan = $('<span class="img-codecogs"></span>');
+            curSpan.text(alt);
+            $(mathcodeList[i]).before(curSpan);
+            $(mathcodeList[i]).remove();
+          }
+        }
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+      }
+    }, 1000)
+  });
+</script>
+</div>
+<div class="directory-boxshadow-dialog" style="display:none;">
+  <div class="directory-boxshadow-dialog-box">
+  </div>
+  <div class="vip-limited-time-offer-box">
+    <div class="vip-limited-time-offer-content">
+      <img class="limited-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/vip-limited-close.png">
+      <div class="limited-box">
+        <span class="limited-num"></span>
+        <span class="limited-quan"> 优惠劵</span>
+      </div>
+      <div class="limited-time-box">
+        <span class="time-hour"></span>
+        <span class="time-minite"></span>
+        <span class="time-second"></span>
+      </div>
+      <a class="limited-time-btn" href="https://mall.csdn.net/vip" data-report-click='{"spm":"1001.2101.3001.9621"}' data-report-query='spm=1001.2101.3001.9621'></a>
+    </div>
+  </div>
+</div>    <div class="more-toolbox-new" id="toolBarBox">
+      <div class="left-toolbox">
+        <div class="toolbox-left">
+            <div class="profile-box">
+              <a class="profile-href" target="_blank" href="https://snu77.blog.csdn.net"><img class="profile-img" src="https://profile-avatar.csdnimg.cn/27160f4941a54d07b535ceabcfa4a800_java1314777.jpg!1">
+                <span class="profile-name">
+                  Snu77
+                </span>
+              </a>
+            </div>
+            <div class="profile-attend">
+              
+                <a class="tool-attend tool-bt-button tool-unbt-attend" href="javascript:;" data-report-view='{"mod":"1592215036_002","spm":"1001.2101.3001.4232","extend1":"已关注"}'>已关注</a>
+              <a class="tool-item-follow active-animation" style="display:none;">关注</a>
+            </div>
+        </div>
+        <div class="toolbox-middle">
+          <ul class="toolbox-list">
+            <li class="tool-item tool-item-size tool-active is-like" id="is-like">
+              <a class="tool-item-href">
+                <img style="display:none;" id="is-like-imgactive-animation-like" class="animation-dom active-animation" src="https://csdnimg.cn/release/blogv2/dist/pc/img/tobarThumbUpactive.png" alt="">
+                <img class="isactive" style="display:none" id="is-like-imgactive" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newHeart2021Active.png" alt="">
+                <img class="isdefault" style="display:block" id="is-like-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newHeart2021Black.png" alt="">
+                <span id="spanCount" class="count ">
+                    27
+                </span>
+              </a>
+              <div class="tool-hover-tip"><span class="text space">点赞</span></div>
+            </li>
+            <li class="tool-item tool-item-size tool-active is-unlike" id="is-unlike">
+              <a class="tool-item-href">
+                <img class="isactive" style="margin-right:0px;display:none" id="is-unlike-imgactive" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newUnHeart2021Active.png" alt="">
+                <img class="isdefault" style="margin-right:0px;display:block" id="is-unlike-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newUnHeart2021Black.png" alt="">
+                <span id="unlikeCount" class="count "></span>
+              </a>
+              <div class="tool-hover-tip"><span class="text space">踩</span></div>
+            </li>
+            <li class="tool-item tool-item-size tool-active is-collection ">
+              <a class="tool-item-href" href="javascript:;" data-report-click='{"mod":"popu_824","spm":"1001.2101.3001.4130","ab":"new"}'>
+                <img style="display:none" id="is-collection-img-collection" class="animation-dom active-animation" src="https://csdnimg.cn/release/blogv2/dist/pc/img/tobarCollectionActive.png" alt="">
+                <img class="isdefault" id="is-collection-img" style="display:block" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newCollectBlack.png" alt="">
+                <img class="isactive" id="is-collection-imgactive" style="display:none" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newCollectActive.png" alt="">
+                <span class="count get-collection " data-num="43" id="get-collection">
+                    43
+                </span>
+              </a>
+              <div class="tool-hover-tip collect">
+                <div class="collect-operate-box">
+                  <span class="collect-text" id="is-collection">
+                    收藏
+                  </span>
+                </div>
+              </div>
+              <div class="tool-active-list">
+                <div class="text">
+                  觉得还不错?
+                  <span class="collect-text" id="tool-active-list-collection">
+                    一键收藏
+                  </span>
+                 <img id="tool-active-list-close" src="https://csdnimg.cn/release/blogv2/dist/pc/img/collectionCloseBlack.png" alt="">
+                </div>
+              </div>
+            </li>
+                <li class="tool-item tool-item-size tool-active tool-item-reward">
+                  <a class="tool-item-href" href="javascript:;" data-report-click='{"mod":"popu_830","spm":"1001.2101.3001.4237","dest":"","ab":"new"}'>
+                    <img class="isdefault reward-bt" id="rewardBtNew" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newRewardBlack.png" alt="打赏">
+                    <span class="count"></span>
+                  </a>
+                  <div class="tool-hover-tip"><span class="text space">打赏</span></div>
+                </li>
+          <li class="tool-item tool-item-size tool-active tool-item-comment">
+            <div class="guide-rr-first">
+              <img src="https://csdnimg.cn/release/blogv2/dist/pc/img/guideRedReward01.png" alt="">
+              <button class="btn-guide-known">知道了</button>
+            </div>
+              <a class="tool-item-href go-side-comment" data-report-click='{"spm":"1001.2101.3001.7009"}'>
+              <img class="isdefault" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newComment2021Black.png" alt="">
+              <span class="count">
+                  5
+              </span>
+            </a>
+            <div class="tool-hover-tip"><span class="text space">评论</span></div>
+          </li>
+          <li class="tool-item tool-item-bar">
+          </li>
+          <li class="tool-item tool-item-size tool-active tool-QRcode" data-type="article" id="tool-share">
+            <a class="tool-item-href" href="javascript:;" data-report-click='{"mod":"1582594662_002","spm":"1001.2101.3001.4129","ab":"new"}'>
+              <img class="isdefault" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newShareBlack.png" alt="">
+            </a>
+              <div class="QRcode" id="tool-QRcode">
+            <div class="share-bg-icon icon1" id="shareBgIcon"></div>
+              <div class="share-bg-box">
+                <div class="share-content">
+                    <img class="share-avatar" src="https://profile-avatar.csdnimg.cn/27160f4941a54d07b535ceabcfa4a800_java1314777.jpg!1" alt="">
+                  <div class="share-tit">
+                    YOLOv8改进 | 2023注意力篇 | EMAttention注意力机制（附多个可添加位置）
+                  </div>
+                  <div class="share-dec">
+                    本文给大家带来的改进机制是EMAttention注意力机制，它的核心思想是，重塑部分通道到批次维度，并将通道维度分组为多个子特征，以保留每个通道的信息并减少计算开销。EMA模块通过编码全局信息来重新校准每个并行分支中的通道权重，并通过跨维度交互来捕获像素级别的关系。本文首先给大家提供效果图(由基础版本未作任何修改和修改了本文的改进机制的效果对比图)，然后介绍其主要的原理，最后手把手教大家如何添加该注意力机制。
+                  </div>
+                  <a id="copyPosterUrl" class="url" data-report-click='{"spm":"1001.2101.3001.7493"}' data-report-view='{"spm":"1001.2101.3001.7493"}'>复制链接</a>
+                </div>
+                <div class="share-code">
+                  <div class="share-code-box" id='shareCode'></div>
+                  <div class="share-code-text">扫一扫</div>
+                </div>
+              </div>
+                <div class="share-code-type">
+                </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="toolbox-right">
+            <div class="tool-directory">
+                <a class="bt-columnlist-show"
+                  data-id="12483754"
+                  data-free="false"
+                  data-subscribe="true"
+                  data-title="YOLOv8有效涨点专栏"
+                  data-img="https://img-blog.csdnimg.cn/direct/d0d498bd4f0c4e17b48ff54e86b67668.png?x-oss-process=image/resize,m_fixed,h_224,w_224"
+                  data-url="https://blog.csdn.net/java1314777/category_12483754.html"
+                  data-sum="125"
+                  data-people="340"
+                  data-price="199.90"
+                  data-hotRank="1"
+                  data-status="true"
+                  data-oldprice="99.00"
+                  data-join="false"
+                  data-studyvip="false"
+                  data-studysubscribe="false"
+                  data-report-view='{"spm":"1001.2101.3001.6334","extend1":"专栏目录"}'
+                  data-report-click='{"spm":"1001.2101.3001.6334","extend1":"专栏目录"}'>专栏目录</a>
+          </div>
+                <div class="tool-column">
+                    <a class="tool-bt-button tool-unbt-subscribe" href="javascript:;" data-report-view='{"mod":"1592215036_001","spm":"1001.2101.3001.4405","extend1":"已订阅"}' data-report-click='{"mod":"1592215036_001","spm":"1001.2101.3001.4405","extend1":"已订阅"}'>已订阅</a>
+                </div>
+</div>
+</div>
+</div>
+<script type=text/javascript crossorigin src="https://csdnimg.cn/release/phoenix/production/qrcode-7c90a92189.min.js"></script>
+<script src="//g.csdnimg.cn/??sharewx/1.2.1/sharewx.js" type="text/javascript"></script>
+<script type="text/javascript" crossorigin src="https://g.csdnimg.cn/common/csdn-login-box/csdn-login-box.js"></script>
+<script type="text/javascript" crossorigin src="https://g.csdnimg.cn/collection-box/2.1.2/collection-box.js"></script>                <div class="first-recommend-box recommend-box ">
+<div class="recommend-item-box type_blog clearfix" data-url="https://blog.csdn.net/m0_51530640/article/details/131412297"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6661.1","mod":"popu_871","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant_t0.none-task-blog-2~default~CTRLIST~PayColumn-1-131412297-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"1","strategy":"2~default~CTRLIST~PayColumn","dest":"https://blog.csdn.net/m0_51530640/article/details/131412297"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://blog.csdn.net/m0_51530640/article/details/131412297" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6661.1","mod":"popu_871","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant_t0.none-task-blog-2~default~CTRLIST~PayColumn-1-131412297-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"1","strategy":"2~default~CTRLIST~PayColumn","dest":"https://blog.csdn.net/m0_51530640/article/details/131412297"}'  data-report-query='spm=1001.2101.3001.6661.1&utm_medium=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7EPayColumn-1-131412297-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7EPayColumn-1-131412297-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+					<div class="left ellipsis-online ellipsis-online-1"><em>YOLO</em><em>V8</em><em>改进</em>：CVPR <em>2023</em> | 在C2f模块不同<em>位置</em><em>添加</em><em>EMA</em><em>注意力机制</em>，有效涨点</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/m0_51530640" target="_blank"><span class="blog-title">m0_51530640的博客</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">06-27</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountBlack.png" alt="">
+					3944
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://blog.csdn.net/m0_51530640/article/details/131412297" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6661.1","mod":"popu_871","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant_t0.none-task-blog-2~default~CTRLIST~PayColumn-1-131412297-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"1","strategy":"2~default~CTRLIST~PayColumn","dest":"https://blog.csdn.net/m0_51530640/article/details/131412297"}'  data-report-query='spm=1001.2101.3001.6661.1&utm_medium=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7EPayColumn-1-131412297-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7EPayColumn-1-131412297-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+				<div class="desc ellipsis-online ellipsis-online-1">显著的渠道或空间有效性<em>注意力</em>产生机制更加可辨特征表示用各种计算机进行了说明视觉任务。然而，跨通道建模关系与通道降维可能在提取深度视觉表征时带来副作用。本文提出了一种新的高效多尺度<em>注意力</em>(<em>EMA</em>)方法。模块提出。专注于保留信息每个通道上，并减少计算在上方，我们将部分通道重塑为批处理尺寸并将通道尺寸分组为<em>多个</em>子特征构成空间语义特性在每个特性组中分布良好。具体来说，除了将全局信息编码到重新校准每个平行通道的权重支路，两个并联支路的输出特征为的跨维度交互进一步聚合捕获像素级成对关系。</div>
+			</a>
+		</div>
+	</div>
+</div>
+                </div>
+              <script src="https://csdnimg.cn/release/blogv2/dist/components/js/pc_wap_commontools-094b8ec121.min.js" type="text/javascript" async></script>
+                <div class="second-recommend-box recommend-box ">
+<div class="recommend-item-box type_download clearfix" data-url="https://download.csdn.net/download/DeepLearning_/88373374"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.1","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-download-2~default~CTRLIST~Paid-1-88373374-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"1","strategy":"2~default~CTRLIST~Paid","dest":"https://download.csdn.net/download/DeepLearning_/88373374"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://download.csdn.net/download/DeepLearning_/88373374" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.1","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-download-2~default~CTRLIST~Paid-1-88373374-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"1","strategy":"2~default~CTRLIST~Paid","dest":"https://download.csdn.net/download/DeepLearning_/88373374"}'  data-report-query='spm=1001.2101.3001.6650.1&utm_medium=distribute.pc_relevant.none-task-download-2%7Edefault%7ECTRLIST%7EPaid-1-88373374-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-download-2%7Edefault%7ECTRLIST%7EPaid-1-88373374-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+					<div class="left ellipsis-online ellipsis-online-1"><em>添加</em><em>注意力机制</em>的<em>YOLO</em>v5算法源码(支持<em>yolo</em>X和小型网络<em>添加</em>).zip</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info display-flex">
+					<span class="info-block">09-25</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://download.csdn.net/download/DeepLearning_/88373374" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.1","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-download-2~default~CTRLIST~Paid-1-88373374-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"1","strategy":"2~default~CTRLIST~Paid","dest":"https://download.csdn.net/download/DeepLearning_/88373374"}'  data-report-query='spm=1001.2101.3001.6650.1&utm_medium=distribute.pc_relevant.none-task-download-2%7Edefault%7ECTRLIST%7EPaid-1-88373374-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-download-2%7Edefault%7ECTRLIST%7EPaid-1-88373374-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+				<div class="desc ellipsis-online ellipsis-online-1">【资源说明】
+<em>添加</em><em>注意力机制</em>的<em>YOLO</em>v5算法源码(支持<em>yolo</em>X和小型网络<em>添加</em>).zip<em>添加</em><em>注意力机制</em>的<em>YOLO</em>v5算法源码(支持<em>yolo</em>X和小型网络<em>添加</em>).zip<em>添加</em><em>注意力机制</em>的<em>YOLO</em>v5算法源码(支持<em>yolo</em>X和小型网络<em>添加</em>).zip<em>添加</em><em>注意力机制</em>的<em>YOLO</em>v5算法源码(支持<em>yolo</em>X和小型网络<em>添加</em>).zip<em>添加</em><em>注意力机制</em>的<em>YOLO</em>v5算法源码(支持<em>yolo</em>X和小型网络<em>添加</em>).zip<em>添加</em><em>注意力机制</em>的<em>YOLO</em>v5算法源码(支持<em>yolo</em>X和小型网络<em>添加</em>).zip<em>添加</em><em>注意力机制</em>的<em>YOLO</em>v5算法源码(支持<em>yolo</em>X和小型网络<em>添加</em>).zip<em>添加</em><em>注意力机制</em>的<em>YOLO</em>v5算法源码(支持<em>yolo</em>X和小型网络<em>添加</em>).zip<em>添加</em><em>注意力机制</em>的<em>YOLO</em>v5算法源码(支持<em>yolo</em>X和小型网络<em>添加</em>).zip<em>添加</em><em>注意力机制</em>的<em>YOLO</em>v5算法源码(支持<em>yolo</em>X和小型网络<em>添加</em>).zip
+【备注】
+1、该资源内项目代码都经过测试运行成功，功能ok的情况下才上传的，请放心下载使用！
+2、本项目适合计算机相关专业(如计科、<em>人工智能</em>、通信工程、自动化、电子信息等)的在校学生、老师或者企业员工下载使用，也适合小白学习进阶，当然也可作为毕设项目、课程设计、作业、项目初期立项演示等。
+3、如果基础还行，也可在此代码基础上进行修改，以实现其他功能，也可直接用于毕设、课设、作业等。
+欢迎下载，沟通交流，互相学习，共同进步！</div>
+			</a>
+		</div>
+	</div>
+</div>
+                </div>
+<a id="commentBox" name="commentBox"></a>
+  <div id="pcCommentBox" class="comment-box comment-box-new2 login-comment-box-new" style="display:none">
+      <div class="has-comment" style="display:block">
+        <div class="one-line-box">
+          <div class="has-comment-tit go-side-comment">
+            <span class="count">5</span>&nbsp;条评论
+          </div>
+          <div class="has-comment-con comment-operate-item"></div>
+          <a class="has-comment-bt-right go-side-comment focus">写评论</a>
+        </div>
+      </div>
+  </div>
+              <div class="recommend-box insert-baidu-box recommend-box-style ">
+                <div class="recommend-item-box no-index" style="display:none"></div>
+<div class="recommend-item-box type_blog clearfix" data-url="https://blog.csdn.net/qq_43615485/article/details/131470922"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.2","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-2-131470922-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"2","strategy":"2~default~CTRLIST~Rate","dest":"https://blog.csdn.net/qq_43615485/article/details/131470922"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://blog.csdn.net/qq_43615485/article/details/131470922" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.2","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-2-131470922-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"2","strategy":"2~default~CTRLIST~Rate","dest":"https://blog.csdn.net/qq_43615485/article/details/131470922"}'  data-report-query='spm=1001.2101.3001.6650.2&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-2-131470922-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-2-131470922-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+					<div class="left ellipsis-online ellipsis-online-1"><em>改进</em><em>YOLO</em>v5:<em>添加</em><em>EMA</em><em>注意力机制</em></div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/qq_43615485" target="_blank"><span class="blog-title">qq_43615485的博客</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">06-30</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountBlack.png" alt="">
+					5023
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://blog.csdn.net/qq_43615485/article/details/131470922" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.2","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-2-131470922-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"2","strategy":"2~default~CTRLIST~Rate","dest":"https://blog.csdn.net/qq_43615485/article/details/131470922"}'  data-report-query='spm=1001.2101.3001.6650.2&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-2-131470922-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-2-131470922-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+				<div class="desc ellipsis-online ellipsis-online-1">本文主要介绍一种在<em>YOLO</em>v5-7.0中<em>添加</em><em>EMA</em><em>注意力机制</em>的方法。</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_blog clearfix" data-url="https://blog.csdn.net/zmyzcm/article/details/135168882"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.3","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-3-135168882-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"3","strategy":"2~default~CTRLIST~Rate","dest":"https://blog.csdn.net/zmyzcm/article/details/135168882"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://blog.csdn.net/zmyzcm/article/details/135168882" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.3","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-3-135168882-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"3","strategy":"2~default~CTRLIST~Rate","dest":"https://blog.csdn.net/zmyzcm/article/details/135168882"}'  data-report-query='spm=1001.2101.3001.6650.3&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-3-135168882-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-3-135168882-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+					<div class="left ellipsis-online ellipsis-online-1"><em>YOLO</em><em>v8</em>中加入跨维度<em>注意力机制</em><em>注意力机制</em>GAM，效果超越CMBA，NAM</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/zmyzcm" target="_blank"><span class="blog-title">分享一些自己改进代码的实例</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">12-24</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountBlack.png" alt="">
+					1169
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://blog.csdn.net/zmyzcm/article/details/135168882" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.3","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-3-135168882-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"3","strategy":"2~default~CTRLIST~Rate","dest":"https://blog.csdn.net/zmyzcm/article/details/135168882"}'  data-report-query='spm=1001.2101.3001.6650.3&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-3-135168882-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-3-135168882-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+				<div class="desc ellipsis-online ellipsis-online-1">模型<em>添加</em>GAM注通过全局信息建模和多层次的<em>注意力机制</em>，使模型更好地关注火焰和烟雾等非刚体目标，提升了对多尺度目标的感知能力。在<em>多个</em>数据集亲测涨点！！！！</div>
+			</a>
+		</div>
+	</div>
+</div>
+		<dl id="recommend-item-box-tow" class="recommend-item-box type_blog clearfix">
+			
+		</dl>
+<div class="recommend-item-box type_blog clearfix" data-url="https://blog.csdn.net/jiaoyangwm/article/details/128675367"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.4","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-4-128675367-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"4","strategy":"2~default~CTRLIST~Rate","dest":"https://blog.csdn.net/jiaoyangwm/article/details/128675367"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://blog.csdn.net/jiaoyangwm/article/details/128675367" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.4","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-4-128675367-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"4","strategy":"2~default~CTRLIST~Rate","dest":"https://blog.csdn.net/jiaoyangwm/article/details/128675367"}'  data-report-query='spm=1001.2101.3001.6650.4&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-4-128675367-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-4-128675367-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+					<div class="left ellipsis-online ellipsis-online-1">【目标检测】55、<em>YOLO</em><em>v8</em> | <em>YOLO</em>v5 团队 Ultralytics 再次出手，又实现了 SOTA</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/jiaoyangwm" target="_blank"><span class="blog-title">呆呆的猫的博客</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">01-16</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountBlack.png" alt="">
+					6885
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://blog.csdn.net/jiaoyangwm/article/details/128675367" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.4","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-4-128675367-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"4","strategy":"2~default~CTRLIST~Rate","dest":"https://blog.csdn.net/jiaoyangwm/article/details/128675367"}'  data-report-query='spm=1001.2101.3001.6650.4&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-4-128675367-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-4-128675367-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+				<div class="desc ellipsis-online ellipsis-online-1">本文主要介绍 <em>YOLO</em><em>v8</em></div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_blog clearfix" data-url="https://cv2023.blog.csdn.net/article/details/132020419"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.5","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-5-132020419-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"5","strategy":"2~default~BlogCommendFromBaidu~Rate","dest":"https://cv2023.blog.csdn.net/article/details/132020419"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://cv2023.blog.csdn.net/article/details/132020419" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.5","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-5-132020419-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"5","strategy":"2~default~BlogCommendFromBaidu~Rate","dest":"https://cv2023.blog.csdn.net/article/details/132020419"}'  data-report-query='spm=1001.2101.3001.6650.5&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-5-132020419-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-5-132020419-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+					<div class="left ellipsis-online ellipsis-online-1"><em>Yolo</em><em>v8</em>新版本解读：优化点如何加入新版本，通过加入<em>EMA</em><em>注意力</em>进行对比说明</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/m0_63774211" target="_blank"><span class="blog-title">各专栏持续更新中，改进创新YOLO，适用v5、v7、v8，所有博客均是原创博客，所有文章禁止转载，违者必究。 By AI小怪兽 AI&amp;CV</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">07-31</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountBlack.png" alt="">
+					1299
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://cv2023.blog.csdn.net/article/details/132020419" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.5","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-5-132020419-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"5","strategy":"2~default~BlogCommendFromBaidu~Rate","dest":"https://cv2023.blog.csdn.net/article/details/132020419"}'  data-report-query='spm=1001.2101.3001.6650.5&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-5-132020419-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-5-132020419-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+				<div class="desc ellipsis-online ellipsis-online-1">最近<em>yolo</em><em>v8</em>进行了一次较大的更新，对一些优化点加在哪个<em>位置</em>上有些变动，因此本文主要通过具体案列进行对比和说明，以便在新版本上能够轻松上手。</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_blog clearfix" data-url="https://blog.csdn.net/weixin_42001184/article/details/132893681"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.6","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-6-132893681-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"6","strategy":"2~default~BlogCommendFromBaidu~Rate","dest":"https://blog.csdn.net/weixin_42001184/article/details/132893681"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://blog.csdn.net/weixin_42001184/article/details/132893681" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.6","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-6-132893681-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"6","strategy":"2~default~BlogCommendFromBaidu~Rate","dest":"https://blog.csdn.net/weixin_42001184/article/details/132893681"}'  data-report-query='spm=1001.2101.3001.6650.6&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-6-132893681-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-6-132893681-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+					<div class="left ellipsis-online ellipsis-online-1"><em>YOLO</em><em>v8</em><em>添加</em><em>注意力机制</em>小总结</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/weixin_42001184" target="_blank"><span class="blog-title">weixin_42001184的博客</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">09-15</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountBlack.png" alt="">
+					2246
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://blog.csdn.net/weixin_42001184/article/details/132893681" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.6","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-6-132893681-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"6","strategy":"2~default~BlogCommendFromBaidu~Rate","dest":"https://blog.csdn.net/weixin_42001184/article/details/132893681"}'  data-report-query='spm=1001.2101.3001.6650.6&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-6-132893681-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-6-132893681-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+				<div class="desc ellipsis-online ellipsis-online-1"><em>注意力机制</em>（<em>Att</em>ent<em>ion</em> Mechanism）源于对人类视觉的研究。在认知科学中，由于信息处理的瓶颈，人类会选择性地关注所有信息的一部分，同时忽略其他可见的信息。上述机制通常被称为<em>注意力机制</em>。人类视网膜不同的部位具有不同程度的信息处理能力，即敏锐度（Acuity），只有视网膜中央凹部位具有最强的敏锐度。简而言之，<em>注意力机制</em>源于自然界人类视觉的研究。人类的视觉会天然地进行一个抉择，就是选择性地关注所有信息的一个部分，同事就会忽略其他可见的信息。就属于是合理的利用有限的信息处理资源。</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_blog clearfix" data-url="https://cv2023.blog.csdn.net/article/details/131370577"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.7","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-7-131370577-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"7","strategy":"2~default~BlogCommendFromBaidu~Rate","dest":"https://cv2023.blog.csdn.net/article/details/131370577"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://cv2023.blog.csdn.net/article/details/131370577" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.7","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-7-131370577-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"7","strategy":"2~default~BlogCommendFromBaidu~Rate","dest":"https://cv2023.blog.csdn.net/article/details/131370577"}'  data-report-query='spm=1001.2101.3001.6650.7&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-7-131370577-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-7-131370577-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+					<div class="left ellipsis-online ellipsis-online-1"><em>Yolo</em><em>v8</em><em>改进</em>---<em>注意力机制</em>：ICASSP<em>2023</em> <em>EMA</em>基于跨空间学习的高效多尺度<em>注意力</em>、效果优于ECA、CBAM、CA | 小目标涨点明显</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/m0_63774211" target="_blank"><span class="blog-title">各专栏持续更新中，改进创新YOLO，适用v5、v7、v8，所有博客均是原创博客，所有文章禁止转载，违者必究。 By AI小怪兽 AI&amp;CV</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">06-25</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountBlack.png" alt="">
+					4514
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://cv2023.blog.csdn.net/article/details/131370577" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.7","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-7-131370577-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"7","strategy":"2~default~BlogCommendFromBaidu~Rate","dest":"https://cv2023.blog.csdn.net/article/details/131370577"}'  data-report-query='spm=1001.2101.3001.6650.7&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-7-131370577-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-7-131370577-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+				<div class="desc ellipsis-online ellipsis-online-1"><em>yolo</em><em>v8</em>引入ICASSP<em>2023</em> <em>EMA</em>基于跨空间学习的高效多尺度<em>注意力</em>，在小目标检测中涨点明显</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_blog clearfix" data-url="https://blog.csdn.net/weixin_70423469/article/details/131895147"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.8","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-8-131895147-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"8","strategy":"2~default~BlogCommendFromBaidu~Rate","dest":"https://blog.csdn.net/weixin_70423469/article/details/131895147"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://blog.csdn.net/weixin_70423469/article/details/131895147" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.8","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-8-131895147-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"8","strategy":"2~default~BlogCommendFromBaidu~Rate","dest":"https://blog.csdn.net/weixin_70423469/article/details/131895147"}'  data-report-query='spm=1001.2101.3001.6650.8&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-8-131895147-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-8-131895147-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+					<div class="left ellipsis-online ellipsis-online-1"><em>YOLO</em><em>v8</em><em>添加</em>多种<em>att</em>ent<em>ion</em><em>注意力机制</em></div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/weixin_70423469" target="_blank"><span class="blog-title">weixin_70423469的博客</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">07-24</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountBlack.png" alt="">
+					1641
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://blog.csdn.net/weixin_70423469/article/details/131895147" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.8","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-8-131895147-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"8","strategy":"2~default~BlogCommendFromBaidu~Rate","dest":"https://blog.csdn.net/weixin_70423469/article/details/131895147"}'  data-report-query='spm=1001.2101.3001.6650.8&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-8-131895147-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-8-131895147-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+				<div class="desc ellipsis-online ellipsis-online-1">本文主要讲了一些如何在<em>YOLO</em><em>v8</em>中加入一些自己的<em>att</em>ent<em>ion</em><em>注意力机制</em>操作和方法</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_blog clearfix" data-url="https://abc616.blog.csdn.net/article/details/134308697"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.9","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-9-134308697-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"9","strategy":"2~default~BlogCommendFromBaidu~Rate","dest":"https://abc616.blog.csdn.net/article/details/134308697"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://abc616.blog.csdn.net/article/details/134308697" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.9","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-9-134308697-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"9","strategy":"2~default~BlogCommendFromBaidu~Rate","dest":"https://abc616.blog.csdn.net/article/details/134308697"}'  data-report-query='spm=1001.2101.3001.6650.9&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-9-134308697-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-9-134308697-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+					<div class="left ellipsis-online ellipsis-online-1"><em>YOLO</em>v5<em>改进</em> | <em>添加</em>CA<em>注意力机制</em> + 增加预测层 + 更换损失函数之GIoU</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/weixin_61961691" target="_blank"><span class="blog-title">突然好想你</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">11-11</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountBlack.png" alt="">
+					6446
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://abc616.blog.csdn.net/article/details/134308697" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.9","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-9-134308697-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"9","strategy":"2~default~BlogCommendFromBaidu~Rate","dest":"https://abc616.blog.csdn.net/article/details/134308697"}'  data-report-query='spm=1001.2101.3001.6650.9&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-9-134308697-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-9-134308697-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+				<div class="desc ellipsis-online ellipsis-online-1">在小目标场景的检测中，存在远距离目标识别效果差的情形，本节课提出一种基于<em>改进</em><em>YOLO</em>v5的小目标检测方法。经过试验表明，<em>改进</em>后的模型可以有效检测出远距离小目标，在小目标场景下具有较强的泛化能力。🌈</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_download clearfix" data-url="https://download.csdn.net/download/qq_58133908/87959470"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.10","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-download-2~default~CTRLIST~default-10-87959470-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"10","strategy":"2~default~CTRLIST~default","dest":"https://download.csdn.net/download/qq_58133908/87959470"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://download.csdn.net/download/qq_58133908/87959470" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.10","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-download-2~default~CTRLIST~default-10-87959470-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"10","strategy":"2~default~CTRLIST~default","dest":"https://download.csdn.net/download/qq_58133908/87959470"}'  data-report-query='spm=1001.2101.3001.6650.10&utm_medium=distribute.pc_relevant.none-task-download-2%7Edefault%7ECTRLIST%7Edefault-10-87959470-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-download-2%7Edefault%7ECTRLIST%7Edefault-10-87959470-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+					<div class="left ellipsis-online ellipsis-online-1">本科毕设-<em>YOLO</em>V5+<em>注意力机制</em>训练测试源码</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info display-flex">
+					<span class="info-block">06-28</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://download.csdn.net/download/qq_58133908/87959470" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.10","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-download-2~default~CTRLIST~default-10-87959470-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"10","strategy":"2~default~CTRLIST~default","dest":"https://download.csdn.net/download/qq_58133908/87959470"}'  data-report-query='spm=1001.2101.3001.6650.10&utm_medium=distribute.pc_relevant.none-task-download-2%7Edefault%7ECTRLIST%7Edefault-10-87959470-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-download-2%7Edefault%7ECTRLIST%7Edefault-10-87959470-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+				<div class="desc ellipsis-online ellipsis-online-1">本人带的一个本科毕设资料，内含全部可执行代码。包括<em>YOLO</em>V5复现，<em>YOLO</em>V5加<em>注意力机制</em><em>改进</em>，成功将在VOC数据集上的精确度由76%提升至77%。
+包括训练及测试代码，仅包括代码，本人已经调通，仅需要更改路径即可。不包含预训练权重，资源仅包含本人实现的全部代码，不包含论文，应对本科毕设足够。
+预训练权重、论文模板、演示视频，可私信获取。</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_download clearfix" data-url="https://download.csdn.net/download/admin_maxin/88813924"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.11","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-download-2~default~CTRLIST~default-11-88813924-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"11","strategy":"2~default~CTRLIST~default","dest":"https://download.csdn.net/download/admin_maxin/88813924"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://download.csdn.net/download/admin_maxin/88813924" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.11","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-download-2~default~CTRLIST~default-11-88813924-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"11","strategy":"2~default~CTRLIST~default","dest":"https://download.csdn.net/download/admin_maxin/88813924"}'  data-report-query='spm=1001.2101.3001.6650.11&utm_medium=distribute.pc_relevant.none-task-download-2%7Edefault%7ECTRLIST%7Edefault-11-88813924-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-download-2%7Edefault%7ECTRLIST%7Edefault-11-88813924-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+					<div class="left ellipsis-online ellipsis-online-1">可以训练<em>yolo</em>v5(v6.0)、<em>yolo</em>x、小型网络，<em>添加</em><em>注意力机制</em></div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info display-flex">
+					<span class="info-block">02-06</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://download.csdn.net/download/admin_maxin/88813924" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.11","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-download-2~default~CTRLIST~default-11-88813924-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"11","strategy":"2~default~CTRLIST~default","dest":"https://download.csdn.net/download/admin_maxin/88813924"}'  data-report-query='spm=1001.2101.3001.6650.11&utm_medium=distribute.pc_relevant.none-task-download-2%7Edefault%7ECTRLIST%7Edefault-11-88813924-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-download-2%7Edefault%7ECTRLIST%7Edefault-11-88813924-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+				<div class="desc ellipsis-online ellipsis-online-1">可以训练<em>yolo</em>v5(v6.0)、<em>yolo</em>x、小型网络，<em>添加</em><em>注意力机制</em>
+
+<em>yolo</em>v5_all
+可以训练<em>yolo</em>v5(v6.0)、<em>yolo</em>x、小型网络，<em>添加</em><em>注意力机制</em></div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_download clearfix" data-url="https://download.csdn.net/download/DeepLearning_/87249653"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.12","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-download-2~default~OPENSEARCH~Rate-12-87249653-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"12","strategy":"2~default~OPENSEARCH~Rate","dest":"https://download.csdn.net/download/DeepLearning_/87249653"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://download.csdn.net/download/DeepLearning_/87249653" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.12","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-download-2~default~OPENSEARCH~Rate-12-87249653-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"12","strategy":"2~default~OPENSEARCH~Rate","dest":"https://download.csdn.net/download/DeepLearning_/87249653"}'  data-report-query='spm=1001.2101.3001.6650.12&utm_medium=distribute.pc_relevant.none-task-download-2%7Edefault%7EOPENSEARCH%7ERate-12-87249653-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-download-2%7Edefault%7EOPENSEARCH%7ERate-12-87249653-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+					<div class="left ellipsis-online ellipsis-online-1"><em>改进</em><em>yolo</em>v5(多检测头+<em>注意力机制</em>+repvgg结构)<em>pytorch</em>源码+项目说明.zip</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info display-flex">
+					<span class="info-block">12-06</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://download.csdn.net/download/DeepLearning_/87249653" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.12","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-download-2~default~OPENSEARCH~Rate-12-87249653-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"12","strategy":"2~default~OPENSEARCH~Rate","dest":"https://download.csdn.net/download/DeepLearning_/87249653"}'  data-report-query='spm=1001.2101.3001.6650.12&utm_medium=distribute.pc_relevant.none-task-download-2%7Edefault%7EOPENSEARCH%7ERate-12-87249653-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-download-2%7Edefault%7EOPENSEARCH%7ERate-12-87249653-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+				<div class="desc ellipsis-online ellipsis-online-1"><em>改进</em><em>yolo</em>v5(多检测头+<em>注意力机制</em>+repvgg结构)<em>pytorch</em>源码+项目说明.zip 集成<em>yolo</em>v5(v6.0), <em>注意力机制</em>， 和repvgg结构  <em>添加</em>了多头检测代码，使用train_multiple_detect<em>ion</em>_head.py文件进行训练  <em>添加</em>了检测+关键点...</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_download clearfix" data-url="https://download.csdn.net/download/qq_46073825/87246294"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.13","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-download-2~default~OPENSEARCH~Rate-13-87246294-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"13","strategy":"2~default~OPENSEARCH~Rate","dest":"https://download.csdn.net/download/qq_46073825/87246294"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://download.csdn.net/download/qq_46073825/87246294" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.13","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-download-2~default~OPENSEARCH~Rate-13-87246294-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"13","strategy":"2~default~OPENSEARCH~Rate","dest":"https://download.csdn.net/download/qq_46073825/87246294"}'  data-report-query='spm=1001.2101.3001.6650.13&utm_medium=distribute.pc_relevant.none-task-download-2%7Edefault%7EOPENSEARCH%7ERate-13-87246294-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-download-2%7Edefault%7EOPENSEARCH%7ERate-13-87246294-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+					<div class="left ellipsis-online ellipsis-online-1">CBAM<em>注意力机制</em>代码，以及如何对<em>yolo</em>v5进行<em>改进</em></div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info display-flex">
+					<span class="info-block">12-06</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://download.csdn.net/download/qq_46073825/87246294" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.13","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-download-2~default~OPENSEARCH~Rate-13-87246294-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"13","strategy":"2~default~OPENSEARCH~Rate","dest":"https://download.csdn.net/download/qq_46073825/87246294"}'  data-report-query='spm=1001.2101.3001.6650.13&utm_medium=distribute.pc_relevant.none-task-download-2%7Edefault%7EOPENSEARCH%7ERate-13-87246294-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-download-2%7Edefault%7EOPENSEARCH%7ERate-13-87246294-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+				<div class="desc ellipsis-online ellipsis-online-1"><em>注意力机制</em>代码</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_blog clearfix" data-url="https://wstchhwp.blog.csdn.net/article/details/136312952"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.14","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BLOGTAG~default-14-136312952-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"14","strategy":"2~default~BLOGTAG~default","dest":"https://wstchhwp.blog.csdn.net/article/details/136312952"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://wstchhwp.blog.csdn.net/article/details/136312952" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.14","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BLOGTAG~default-14-136312952-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"14","strategy":"2~default~BLOGTAG~default","dest":"https://wstchhwp.blog.csdn.net/article/details/136312952"}'  data-report-query='spm=1001.2101.3001.6650.14&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBLOGTAG%7Edefault-14-136312952-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBLOGTAG%7Edefault-14-136312952-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+					<div class="left ellipsis-online ellipsis-online-1"><em>YOLO</em>v7代码解读[01] readme解读</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/weixin_43593330" target="_blank"><span class="blog-title">我是天才很好</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">02-27</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountBlack.png" alt="">
+					109
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://wstchhwp.blog.csdn.net/article/details/136312952" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.14","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BLOGTAG~default-14-136312952-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"14","strategy":"2~default~BLOGTAG~default","dest":"https://wstchhwp.blog.csdn.net/article/details/136312952"}'  data-report-query='spm=1001.2101.3001.6650.14&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBLOGTAG%7Edefault-14-136312952-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBLOGTAG%7Edefault-14-136312952-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+				<div class="desc ellipsis-online ellipsis-online-1"><em>YOLO</em>v7代码解读[01] readme解读</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_blog clearfix" data-url="https://snu77.blog.csdn.net/article/details/136278117"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.15","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BLOGTAG~default-15-136278117-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"15","strategy":"2~default~BLOGTAG~default","dest":"https://snu77.blog.csdn.net/article/details/136278117"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://snu77.blog.csdn.net/article/details/136278117" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.15","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BLOGTAG~default-15-136278117-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"15","strategy":"2~default~BLOGTAG~default","dest":"https://snu77.blog.csdn.net/article/details/136278117"}'  data-report-query='spm=1001.2101.3001.6650.15&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBLOGTAG%7Edefault-15-136278117-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBLOGTAG%7Edefault-15-136278117-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+					<div class="left ellipsis-online ellipsis-online-1"><em>YOLO</em>v5<em>改进</em> | SPPF<em>篇</em> | 利用<em>YOLO</em>v9最新的SPPELAN模块<em>改进</em>SPPF（全网独家创新，<em>附</em>手撕结构图）</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/java1314777" target="_blank"><span class="blog-title">Snu77的博客</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">02-25</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountBlack.png" alt="">
+					729
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://snu77.blog.csdn.net/article/details/136278117" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.15","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BLOGTAG~default-15-136278117-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"15","strategy":"2~default~BLOGTAG~default","dest":"https://snu77.blog.csdn.net/article/details/136278117"}'  data-report-query='spm=1001.2101.3001.6650.15&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBLOGTAG%7Edefault-15-136278117-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBLOGTAG%7Edefault-15-136278117-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+				<div class="desc ellipsis-online ellipsis-online-1">本文给大家带来的<em>改进</em>机制是利用2024/02/21号最新发布的<em>YOLO</em>v9其中提出的SPPELAN模块来<em>改进</em>SPPF，其中<em>YOLO</em>v9针对于这个模块并没有介绍，只是在其项目文件中用到了，我将其整理出来用于我们的<em>YOLO</em>v5的项目，同时空间金字塔池化作为我们<em>YOLO</em>v5中的一个比较独特的存在其的改变并不会影响我们的模型其它的<em>改进</em>太多，所以如果你融合方面比较困难，可以尝试替换一下SPPF来改变模型的结构从而达到一个创新的目的，同时本文的内容目前网络上并无其它人总结大家可以尝试以下在自己数据集上的效果。</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_blog clearfix" data-url="https://blog.csdn.net/huohu728/article/details/136279327"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.16","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BLOGTAG~default-16-136279327-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"16","strategy":"2~default~BLOGTAG~default","dest":"https://blog.csdn.net/huohu728/article/details/136279327"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://blog.csdn.net/huohu728/article/details/136279327" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.16","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BLOGTAG~default-16-136279327-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"16","strategy":"2~default~BLOGTAG~default","dest":"https://blog.csdn.net/huohu728/article/details/136279327"}'  data-report-query='spm=1001.2101.3001.6650.16&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBLOGTAG%7Edefault-16-136279327-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBLOGTAG%7Edefault-16-136279327-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+					<div class="left ellipsis-online ellipsis-online-1"><em>YOLO</em>v9来了，可编程梯度信息与广义高效层聚合网络 助力全新检测SOTA前沿</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/huohu728" target="_blank"><span class="blog-title">聚焦底层视觉处理，对相关基础AI技术持续学习</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">02-25</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountBlack.png" alt="">
+					1273
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://blog.csdn.net/huohu728/article/details/136279327" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.16","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BLOGTAG~default-16-136279327-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"16","strategy":"2~default~BLOGTAG~default","dest":"https://blog.csdn.net/huohu728/article/details/136279327"}'  data-report-query='spm=1001.2101.3001.6650.16&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBLOGTAG%7Edefault-16-136279327-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBLOGTAG%7Edefault-16-136279327-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+				<div class="desc ellipsis-online ellipsis-online-1"><em>YOLO</em>v9来了</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_blog clearfix" data-url="https://blog.csdn.net/yangshixu520/article/details/136317805"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.17","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BLOGTAG~default-17-136317805-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"17","strategy":"2~default~BLOGTAG~default","dest":"https://blog.csdn.net/yangshixu520/article/details/136317805"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://blog.csdn.net/yangshixu520/article/details/136317805" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.17","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BLOGTAG~default-17-136317805-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"17","strategy":"2~default~BLOGTAG~default","dest":"https://blog.csdn.net/yangshixu520/article/details/136317805"}'  data-report-query='spm=1001.2101.3001.6650.17&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBLOGTAG%7Edefault-17-136317805-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBLOGTAG%7Edefault-17-136317805-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+					<div class="left ellipsis-online ellipsis-online-1">RK3588 <em>yolo</em> <em>v8</em>实例分割部署</div>
+					<div class="tag">最新发布</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/yangshixu520" target="_blank"><span class="blog-title">yangshixu520的博客</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">02-27</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountBlack.png" alt="">
+					210
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://blog.csdn.net/yangshixu520/article/details/136317805" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.17","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BLOGTAG~default-17-136317805-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"17","strategy":"2~default~BLOGTAG~default","dest":"https://blog.csdn.net/yangshixu520/article/details/136317805"}'  data-report-query='spm=1001.2101.3001.6650.17&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBLOGTAG%7Edefault-17-136317805-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBLOGTAG%7Edefault-17-136317805-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+				<div class="desc ellipsis-online ellipsis-online-1">RK3588 <em>yolo</em> <em>v8</em>实例分割部署</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_chatgpt clearfix" data-url="https://wenku.csdn.net/answer/6rbxu7fzdh"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.18","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-chatgpt-2~default~CTRLIST~Position-18-6rbxu7fzdh-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"18","strategy":"2~default~CTRLIST~Position","dest":"https://wenku.csdn.net/answer/6rbxu7fzdh"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://wenku.csdn.net/answer/6rbxu7fzdh" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.18","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-chatgpt-2~default~CTRLIST~Position-18-6rbxu7fzdh-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"18","strategy":"2~default~CTRLIST~Position","dest":"https://wenku.csdn.net/answer/6rbxu7fzdh"}'  data-report-query='spm=1001.2101.3001.6650.18&utm_medium=distribute.pc_relevant.none-task-chatgpt-2%7Edefault%7ECTRLIST%7EPosition-18-6rbxu7fzdh-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-chatgpt-2%7Edefault%7ECTRLIST%7EPosition-18-6rbxu7fzdh-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+					<div class="left ellipsis-online ellipsis-online-1"><em>YOLO</em>V5<em>改进</em>-<em>添加</em><em>注意力机制</em>senet</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info display-flex">
+					<span class="info-block">09-13</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://wenku.csdn.net/answer/6rbxu7fzdh" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.18","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-chatgpt-2~default~CTRLIST~Position-18-6rbxu7fzdh-blog-135248908.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709120162315_29401\"}","dist_request_id":"1709120162315_29401","ab_strategy":"increase_t0_anti_vip","index":"18","strategy":"2~default~CTRLIST~Position","dest":"https://wenku.csdn.net/answer/6rbxu7fzdh"}'  data-report-query='spm=1001.2101.3001.6650.18&utm_medium=distribute.pc_relevant.none-task-chatgpt-2%7Edefault%7ECTRLIST%7EPosition-18-6rbxu7fzdh-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-chatgpt-2%7Edefault%7ECTRLIST%7EPosition-18-6rbxu7fzdh-blog-135248908.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+				<div class="desc ellipsis-online ellipsis-online-1">你好！关于<em>YOLO</em>v5的<em>改进</em>，你提到了<em>添加</em><em>注意力机制</em>SENet。SENet（Squeeze-and-Excitat<em>ion</em> Network）是一种用于增强卷积<em>神经网络</em>性能的<em>注意力机制</em>。它通过学习通道间的依赖关系，来自适应地调整不同通道的特征响应。
+
+在<em>YOLO</em>v5中，可以通过将SENet模块嵌入到主干特征提取网络中来实现<em>注意力机制</em>的<em>添加</em>。具体而言，可以在主干网络的某些卷积层之后<em>添加</em>SENet模块，以学习通道间的权重。这样做可以帮助网络更好地关注对目标检测任务更有用的特征，从而提高检测性能。
+
+<em>添加</em>SENet的步骤如下：
+1. 在主干网络的某些卷积层之后插入SENet模块。
+2. SE模块由两个阶段组成：Squeeze阶段和Excitat<em>ion</em>阶段。
+   - Squeeze阶段：通过全局平均池化操作将每个通道的特征图压缩为一个标量。
+   - Excitat<em>ion</em>阶段：使用全连接层将压缩后的特征进行激活处理，并生成一个通道<em>注意力</em>向量。
+3. 将通道<em>注意力</em>向量与原始特征相乘，以增强重要特征的表示能力。
+
+通过引入SENet的<em>注意力机制</em>，<em>YOLO</em>v5可以更好地选择和强调对目标检测任务最为关键的特征，从而提升检测性能。这是一种常见的<em>改进</em>方法，已被广泛应用于不同的视觉任务中。希望这些信息对你有所帮助！如果你还有其他问题，可以继续提问。</div>
+			</a>
+		</div>
+	</div>
+</div>
+              </div>
+<div id="recommendNps" class="recommend-nps-box common-nps-box">
+  <h3 class="aside-title">“相关推荐”对你有帮助么？</h3>
+  <div class="aside-content">
+      <ul class="newnps-list">
+          <li class="newnps-item" data-type="非常没帮助">
+              <div class="newnps-img-box">
+                  <img class="newnps-img active" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeel1.png" alt="">
+                  <img class="newnps-img default" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeelGrey1.png" alt="">
+              </div>
+              <div class="newnps-text">非常没帮助</div>
+          </li>
+          <li class="newnps-item" data-type="没帮助">
+              <div class="newnps-img-box">
+                  <img class="newnps-img active" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeel2.png" alt="">
+                  <img class="newnps-img default" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeelGrey2.png" alt="">
+              </div>
+              <div class="newnps-text">没帮助</div>
+          </li>
+          <li class="newnps-item" data-type="一般">
+              <div class="newnps-img-box">
+                  <img class="newnps-img active" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeel3.png" alt="">
+                  <img class="newnps-img default" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeelGrey3.png" alt="">
+              </div>
+              <div class="newnps-text">一般</div>
+          </li>
+          <li class="newnps-item" data-type="有帮助">
+              <div class="newnps-img-box">
+                  <img class="newnps-img active" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeel4.png" alt="">
+                  <img class="newnps-img default" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeelGrey4.png" alt="">
+              </div>
+              <div class="newnps-text">有帮助</div>
+          </li>
+          <li class="newnps-item" data-type="非常有帮助">
+              <div class="newnps-img-box">
+                  <img class="newnps-img active" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeel5.png" alt="">
+                  <img class="newnps-img default" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeelGrey5.png" alt="">
+              </div>
+              <div class="newnps-text">非常有帮助</div>
+          </li>
+      </ul>
+      <div class="newnps-form-box">
+      <div class="newnps-form">
+          <input type="text" placeholder="请输入建议或反馈后点击提交" class="newnps-input">
+          <span class="newnps-btn">提交</span>
+      </div>
+      </div>
+  </div>
+</div><div class="blog-footer-bottom" style="margin-top:10px;"></div>
+<script src="https://g.csdnimg.cn/common/csdn-footer/csdn-footer.js" data-isfootertrack="false" type="text/javascript"></script>
+<script type="text/javascript">
+    window.csdn.csdnFooter.options = {
+        el: '.blog-footer-bottom',
+        type: 2
+    }
+</script>          </main>
+<aside class="blog_container_aside">
+<div id="asideProfile" class="aside-box">
+    <div class="profile-intro d-flex">
+        <div class="avatar-box d-flex justify-content-center flex-column">
+            <a href="https://snu77.blog.csdn.net" target="_blank" data-report-click='{"mod":"popu_379","spm":"1001.2101.3001.4121","dest":"https://snu77.blog.csdn.net","ab":"new"}'>
+                <img src="https://profile-avatar.csdnimg.cn/27160f4941a54d07b535ceabcfa4a800_java1314777.jpg!1" class="avatar_pic">
+            </a>
+        </div>
+        <div class="user-info d-flex flex-column profile-intro-name-box">
+            <div class="profile-intro-name-boxTop">
+                <a href="https://snu77.blog.csdn.net" target="_blank" class="" id="uid" title="Snu77" data-report-click='{"mod":"popu_379","spm":"1001.2101.3001.4122","dest":"https://snu77.blog.csdn.net","ab":"new"}'>
+                    <span class="name vip-name" username="java1314777">Snu77</span>
+                </a>
+                <span>
+                <a href="https://snu77.blog.csdn.net"  data-report-click='{"spm":"1001.2101.3001.9180"}' target="_blank"><img class="identity" src="https://csdnimg.cn/release/blogv2/dist/mobile/img/vipNew.png" alt=""></a>
+                </span>
+                <span class="flag expert-blog">
+                <span class="bubble">CSDN认证博客专家</span>
+                </span>
+                <span class="flag company-blog">
+                <span class="bubble">CSDN认证企业博客</span>
+                </span>
+            </div>
+            <div class="profile-intro-name-boxFooter">
+                <span class="personal-home-page personal-home-years" title="已加入 CSDN 2年">码龄2年</span>
+                    <span class="personal-home-page">
+                    <a class="personal-home-certification" href="https://i.csdn.net/#/uc/profile?utm_source=14998968" target="_blank" title="人工智能领域优质创作者">
+                    <img src="https://img-home.csdnimg.cn/images/20210412060958.png" alt="">
+                    人工智能领域优质创作者
+                    </a>
+                    </span>
+            </div>
+        </div>
+    </div>
+    <div class="data-info d-flex item-tiling">
+        <dl class="text-center" title="337">
+            <a href="https://snu77.blog.csdn.net" data-report-click='{"mod":"1598321000_001","spm":"1001.2101.3001.4310"}' data-report-query="t=1">  
+                <dt><span class="count">337</span></dt>
+                <dd class="font">原创</dd>
+            </a>
+        </dl>
+        <dl class="text-center" data-report-click='{"mod":"1598321000_002","spm":"1001.2101.3001.4311"}' title="7">
+            <a href="https://blog.csdn.net/rank/list/weekly" target="_blank">
+                <dt><span class="count">7</span></dt>
+                <dd class="font">周排名</dd>
+            </a>
+        </dl>
+        <dl class="text-center" title="1140">
+            <a href="https://blog.csdn.net/rank/list/total" data-report-click='{"mod":"1598321000_003","spm":"1001.2101.3001.4312"}' target="_blank">
+                <dt><span class="count">1140</span></dt>
+                <dd class="font">总排名</dd>
+            </a>
+        </dl>
+        <dl class="text-center" style="min-width:58px" title="592723">  
+            <dt><span class="count">59万+</span></dt>
+            <dd>访问</dd>
+        </dl>
+        <dl class="text-center" title="7级,点击查看等级说明">
+            <dt><a href="https://blog.csdn.net/blogdevteam/article/details/103478461" target="_blank">
+                <img class="level" src="https://csdnimg.cn/identity/blog7.png">
+            </a>
+            </dt>
+            <dd>等级</dd>
+        </dl>
+    </div>
+    <div class="item-rank"></div>
+    <div class="data-info d-flex item-tiling">
+        <dl class="text-center" title="13269">
+            <dt><span class="count">1万+</span></dt>
+            <dd>积分</dd>
+        </dl>
+         <dl class="text-center" id="fanBox" title="25750">
+            <dt><span class="count" id="fan">2万+</span></dt>
+            <dd>粉丝</dd>
+        </dl>
+        <dl class="text-center" title="7608">
+            <dt><span class="count">7608</span></dt>
+            <dd>获赞</dd>
+        </dl>
+        <dl class="text-center" title="3467">
+            <dt><span class="count">3467</span></dt>
+            <dd>评论</dd>
+        </dl>
+        <dl class="text-center" title="9401">
+            <dt><span class="count">9401</span></dt>
+            <dd>收藏</dd>
+        </dl>
+    </div>
+    <div class="aside-box-footer" data-report-view='{"spm":"3001.4296"}'>
+        <div class="badge-box d-flex">
+            <div class="badge d-flex">
+                <div class="icon-badge" title="MarkDown">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/11887cd76794439ba69942cd77e81457.png" alt="MarkDown">
+                    </div>
+                </div>
+                <div class="icon-badge" title="CUDA入门">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/cd999bc9a00b4283abaff17a468ff189.png" alt="CUDA入门">
+                    </div>
+                </div>
+                <div class="icon-badge" title="云原生入门">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/3d0f343b511d482892084e4bec9ef37b.png" alt="云原生入门">
+                    </div>
+                </div>
+                <div class="icon-badge" title="学无止境">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/0af32a292d094a4cbfd0feff60f3590d.png" alt="学无止境">
+                    </div>
+                </div>
+                <div class="icon-badge" title="习惯养成">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/medal/xiguanyangchengLv1.png" alt="习惯养成">
+                    </div>
+                </div>
+                <div class="icon-badge" title="笔记达人">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/medal/bijidarenLv1.png" alt="笔记达人">
+                    </div>
+                </div>
+                <div class="icon-badge" title="Java工程师·初级">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/medal/s_java_b_lv1@240.png" alt="Java工程师·初级">
+                    </div>
+                </div>
+                <div class="icon-badge" title="Java工程师·高级">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/medal/s_java_a_lv1@240.png" alt="Java工程师·高级">
+                    </div>
+                </div>
+                <div class="icon-badge" title="博客之星–参与">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/76b1d0d897bc4bdabc11a5d89fe552d3.png" alt="博客之星–参与">
+                    </div>
+                </div>
+                <div class="icon-badge" title="Python工程师·初级">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/medal/s_python_b_lv1@240.png" alt="Python工程师·初级">
+                    </div>
+                </div>
+                <div class="icon-badge" title="Vue进阶">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/c1369b46fc9140c3808c8189382cf046.png" alt="Vue进阶">
+                    </div>
+                </div>
+                <div class="icon-badge" title="Python工程师·高级">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/medal/s_python_a_lv1@240.png" alt="Python工程师·高级">
+                    </div>
+                </div>
+                <div class="icon-badge" title="勤写标兵">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/eabb492c5e3343738376cdb052649492.png" alt="勤写标兵">
+                    </div>
+                </div>
+                <div class="icon-badge" title="创作能手">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/medal/qixiebiaobing4@240.png" alt="创作能手">
+                    </div>
+                </div>
+                <div class="icon-badge" title="新秀勋章">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/medal/xinxiu@240.png" alt="新秀勋章">
+                    </div>
+                </div>
+                <div class="icon-badge" title="持之以恒">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/a73a5facfe464b5a9e2b0393b1189042.png" alt="持之以恒">
+                    </div>
+                </div>
+                <div class="icon-badge" title="创作纪念日">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/medal/cz1th.png" alt="创作纪念日">
+                    </div>
+                </div>
+                <div class="icon-badge" title="GitHub">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/medal/github@240.png" alt="GitHub">
+                    </div>
+                </div>
+                <div class="icon-badge" title="笔耕不辍">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/02d34b42a3ee476fb50850304ab67017.png" alt="笔耕不辍">
+                    </div>
+                </div>
+                <div class="icon-badge" title="话题达人">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/dff63da017d0435d83f26031510a70f0.png" alt="话题达人">
+                    </div>
+                </div>
+                <div class="icon-badge" title="知无不言">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/f19b84c244aa4e6d8bf469b4aff1f98c.png" alt="知无不言">
+                    </div>
+                </div>
+                <div class="icon-badge" title="授人以渔">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/53a3e1cbc8b643cd88e0be2ea68200f7.png" alt="授人以渔">
+                    </div>
+                </div>
+                <div class="icon-badge" title="求知">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/c0535f9cefbd4cc0a4878be28bfc4590.png" alt="求知">
+                    </div>
+                </div>
+                <div class="icon-badge" title="受益良多">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/f36bcf8b59434f7e8e4fe5cab12ed731.png" alt="受益良多">
+                    </div>
+                </div>
+                <div class="icon-badge" title="MySQL进阶">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/2b34833c180244d581b07e8aaa9ae3d9.png" alt="MySQL进阶">
+                    </div>
+                </div>
+                <div class="icon-badge" title="Go">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/23159beb43324e31b1a0ffa3bd651a22.png" alt="Go">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="profile-intro-name-boxOpration">
+        <div class="opt-letter-watch-box">
+        <a rel="nofollow" class="bt-button personal-letter" href="https://im.csdn.net/chat/java1314777" target="_blank" rel="noopener">私信</a>
+        </div>
+        <div class="opt-letter-watch-box"> 
+            <a class="attented personal-watch bt-button" id="btnAttent">已关注</a>
+        </div>
+    </div>
+</div>
+<a id="remuneration" data-report-click='{"spm":"1001.2101.3001.9809"}' rel="nofollow" href="" class="remuneration-box">
+  <img src="" alt="">
+</a>
+  <div id="asideWriteGuide" class="aside-box side-write-guide-box type-1" data-report-view='{"spm":"3001.9727"}'>
+    <div class="content-box">
+      <a rel="nofollow" href="https://mp.csdn.net" target="_blank" class="btn-go-write" data-report-query="spm=3001.9727" data-report-click='{"spm":"3001.9727"}'>
+        <img src="https://img-home.csdnimg.cn/images/20240218021837.png" alt="写文章">
+      </a>
+    </div>
+  </div>
+<div id="asideSearchArticle" class="aside-box">
+	<div class="aside-content search-comter">
+    <div class="aside-search aside-search-blog">         
+        <input type="text" class="input-serch-blog" name="" autocomplete="off" value="" id="search-blog-words" placeholder="搜博主文章">
+        <a class="btn-search-blog" data-report-click='{"spm":"1001.2101.3001.9182"}'>
+            <img src="//csdnimg.cn/cdn/content-toolbar/csdn-white-search.png?v=1587006908">
+        </a>
+    </div>
+    </div>
+</div>
+
+
+
+<div id="asideHotArticle" class="aside-box">
+	<h3 class="aside-title">热门文章</h3>
+	<div class="aside-content">
+		<ul class="hotArticle-list">
+			<li>
+				<a href="https://snu77.blog.csdn.net/article/details/132974960" target="_blank"  data-report-click='{"mod":"popu_541","spm":"1001.2101.3001.4139","dest":"https://snu77.blog.csdn.net/article/details/132974960","ab":"new"}'>
+				时间序列预测模型实战案例(三)(LSTM)(Python)(深度学习)时间序列预测(包括运行代码以及代码讲解)
+					<img src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountBlack.png" alt="">
+					<span class="read">18875</span>
+                </a>
+			</li>
+			<li>
+				<a href="https://snu77.blog.csdn.net/article/details/135309007" target="_blank"  data-report-click='{"mod":"popu_541","spm":"1001.2101.3001.4139","dest":"https://snu77.blog.csdn.net/article/details/135309007","ab":"new"}'>
+				YOLOv8改进有效系列目录 | 包含卷积、主干、检测头、注意力机制、Neck上百种创新机制
+					<img src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountBlack.png" alt="">
+					<span class="read">17067</span>
+                </a>
+			</li>
+			<li>
+				<a href="https://snu77.blog.csdn.net/article/details/134154676" target="_blank"  data-report-click='{"mod":"popu_541","spm":"1001.2101.3001.4139","dest":"https://snu77.blog.csdn.net/article/details/134154676","ab":"new"}'>
+				YOLOv8性能评估指标-＞mAP、Precision、Recall、FPS、IoU
+					<img src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountBlack.png" alt="">
+					<span class="read">16119</span>
+                </a>
+			</li>
+			<li>
+				<a href="https://snu77.blog.csdn.net/article/details/134097996" target="_blank"  data-report-click='{"mod":"popu_541","spm":"1001.2101.3001.4139","dest":"https://snu77.blog.csdn.net/article/details/134097996","ab":"new"}'>
+				详解YOLOv8网络结构/环境搭建/数据集获取/训练/推理/验证/导出/部署
+					<img src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountBlack.png" alt="">
+					<span class="read">12428</span>
+                </a>
+			</li>
+			<li>
+				<a href="https://snu77.blog.csdn.net/article/details/128027977" target="_blank"  data-report-click='{"mod":"popu_541","spm":"1001.2101.3001.4139","dest":"https://snu77.blog.csdn.net/article/details/128027977","ab":"new"}'>
+				Win11上Pytorch的安装并在Pycharm上调用PyTorch最新超详细过程并附详细的系统变量添加过程,可解决pycharm中pip不好使的问题
+					<img src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountBlack.png" alt="">
+					<span class="read">9005</span>
+                </a>
+			</li>
+		</ul>
+	</div>
+</div>
+<div id="asideCategory" class="aside-box flexible-box">
+    <h3 class="aside-title">分类专栏</h3>
+    <div class="aside-content">
+        <ul>
+            <li>
+                <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12483754.html" data-report-click='{"mod":"popu_826","spm":"1001.2101.3001.4230","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12483754.html","ab":"new"}'>
+                    <div class="special-column-bar "></div>
+                    <img src="https://img-blog.csdnimg.cn/direct/d0d498bd4f0c4e17b48ff54e86b67668.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                    <div class="img-mantle "></div>
+                    <span class="title oneline">
+                        YOLOv8有效涨点专栏
+                    </span>
+                        <span class="pay-tag">付费</span>
+                </a>
+                <span class="special-column-num">125篇</span>
+            </li>
+            <li>
+                <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12500428.html" data-report-click='{"mod":"popu_826","spm":"1001.2101.3001.4230","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12500428.html","ab":"new"}'>
+                    <div class="special-column-bar "></div>
+                    <img src="https://img-blog.csdnimg.cn/direct/bce35723af3f466e97009ebf18e827aa.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                    <div class="img-mantle "></div>
+                    <span class="title oneline">
+                        RT-DETR有效改进专栏
+                    </span>
+                        <span class="pay-tag">付费</span>
+                </a>
+                <span class="special-column-num">61篇</span>
+            </li>
+            <li>
+                <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12500426.html" data-report-click='{"mod":"popu_826","spm":"1001.2101.3001.4230","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12500426.html","ab":"new"}'>
+                    <div class="special-column-bar "></div>
+                    <img src="https://img-blog.csdnimg.cn/direct/6029d5920130491c8f52a4b3005e5f84.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                    <div class="img-mantle "></div>
+                    <span class="title oneline">
+                        YOLOv5改进有效专栏
+                    </span>
+                        <span class="pay-tag">付费</span>
+                </a>
+                <span class="special-column-num">106篇</span>
+            </li>
+            <li>
+                <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12583198.html" data-report-click='{"mod":"popu_537","spm":"1001.2101.3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12583198.html","ab":"new"}'>
+                    <div class="special-column-bar "></div>
+                    <img src="https://img-blog.csdnimg.cn/direct/ba2519e7272a4267a3ded30aaa79eb09.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                    <div class="img-mantle "></div>
+                    <span class="title oneline">
+                        YOLOv9有效涨点专栏
+                    </span>
+                </a>
+                <span class="special-column-num">2篇</span>
+            </li>
+            <li>
+                <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12464694.html" data-report-click='{"mod":"popu_537","spm":"1001.2101.3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12464694.html","ab":"new"}'>
+                    <div class="special-column-bar "></div>
+                    <img src="https://img-blog.csdnimg.cn/20201014180756913.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                    <div class="img-mantle "></div>
+                    <span class="title oneline">
+                        数据集专栏
+                    </span>
+                </a>
+                <span class="special-column-num">3篇</span>
+            </li>
+            <li>
+                <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12551123.html" data-report-click='{"mod":"popu_537","spm":"1001.2101.3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12551123.html","ab":"new"}'>
+                    <div class="special-column-bar "></div>
+                    <img src="https://img-blog.csdnimg.cn/direct/85c6dd75fec842e7a1a36ea95aa69562.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                    <div class="img-mantle "></div>
+                    <span class="title oneline">
+                        YOLOv5/v7有效涨点
+                    </span>
+                </a>
+                <span class="special-column-num">1篇</span>
+            </li>
+            <li>
+                <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12510496.html" data-report-click='{"mod":"popu_537","spm":"1001.2101.3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12510496.html","ab":"new"}'>
+                    <div class="special-column-bar "></div>
+                    <img src="https://img-blog.csdnimg.cn/direct/e44ee41c806043f0a3245f74fd5de1db.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                    <div class="img-mantle "></div>
+                    <span class="title oneline">
+                        深度学习100题大战
+                    </span>
+                </a>
+                <span class="special-column-num">1篇</span>
+            </li>
+            <li>
+                <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12486438.html" data-report-click='{"mod":"popu_537","spm":"1001.2101.3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12486438.html","ab":"new"}'>
+                    <div class="special-column-bar "></div>
+                    <img src="https://img-blog.csdnimg.cn/20201014180756738.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                    <div class="img-mantle "></div>
+                    <span class="title oneline">
+                        活动专栏
+                    </span>
+                </a>
+                <span class="special-column-num">2篇</span>
+            </li>
+            <li>
+                <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12285732.html" data-report-click='{"mod":"popu_537","spm":"1001.2101.3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12285732.html","ab":"new"}'>
+                    <div class="special-column-bar "></div>
+                    <img src="https://img-blog.csdnimg.cn/20201014180756919.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                    <div class="img-mantle "></div>
+                    <span class="title oneline">
+                        目标检测专栏
+                    </span>
+                </a>
+                <span class="special-column-num">3篇</span>
+            </li>
+            <li>
+                <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12441087.html" data-report-click='{"mod":"popu_537","spm":"1001.2101.3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12441087.html","ab":"new"}'>
+                    <div class="special-column-bar "></div>
+                    <img src="https://img-blog.csdnimg.cn/direct/5ae08a29357d42a9b849b054be235894.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                    <div class="img-mantle "></div>
+                    <span class="title oneline">
+                        时间序列预测专栏
+                    </span>
+                </a>
+                <span class="special-column-num">35篇</span>
+            </li>
+        </ul>
+    </div>
+    <p class="text-center">
+        <a class="flexible-btn" data-fbox="aside-archive"><img class="look-more" src="https://csdnimg.cn/release/blogv2/dist/pc/img/arrowDownBlack.png" alt=""></a>
+    </p>
+</div>
+<div id="asideNewComments" class="aside-box">
+    <h3 class="aside-title">最新评论</h3>
+    <div class="aside-content">
+        <ul class="newcomment-list">
+            <li>
+                <a class="title text-truncate" target="_blank" href="https://snu77.blog.csdn.net/article/details/136282783#comments_31436253" data-report-click='{"mod":"popu_542","spm":"1001.2101.3001.4231","dest":"https://snu77.blog.csdn.net/article/details/136282783#comments_31436253","ab":"new"}' data-report-view='{"mod":"popu_542","spm":"1001.2101.3001.4231","dest":"https://snu77.blog.csdn.net/article/details/136282783#comments_31436253","ab":"new"}'>YOLOv5改进 | Conv篇 | 全新的SOATA轻量化下采样操作ADown（轻量又涨点，附手撕结构图）</a>
+                <p class="comment ellipsis">
+                    <a href="https://xiaoming.blog.csdn.net" class="user-name" target="_blank">小   明: </a>
+                    <span class="code-comments">您的深度理解和清晰的表达方式使复杂的技术概念变得容易理解。感谢您的无私分享，这对于像我这样的技术爱好者来说是一份宝贵的资源。期待更多精彩的内容！</span>
+                </p>
+            </li>
+            <li>
+                <a class="title text-truncate" target="_blank" href="https://snu77.blog.csdn.net/article/details/136346900#comments_31436249" data-report-click='{"mod":"popu_542","spm":"1001.2101.3001.4231","dest":"https://snu77.blog.csdn.net/article/details/136346900#comments_31436249","ab":"new"}' data-report-view='{"mod":"popu_542","spm":"1001.2101.3001.4231","dest":"https://snu77.blog.csdn.net/article/details/136346900#comments_31436249","ab":"new"}'>YOLOv8改进 | 独家创新篇 | 结合SOTA思想利用双主干网络改进YOLOv8（全网独家创新，最重磅的更新）</a>
+                <p class="comment ellipsis">
+                    <a href="https://xiaoming.blog.csdn.net" class="user-name" target="_blank">小   明: </a>
+                    <span class="code-comments">总结的很详细，文章有深度，内容丰富，干货满满，期待博主持续更新，三连支持！！</span>
+                </p>
+            </li>
+            <li>
+                <a class="title text-truncate" target="_blank" href="https://snu77.blog.csdn.net/article/details/135305515#comments_31435440" data-report-click='{"mod":"popu_542","spm":"1001.2101.3001.4231","dest":"https://snu77.blog.csdn.net/article/details/135305515#comments_31435440","ab":"new"}' data-report-view='{"mod":"popu_542","spm":"1001.2101.3001.4231","dest":"https://snu77.blog.csdn.net/article/details/135305515#comments_31435440","ab":"new"}'>YOLOv8改进 | 检测头篇 | DynamicHead原论文一比一复现 （不同于网上版本，全网首发）</a>
+                <p class="comment ellipsis">
+                    <a href="https://snu77.blog.csdn.net" class="user-name" target="_blank">Snu77: </a>
+                    <span class="code-comments">安装一下就行，mmcv这是个第三方库。</span>
+                </p>
+            </li>
+            <li>
+                <a class="title text-truncate" target="_blank" href="https://snu77.blog.csdn.net/article/details/135305515#comments_31435053" data-report-click='{"mod":"popu_542","spm":"1001.2101.3001.4231","dest":"https://snu77.blog.csdn.net/article/details/135305515#comments_31435053","ab":"new"}' data-report-view='{"mod":"popu_542","spm":"1001.2101.3001.4231","dest":"https://snu77.blog.csdn.net/article/details/135305515#comments_31435053","ab":"new"}'>YOLOv8改进 | 检测头篇 | DynamicHead原论文一比一复现 （不同于网上版本，全网首发）</a>
+                <p class="comment ellipsis">
+                    <a href="https://blog.csdn.net/m0_59403586" class="user-name" target="_blank">m0_59403586: </a>
+                    <span class="code-comments">博主你好，   from mmcv.ops import ModulatedDeformConv2d
+ModuleNotFoundError: No module named &#39;mmcv&#39; 这个问题怎么解决</span>
+                </p>
+            </li>
+            <li>
+                <a class="title text-truncate" target="_blank" href="https://snu77.blog.csdn.net/article/details/136346900#comments_31434710" data-report-click='{"mod":"popu_542","spm":"1001.2101.3001.4231","dest":"https://snu77.blog.csdn.net/article/details/136346900#comments_31434710","ab":"new"}' data-report-view='{"mod":"popu_542","spm":"1001.2101.3001.4231","dest":"https://snu77.blog.csdn.net/article/details/136346900#comments_31434710","ab":"new"}'>YOLOv8改进 | 独家创新篇 | 结合SOTA思想利用双主干网络改进YOLOv8（全网独家创新，最重磅的更新）</a>
+                <p class="comment ellipsis">
+                    <a href="https://blog.csdn.net/WTYuong" class="user-name" target="_blank">是Yu欸: </a>
+                    <span class="code-comments">这是一篇高质量的好文，深度理解和清晰的表达方式使复杂的技术概念变得容易理解，值得收藏点赞。博主用心很有耐心，更有对知识的热忱和热爱，写了这么实用有效的分享，期盼博主能够光顾我的博客，给予宝贵的指导！</span>
+                </p>
+            </li>
+        </ul>
+    </div>
+</div>
+<div id="asideNewNps" class="aside-box common-nps-box">
+    <h3 class="aside-title">您愿意向朋友推荐“博客详情页”吗？</h3>
+    <div class="aside-content">
+        <ul class="newnps-list">
+            <li class="newnps-item" data-type="强烈不推荐">
+                <div class="newnps-img-box">
+                    <img class="newnps-img active" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeel1.png" alt="">
+                    <img class="newnps-img default" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeelGrey1.png" alt="">
+                </div>
+                <div class="newnps-text">强烈不推荐</div>
+            </li>
+            <li class="newnps-item" data-type="不推荐">
+                <div class="newnps-img-box">
+                    <img class="newnps-img active" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeel2.png" alt="">
+                    <img class="newnps-img default" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeelGrey2.png" alt="">
+                </div>
+                <div class="newnps-text">不推荐</div>
+            </li>
+            <li class="newnps-item" data-type="一般般">
+                <div class="newnps-img-box">
+                    <img class="newnps-img active" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeel3.png" alt="">
+                    <img class="newnps-img default" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeelGrey3.png" alt="">
+                </div>
+                <div class="newnps-text">一般般</div>
+            </li>
+            <li class="newnps-item" data-type="推荐">
+                <div class="newnps-img-box">
+                    <img class="newnps-img active" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeel4.png" alt="">
+                    <img class="newnps-img default" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeelGrey4.png" alt="">
+                </div>
+                <div class="newnps-text">推荐</div>
+            </li>
+            <li class="newnps-item" data-type="强烈推荐">
+                <div class="newnps-img-box">
+                    <img class="newnps-img active" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeel5.png" alt="">
+                    <img class="newnps-img default" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeelGrey5.png" alt="">
+                </div>
+                <div class="newnps-text">强烈推荐</div>
+            </li>
+        </ul>
+        <div class="newnps-form-box">
+        <div class="newnps-form">
+            <input type="text" placeholder="请输入建议或反馈后点击提交" class="newnps-input">
+            <span class="newnps-btn">提交</span>
+        </div>
+        </div>
+    </div>
+</div>
+<div id="asideArchive" class="aside-box" style="display:block!important; width:300px;">
+    <h3 class="aside-title">最新文章</h3>
+    <div class="aside-content">
+        <ul class="inf_list clearfix">
+            <li class="clearfix">
+            <a href="https://snu77.blog.csdn.net/article/details/136346900" target="_blank" data-report-click='{"mod":"popu_382","spm":"1001.2101.3001.4136","dest":"https://snu77.blog.csdn.net/article/details/136346900","ab":"new"}' data-report-view='{"mod":"popu_382","dest":"https://snu77.blog.csdn.net/article/details/136346900","ab":"new"}'>YOLOv8改进 | 独家创新篇 | 结合SOTA思想利用双主干网络改进YOLOv8（全网独家创新，最重磅的更新）</a>
+            </li>
+            <li class="clearfix">
+            <a href="https://snu77.blog.csdn.net/article/details/136282783" target="_blank" data-report-click='{"mod":"popu_382","spm":"1001.2101.3001.4136","dest":"https://snu77.blog.csdn.net/article/details/136282783","ab":"new"}' data-report-view='{"mod":"popu_382","dest":"https://snu77.blog.csdn.net/article/details/136282783","ab":"new"}'>YOLOv5改进 | Conv篇 | 全新的SOATA轻量化下采样操作ADown（轻量又涨点，附手撕结构图）</a>
+            </li>
+            <li class="clearfix">
+            <a href="https://snu77.blog.csdn.net/article/details/136278264" target="_blank" data-report-click='{"mod":"popu_382","spm":"1001.2101.3001.4136","dest":"https://snu77.blog.csdn.net/article/details/136278264","ab":"new"}' data-report-view='{"mod":"popu_382","dest":"https://snu77.blog.csdn.net/article/details/136278264","ab":"new"}'>YOLOv8改进 | Conv篇 | 全新的SOATA轻量化下采样操作ADown（参数量下降百分之二十，附手撕结构图）</a>
+            </li>
+        </ul>
+        <div class="archive-bar"></div>
+        <div class="archive-box">
+                <div class="archive-title">2024</div> 
+                <div class="archive-content">
+                    <div class="archive-item">
+                        <a href="https://snu77.blog.csdn.net?type=blog&amp;year=2024&amp;month=02" target="_blank" data-report-click='{"mod":"popu_538","spm":"1001.2101.3001.4138","ab":"new","dest":"https://snu77.blog.csdn.net?type=blog&amp;year=2024&amp;month=02"}'>
+                        <span class="time">02月</span>
+                        <span class="count">55篇</span>
+                        </a>
+                    </div>
+                    <div class="archive-item">
+                        <a href="https://snu77.blog.csdn.net?type=blog&amp;year=2024&amp;month=01" target="_blank" data-report-click='{"mod":"popu_538","spm":"1001.2101.3001.4138","ab":"new","dest":"https://snu77.blog.csdn.net?type=blog&amp;year=2024&amp;month=01"}'>
+                        <span class="time">01月</span>
+                        <span class="count">143篇</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="archive-list-item"><a href="https://snu77.blog.csdn.net?type=blog&amp;year=2023&amp;month=12" target="_blank" data-report-click='{"mod":"popu_538","spm":"1001.2101.3001.4138","ab":"new","dest":"https://snu77.blog.csdn.net?type=blog&amp;year=2023&amp;month=12"}'><span class="year">2023年</span><span class="num">138篇</span></a></div>
+                <div class="archive-list-item"><a href="https://snu77.blog.csdn.net?type=blog&amp;year=2022&amp;month=11" target="_blank" data-report-click='{"mod":"popu_538","spm":"1001.2101.3001.4138","ab":"new","dest":"https://snu77.blog.csdn.net?type=blog&amp;year=2022&amp;month=11"}'><span class="year">2022年</span><span class="num">1篇</span></a></div>
+        </div>
+    </div>
+</div>
+    <!-- 详情页显示目录 -->
+<!--文章目录-->
+<div id="asidedirectory" class="aside-box">
+    <div class='groupfile' id="directory">
+        <h3 class="aside-title">目录</h3>
+        <div class="align-items-stretch group_item">
+            <div class="pos-box">
+            <div class="scroll-box">
+                <div class="toc-box"></div>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+</aside>
+<script>
+	$("a.flexible-btn").click(function(){
+		$(this).parents('div.aside-box').removeClass('flexible-box');
+		$(this).parents("p.text-center").remove();
+	})
+</script>
+<script type="text/javascript"  src="https://g.csdnimg.cn/user-tooltip/2.7/user-tooltip.js"></script>
+<script type="text/javascript"  src="https://g.csdnimg.cn/user-medal/2.0.0/user-medal.js"></script>        </div>
+<div class="recommend-right align-items-stretch clearfix" id="rightAside" data-type="recommend">
+    <aside class="recommend-right_aside">
+        <div id="recommend-right" >
+                        <div class='flex-column aside-box groupfile' id="groupfile">
+                <div class="groupfile-div">
+                <h3 class="aside-title">目录</h3>
+                <div class="align-items-stretch group_item">
+                    <div class="pos-box">
+                        <div class="scroll-box">
+                            <div class="toc-box"></div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+            <div class='aside-box kind_person d-flex flex-column'>
+                    <h3 class="aside-title">分类专栏</h3>
+                    <div class="align-items-stretch kindof_item" id="kind_person_column">
+                        <div class="aside-content">
+                            <ul>
+                                <li>
+                                    <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12483754.html" data-report-click='{"mod":"popu_826","spm":"1001.2101.3001.4230","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12483754.html","ab":"new"}'>
+                                        <div class="special-column-bar "></div>
+                                        <img src="https://img-blog.csdnimg.cn/direct/d0d498bd4f0c4e17b48ff54e86b67668.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                                        <div class="img-mantle "></div>
+                                        <span class="">
+                                            YOLOv8有效涨点专栏
+                                        </span>
+                                            <span class="pay-tag">付费</span>
+                                    </a>
+                                    <span class="special-column-num">125篇</span>
+                                </li>
+                                <li>
+                                    <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12500428.html" data-report-click='{"mod":"popu_826","spm":"1001.2101.3001.4230","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12500428.html","ab":"new"}'>
+                                        <div class="special-column-bar "></div>
+                                        <img src="https://img-blog.csdnimg.cn/direct/bce35723af3f466e97009ebf18e827aa.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                                        <div class="img-mantle "></div>
+                                        <span class="">
+                                            RT-DETR有效改进专栏
+                                        </span>
+                                            <span class="pay-tag">付费</span>
+                                    </a>
+                                    <span class="special-column-num">61篇</span>
+                                </li>
+                                <li>
+                                    <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12500426.html" data-report-click='{"mod":"popu_826","spm":"1001.2101.3001.4230","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12500426.html","ab":"new"}'>
+                                        <div class="special-column-bar "></div>
+                                        <img src="https://img-blog.csdnimg.cn/direct/6029d5920130491c8f52a4b3005e5f84.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                                        <div class="img-mantle "></div>
+                                        <span class="">
+                                            YOLOv5改进有效专栏
+                                        </span>
+                                            <span class="pay-tag">付费</span>
+                                    </a>
+                                    <span class="special-column-num">106篇</span>
+                                </li>
+                                <li>
+                                    <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12583198.html" data-report-click='{"mod":"popu_537","spm":"1001.2101.3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12583198.html","ab":"new"}'>
+                                        <div class="special-column-bar "></div>
+                                        <img src="https://img-blog.csdnimg.cn/direct/ba2519e7272a4267a3ded30aaa79eb09.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                                        <div class="img-mantle "></div>
+                                        <span class="">
+                                            YOLOv9有效涨点专栏
+                                        </span>
+                                    </a>
+                                    <span class="special-column-num">2篇</span>
+                                </li>
+                                <li>
+                                    <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12464694.html" data-report-click='{"mod":"popu_537","spm":"1001.2101.3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12464694.html","ab":"new"}'>
+                                        <div class="special-column-bar "></div>
+                                        <img src="https://img-blog.csdnimg.cn/20201014180756913.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                                        <div class="img-mantle "></div>
+                                        <span class="">
+                                            数据集专栏
+                                        </span>
+                                    </a>
+                                    <span class="special-column-num">3篇</span>
+                                </li>
+                                <li>
+                                    <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12551123.html" data-report-click='{"mod":"popu_537","spm":"1001.2101.3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12551123.html","ab":"new"}'>
+                                        <div class="special-column-bar "></div>
+                                        <img src="https://img-blog.csdnimg.cn/direct/85c6dd75fec842e7a1a36ea95aa69562.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                                        <div class="img-mantle "></div>
+                                        <span class="">
+                                            YOLOv5/v7有效涨点
+                                        </span>
+                                    </a>
+                                    <span class="special-column-num">1篇</span>
+                                </li>
+                                <li>
+                                    <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12510496.html" data-report-click='{"mod":"popu_537","spm":"1001.2101.3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12510496.html","ab":"new"}'>
+                                        <div class="special-column-bar "></div>
+                                        <img src="https://img-blog.csdnimg.cn/direct/e44ee41c806043f0a3245f74fd5de1db.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                                        <div class="img-mantle "></div>
+                                        <span class="">
+                                            深度学习100题大战
+                                        </span>
+                                    </a>
+                                    <span class="special-column-num">1篇</span>
+                                </li>
+                                <li>
+                                    <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12486438.html" data-report-click='{"mod":"popu_537","spm":"1001.2101.3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12486438.html","ab":"new"}'>
+                                        <div class="special-column-bar "></div>
+                                        <img src="https://img-blog.csdnimg.cn/20201014180756738.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                                        <div class="img-mantle "></div>
+                                        <span class="">
+                                            活动专栏
+                                        </span>
+                                    </a>
+                                    <span class="special-column-num">2篇</span>
+                                </li>
+                                <li>
+                                    <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12285732.html" data-report-click='{"mod":"popu_537","spm":"1001.2101.3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12285732.html","ab":"new"}'>
+                                        <div class="special-column-bar "></div>
+                                        <img src="https://img-blog.csdnimg.cn/20201014180756919.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                                        <div class="img-mantle "></div>
+                                        <span class="">
+                                            目标检测专栏
+                                        </span>
+                                    </a>
+                                    <span class="special-column-num">3篇</span>
+                                </li>
+                                <li>
+                                    <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12441087.html" data-report-click='{"mod":"popu_537","spm":"1001.2101.3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12441087.html","ab":"new"}'>
+                                        <div class="special-column-bar "></div>
+                                        <img src="https://img-blog.csdnimg.cn/direct/5ae08a29357d42a9b849b054be235894.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                                        <div class="img-mantle "></div>
+                                        <span class="">
+                                            时间序列预测专栏
+                                        </span>
+                                    </a>
+                                    <span class="special-column-num">35篇</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </aside>
+</div>
+
+<div class="recommend-right1  align-items-stretch clearfix" id="rightAsideConcision" data-type="recommend">
+    <aside class="recommend-right_aside">
+        <div id="recommend-right-concision" >
+            <div class='flex-column aside-box groupfile' id="groupfileConcision">
+                <div class="groupfile-div1">
+                <h3 class="aside-title">目录</h3>
+                <div class="align-items-stretch group_item">
+                    <div class="pos-box">
+                        <div class="scroll-box">
+                            <div class="toc-box"></div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </aside>
+</div>
+
+      </div>
+      <div class="mask-dark"></div>
+      <div class="skin-boxshadow"></div>
+      <div class="directory-boxshadow"></div>
+<div class="comment-side-box-shadow comment-side-tit-close" id="commentSideBoxshadow">
+<div class="comment-side-content">
+	<div class="comment-side-tit">
+		<div class="comment-side-tit-count">评论&nbsp;<span class="count">5</span></div>
+	<img class="comment-side-tit-close" src="https://csdnimg.cn/release/blogv2/dist/pc/img/closeBt.png"></div>
+	<div id="pcCommentSideBox" class="comment-box comment-box-new2 " style="display:block">
+    <div class="comment-edit-box d-flex">
+      <div class="user-img">
+        <a href="https://blog.csdn.net/DreamSun527" target="_blank">
+          <img src="https://profile-avatar.csdnimg.cn/default.jpg!1">
+        </a>
+      </div>
+      <form id="commentform">
+        <textarea class="comment-content" name="comment_content" id="comment_content" placeholder="欢迎高质量的评论，低质的评论会被折叠" maxlength="1000"></textarea>
+        <div class="comment-reward-box" style="background-image: url('https://img-home.csdnimg.cn/images/20230131025301.png');">
+          <a class="btn-remove-reward"></a>
+          <div class="form-reward-box">
+            <div class="info">
+              成就一亿技术人!
+            </div>
+            <div class="price-info">
+              拼手气红包<span class="price">6.0元</span>
+            </div>
+          </div>
+        </div>
+        <div class="comment-operate-box">
+          <div class="comment-operate-l">
+            <span id="tip_comment" class="tip">还能输入<em>1000</em>个字符</span>
+          </div>
+          <div class="comment-operate-c">
+            &nbsp;
+          </div>
+          <div class="comment-operate-r">
+            <div class="comment-operate-item comment-reward">
+              <img class="comment-operate-img" data-url="https://csdnimg.cn/release/blogv2/dist/pc/img/" src="https://csdnimg.cn/release/blogv2/dist/pc/img/commentReward.png" alt="红包">
+              <span class="comment-operate-tip">添加红包</span>
+            </div>
+            <div class="comment-operate-item comment-emoticon">
+              <img class="comment-operate-img" data-url="https://csdnimg.cn/release/blogv2/dist/pc/img/" src="https://csdnimg.cn/release/blogv2/dist/pc/img/commentEmotionIcon.png" alt="表情包">
+              <span class="comment-operate-tip">插入表情</span>
+              <div class="comment-emoticon-box comment-operate-isshow">
+                <div class="comment-emoticon-img-box"></div>
+              </div>
+            </div>
+            <div class="comment-operate-item comment-code">
+              <img class="comment-operate-img" data-url="https://csdnimg.cn/release/blogv2/dist/pc/img/" src="https://csdnimg.cn/release/blogv2/dist/pc/img/commentCodeIcon.png" alt="表情包">
+              <span class="comment-operate-tip">代码片</span>
+              <div class="comment-code-box comment-operate-isshow">
+                <ul id="commentCode">
+                  <li><a data-code="html">HTML/XML</a></li>
+                  <li><a data-code="objc">objective-c</a></li>
+                  <li><a data-code="ruby">Ruby</a></li>
+                  <li><a data-code="php">PHP</a></li>
+                  <li><a data-code="csharp">C</a></li>
+                  <li><a data-code="cpp">C++</a></li>
+                  <li><a data-code="javascript">JavaScript</a></li>
+                  <li><a data-code="python">Python</a></li>
+                  <li><a data-code="java">Java</a></li>
+                  <li><a data-code="css">CSS</a></li>
+                  <li><a data-code="sql">SQL</a></li>
+                  <li><a data-code="plain">其它</a></li>
+                </ul>
+              </div>
+            </div>
+            <div class="comment-operate-item">
+              <input type="hidden" id="comment_replyId" name="comment_replyId">
+              <input type="hidden" id="article_id" name="article_id" value="135248908">
+              <input type="hidden" id="comment_userId" name="comment_userId" value="">
+              <input type="hidden" id="commentId" name="commentId" value="">
+              <a data-report-click='{"mod":"1582594662_003","spm":"1001.2101.3001.4227","ab":"new"}'>
+              <input type="submit" class="btn-comment btn-comment-input" value="评论">
+              </a>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+		<div class="comment-list-container">
+			<div class="comment-list-box comment-operate-item">
+			</div>
+			<div id="lookGoodComment" class="look-good-comment side-look-comment">
+				<a class="look-more-comment">查看更多评论<img src="https://csdnimg.cn/release/blogv2/dist/pc/img/commentArrowDownBlack.png" alt=""></a>
+			</div>
+			<div id="lookFlodComment" class="look-flod-comment">
+					<span class="count"></span>&nbsp;条评论被折叠&nbsp;<a class="look-more-flodcomment">查看</a>
+			</div>
+			<div class="opt-box text-center">
+				<div class="btn btn-sm btn-link-blue" id="btnMoreComment"></div>
+			</div>
+		</div>
+	</div>
+	<div id="pcFlodCommentSideBox" class="pc-flodcomment-sidebox">
+		<div class="comment-fold-tit"><span id="lookUnFlodComment" class="back"><img src="https://csdnimg.cn/release/blogv2/dist/pc/img/commentArrowLeftBlack.png" alt=""></span>被折叠的&nbsp;<span class="count"></span>&nbsp;条评论
+		 <a href="https://blogdev.blog.csdn.net/article/details/122245662" class="tip" target="_blank">为什么被折叠?</a>
+		 <a href="https://bbs.csdn.net/forums/FreeZone" class="park" target="_blank">
+		 <img src="https://csdnimg.cn/release/blogv2/dist/pc/img/iconPark.png">到【灌水乐园】发言</a>                                
+		</div>
+		<div class="comment-fold-content"></div>
+		<div id="lookBadComment" class="look-bad-comment side-look-comment">
+			<a class="look-more-comment">查看更多评论<img src="https://csdnimg.cn/release/blogv2/dist/pc/img/commentArrowDownBlack.png" alt=""></a>
+		</div>
+	</div>
+</div>
+<div class="comment-rewarddialog-box">
+  <div class="form-box">
+    <div class="title-box">
+      添加红包
+      <a class="btn-form-close"></a>
+    </div>
+    <form id="commentRewardForm">
+      <div class="ipt-box">
+        <label for="txtName">祝福语</label>
+        <div class="ipt-btn-box">
+          <input type="text" name="name" id="txtName" autocomplete="off" maxlength="50">
+          <a class="btn-ipt btn-random"></a>
+        </div>
+        <p class="notice">请填写红包祝福语或标题</p>
+      </div>
+      <div class="ipt-box">
+        <label for="txtSendAmount">红包数量</label>
+        <div class="ipt-txt-box">
+          <input type="text" name="sendAmount" maxlength="4" id="txtSendAmount" placeholder="请填写红包数量(最小10个)" autocomplete="off">
+          <span class="after-txt">个</span>
+        </div>
+        <p class="notice">红包个数最小为10个</p>
+      </div>
+      <div class="ipt-box">
+        <label for="txtMoney">红包总金额</label>
+        <div class="ipt-txt-box error">
+          <input type="text" name="money" maxlength="5" id="txtMoney" placeholder="请填写总金额(最低5元)" autocomplete="off">
+          <span class="after-txt">元</span>
+        </div>
+        <p class="notice">红包金额最低5元</p>
+      </div>
+      <div class="balance-info-box">
+        <label>余额支付</label>
+        <div class="balance-info">
+          当前余额<span class="balance">3.43</span>元
+          <a href="https://i.csdn.net/#/wallet/balance/recharge" class="link-charge" target="_blank">前往充值 ></a>
+        </div>
+      </div>
+      <div class="opt-box">
+        <div class="pay-info">
+          需支付：<span class="price">10.00</span>元
+        </div>
+        <button type="button" class="ml-auto btn-cancel">取消</button>
+        <button type="button" class="ml8 btn-submit" disabled="true">确定</button>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="rr-guide-box">
+  <div class="rr-first-box">
+    <img src="https://csdnimg.cn/release/blogv2/dist/pc/img/guideRedReward02.png" alt="">
+    <button class="btn-guide-known next">下一步</button>
+  </div>
+  <div class="rr-second-box">
+    <img src="https://csdnimg.cn/release/blogv2/dist/pc/img/guideRedReward03.png" alt="">
+    <button class="btn-guide-known known">知道了</button>
+  </div>
+</div>
+</div>
+
+<div class="redEnvolope" id="redEnvolope">
+  <div class="env-box">
+    <div class="env-container">
+      <div class="pre-open" id="preOpen">
+        <div class="top">
+          <header>
+            <img class="clearTpaErr" :src="redpacketAuthor.avatar" alt="" />
+            <div class="author">成就一亿技术人!</div>
+          </header>
+          <div class="bot-icon"></div>
+        </div>
+        <footer>
+          <div class="red-openbtn open-start"></div>
+          <div class="tip">
+            领取后你会自动成为博主和红包主的粉丝
+            <a class="rule" target="_blank">规则</a>
+          </div>
+        </footer>
+      </div>
+      <div class="opened" id="opened">
+        <div class="bot-icon">
+          <header>
+            <a class="creatorUrl" href="" target="_blank">
+              <img class="clearTpaErr" src="https://profile-avatar.csdnimg.cn/default.jpg!2" alt="" />
+            </a>
+            <div class="author">
+              <div class="tt">hope_wisdom</div> 发出的红包
+            </div>
+          </header>
+        </div>
+        <div class="receive-box">
+          <header></header>
+          <div class="receive-list">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="close-btn"></div>
+  </div>
+</div>
+<div id="rewardNew" class="reward-popupbox-new">
+	<p class="rewad-title">打赏作者<span class="reward-close"><img src="https://csdnimg.cn/release/blogv2/dist/pc/img/closeBt.png"></span></p>
+	<dl class="profile-box">
+		<dd>
+		<a href="https://snu77.blog.csdn.net" data-report-click='{"mod":"popu_379","dest":"https://snu77.blog.csdn.net","ab":"new"}'>
+			<img src="https://profile-avatar.csdnimg.cn/27160f4941a54d07b535ceabcfa4a800_java1314777.jpg!1" class="avatar_pic">
+		</a>
+		</dd>
+		<dt>
+			<p class="blog-name">Snu77</p>
+			<p class="blog-discript">你的鼓励将是我创作的最大动力</p>
+		</dt>
+	</dl>
+	<div class="reward-box-new">
+			<div class="reward-content"><div class="reward-right"></div></div>
+	</div>
+	<div class="money-box">
+    <span class="choose-money choosed" data-id="1">¥1</span>
+    <span class="choose-money " data-id="2">¥2</span>
+    <span class="choose-money " data-id="4">¥4</span>
+    <span class="choose-money " data-id="6">¥6</span>
+    <span class="choose-money " data-id="10">¥10</span>
+    <span class="choose-money " data-id="20">¥20</span>
+	</div>
+	<div class="sure-box">
+		<div class="sure-box-money">
+			<div class="code-box">
+				<div class="code-num-box">
+					<span class="code-name">扫码支付：</span><span class="code-num">¥1</span>
+				</div>
+				<div class="code-img-box">
+					<div class="renovate">
+					<img src="https://csdnimg.cn/release/blogv2/dist/pc/img/pay-time-out.png">
+					<span>获取中</span>
+					</div>
+				</div>
+				<div class="code-pay-box">
+					<img src="https://csdnimg.cn/release/blogv2/dist/pc/img/newWeiXin.png" alt="">
+					<img src="https://csdnimg.cn/release/blogv2/dist/pc/img/newZhiFuBao.png" alt="">
+					<span>扫码支付</span>
+				</div>
+			</div>
+		</div>
+		<div class="sure-box-blance">
+			<p class="tip">您的余额不足，请更换扫码支付或<a target="_blank" data-report-click='{"mod":"1597646289_003","spm":"1001.2101.3001.4302"}' href="https://i.csdn.net/#/wallet/balance/recharge?utm_source=RewardVip" class="go-invest">充值</a></p>
+			<p class="is-have-money"><a class="reward-sure">打赏作者</a></p>
+		</div>
+	</div>
+</div>
+      
+      <div class="pay-code">
+      <div class="pay-money">实付<span class="pay-money-span" data-nowprice='' data-oldprice=''>元</span></div>
+      <div class="content-blance"><a class="blance-bt" href="javascript:;">使用余额支付</a></div>
+      <div class="content-code">
+        <div id="payCode" data-id="">
+          <div class="renovate">
+            <img src="https://csdnimg.cn/release/blogv2/dist/pc/img/pay-time-out.png">
+            <span>点击重新获取</span>
+          </div>
+        </div>
+        <div class="pay-style"><span><img src="https://csdnimg.cn/release/blogv2/dist/pc/img/weixin.png"></span><span><img src="https://csdnimg.cn/release/blogv2/dist/pc/img/zhifubao.png"></span><span><img src="https://csdnimg.cn/release/blogv2/dist/pc/img/jingdong.png"></span><span class="text">扫码支付</span></div>
+      </div>
+      <div class="bt-close">
+        <svg t="1567152543821" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="10924" xmlns:xlink="http://www.w3.org/1999/xlink" width="12" height="12">
+          <defs>
+            <style type="text/css"></style>
+          </defs>
+          <path d="M512 438.378667L806.506667 143.893333a52.032 52.032 0 1 1 73.6 73.621334L585.621333 512l294.485334 294.485333a52.074667 52.074667 0 0 1-73.6 73.642667L512 585.621333 217.514667 880.128a52.053333 52.053333 0 1 1-73.621334-73.642667L438.378667 512 143.893333 217.514667a52.053333 52.053333 0 1 1 73.621334-73.621334L512 438.378667z" fill="" p-id="10925"></path>
+        </svg>
+      </div>
+      <div class="pay-balance">
+        <input type="radio" class="pay-code-radio" data-type="details">
+        <span class="span">钱包余额</span>
+          <span class="balance" style="color:#FC5531;font-size:14px;">0</span>
+          <div class="pay-code-tile">
+            <img src="https://csdnimg.cn/release/blogv2/dist/pc/img/pay-help.png" alt="">
+            <div class="pay-code-content">
+              <div class="span">
+                <p class="title">抵扣说明：</p>
+                <p> 1.余额是钱包充值的虚拟货币，按照1:1的比例进行支付金额的抵扣。<br> 2.余额无法直接购买下载，可以购买VIP、付费专栏及课程。</p>
+              </div>
+            </div>
+          </div>
+      </div>
+      <a class="pay-balance-con" href="https://i.csdn.net/#/wallet/balance/recharge" target="_blank"><img src="https://csdnimg.cn/release/blogv2/dist/pc/img/recharge.png" alt=""><span>余额充值</span></a>
+    </div>
+    <div style="display:none;">
+      <img src="" onerror='setTimeout(function(){if(!/(csdn.net|iteye.com|baiducontent.com|googleusercontent.com|360webcache.com|sogoucdn.com|bingj.com|baidu.com)$/.test(window.location.hostname)){window.location.href="\x68\x74\x74\x70\x73\x3a\x2f\x2f\x77\x77\x77\x2e\x63\x73\x64\x6e\x2e\x6e\x65\x74"}},3000);'>
+    </div>
+    <div class="keyword-dec-box" id="keywordDecBox"></div>
+  </body>
+    <!-- 富文本柱状图  -->
+    <link rel="stylesheet" href="https://csdnimg.cn/release/blog_editor_html/release1.6.12/ckeditor/plugins/chart/chart.css" />
+    <script type="text/javascript" src="https://csdnimg.cn/release/blog_editor_html/release1.6.12/ckeditor/plugins/chart/lib/chart.min.js"></script>
+    <script type="text/javascript" src="https://csdnimg.cn/release/blog_editor_html/release1.6.12/ckeditor/plugins/chart/widget2chart.js"></script>
+  <script src="https://csdnimg.cn/release/blogv2/dist/components/js/axios-83fa28cedf.min.js" type="text/javascript"></script>
+  <script src="https://csdnimg.cn/release/blogv2/dist/components/js/pc_wap_highlight-8defd55d6e.min.js" type="text/javascript"></script>
+  <script src="https://csdnimg.cn/release/blogv2/dist/components/js/pc_wap_common-be82269d23.min.js" type="text/javascript"></script>
+  <script src="https://csdnimg.cn/release/blogv2/dist/components/js/edit_copy_code-27143fd02b.min.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="https://csdnimg.cn/release/blog_editor_html/release1.6.12/ckeditor/plugins/codesnippet/lib/highlight/styles/tomorrow-night.css">
+  <script src="https://g.csdnimg.cn/user-accusation/1.0.6/user-accusation.js" type="text/javascript"></script>
+  <script>
+    // 全局声明
+    if (window.csdn === undefined) {
+      window.csdn = {};
+    }
+    window.csdn.sideToolbar = {
+      options: {
+        report: {
+          isShow: true,
+        },
+        qr: {
+          isShow: false,
+        },
+        guide: {
+          isShow: true
+        }
+      }
+    }
+    $(function() {
+      $(document).on('click', "a.option-box[data-type='report']", function() {
+        window.csdn.loginBox.key({
+          biz: 'blog',
+          subBiz: 'other_service',
+          cb: function() {
+            window.csdn.feedback({
+              "type": 'blog',
+              "rtype": 'article',
+              "rid": articleId,
+              "reportedName": username,
+              "submitOptions": {
+                "title": articleTitle,
+                "contentUrl": articleDetailUrl
+              },
+              "callback": function() {
+                showToast({
+                  text: "感谢您的举报，我们会尽快审核！",
+                  bottom: '10%',
+                  zindex: 9000,
+                  speed: 500,
+                  time: 1500
+                })
+              }
+            })
+          }
+        })
+      });
+    })
+  </script>
+    <script src="https://g.csdnimg.cn/baidu-search/1.0.12/baidu-search.js" type="text/javascript"></script>
+  <script src="https://csdnimg.cn/release/download/old_static/js/qrcode.js"></script>
+  <script src="https://g.csdnimg.cn/lib/qrcode/1.0.0/qrcode.min.js"></script>
+  <script src="https://g.csdnimg.cn/user-ordercart/3.0.1/user-ordercart.js" type="text/javascript"></script>
+  <script src="https://g.csdnimg.cn/user-ordertip/5.0.3/user-ordertip.js" type="text/javascript"></script>
+  <script src="https://g.csdnimg.cn/order-payment/4.0.5/order-payment.js" type="text/javascript"></script>
+  <script src="https://csdnimg.cn/release/blogv2/dist/pc/js/common-a425354f6a.min.js" type="text/javascript"></script>
+  <script src="https://csdnimg.cn/release/blogv2/dist/pc/js/detail-0655e5d8db.min.js" type="text/javascript"></script>
+  <script src="https://csdnimg.cn/release/blogv2/dist/pc/js/column-35b87614d0.min.js" type="text/javascript"></script>
+  <script src="https://g.csdnimg.cn/side-toolbar/3.4/side-toolbar.js" type="text/javascript"></script>
+    <script>
+    window.csdn.extensionBox = window.csdn.extensionBox ? window.csdn.extensionBox : {};
+    window.csdn.extensionBox.extensionBoxParams = {
+      inited: function() {
+        var extensionBox = document.getElementById('blogExtensionBox'); // 位置dom元素
+        window.csdn.extensionBox.show({
+          isdark: true, // 是否黑皮肤
+          voteusername: "java1314777",
+          posDom: extensionBox, // 插入位置 selectorString || 位置dom元素
+          codyFn: () => {
+            //复制成功回调函数
+            showToast({
+              text: '复制成功（作者已获得对应原力分）!',
+              bottom: '10%', //toast距离页面底部的距离
+              zindex: 9000, //为了防止被其他控件遮盖，z-index默认为2
+              speed: 500, //toast的显示速度
+              time: 1500 //toast显示多久以后消失
+            });
+          }
+        });
+      }
+    }
+    </script>
+    <script src="https://g.csdnimg.cn/extension-box/1.1.7/extension-box.js" type="text/javascript"></script>
+  <script src="https://g.csdnimg.cn/copyright/1.0.4/copyright.js" type="text/javascript"></script>
+  <script>
+    $(".MathJax").remove();
+    if ($('div.markdown_views pre.prettyprint code.hljs').length > 0) {
+      $('div.markdown_views')[0].className = 'markdown_views';
+    }
+  </script>
+  <script type="text/javascript" src="https://csdnimg.cn/release/blog_mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      "HTML-CSS": {
+        linebreaks: { automatic: true, width: "94%container" },
+        imageFont: null
+      },
+      tex2jax: {
+      preview: "none",
+      ignoreClass:"title-article"
+      },
+      mml2jax: {
+      preview: 'none'
+      }
+    });
+  </script>
+<script type="text/javascript" crossorigin src="https://g.csdnimg.cn/common/csdn-login-box/csdn-login-box.js"></script></html>

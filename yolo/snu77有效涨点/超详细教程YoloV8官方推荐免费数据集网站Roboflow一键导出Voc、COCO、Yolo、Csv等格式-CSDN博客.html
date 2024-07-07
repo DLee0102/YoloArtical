@@ -1,0 +1,2335 @@
+    <!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <link rel="canonical" href="https://blog.csdn.net/java1314777/article/details/131402056"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="renderer" content="webkit"/>
+    <meta name="force-rendering" content="webkit"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="report" content='{"pid": "blog", "spm":"1001.2101"}'>
+    <meta name="referrer" content="always">
+    <meta http-equiv="Cache-Control" content="no-siteapp" /><link rel="alternate" media="handheld" href="#" />
+    <meta name="shenma-site-verification" content="5a59773ab8077d4a62bf469ab966a63b_1497598848">
+    <meta name="applicable-device" content="pc">
+    <link  href="https://g.csdnimg.cn/static/logo/favicon32.ico"  rel="shortcut icon" type="image/x-icon" />
+    <title>超详细教程YoloV8官方推荐免费数据集网站Roboflow一键导出Voc、COCO、Yolo、Csv等格式-CSDN博客</title>
+    <script>
+      (function(){ 
+        var el = document.createElement("script"); 
+        el.src = "https://s3a.pstatp.com/toutiao/push.js?1abfa13dfe74d72d41d83c86d240de427e7cac50c51ead53b2e79d40c7952a23ed7716d05b4a0f683a653eab3e214672511de2457e74e99286eb2c33f4428830"; 
+        el.id = "ttzz"; 
+        var s = document.getElementsByTagName("script")[0]; 
+        s.parentNode.insertBefore(el, s);
+      })(window)
+    </script>
+        <meta name="keywords" content="roboflow">
+        <meta name="csdn-baidu-search"  content='{"autorun":true,"install":true,"keyword":"roboflow"}'>
+    <meta name="description" content="文章浏览阅读5.3k次，点赞11次，收藏54次。YoloV8官方推荐了一个数据集网站，就是Roboflow。Roboflow是一个数据集管理平台，提供了免费的数据集，同时也支持上传自己的数据集进行格式转换。使用Roboflow，开发者可以方便地获取所需格式的数据集，无需手动转换格式。此外，Roboflow还提供了多种数据预处理、数据增强等功能，可帮助开发者更好地优化训练数据_roboflow">
+        <link rel="stylesheet" type="text/css" href="https://csdnimg.cn/release/blogv2/dist/pc/css/detail_enter-38ddee24dc.min.css">
+    <style>
+        #content_views{
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none; 
+            user-select: none; 
+        }
+    </style>
+    <script type="application/ld+json">{"@context":"https://ziyuan.baidu.com/contexts/cambrian.jsonld","@id":"https://blog.csdn.net/java1314777/article/details/131402056","appid":"1638831770136827","pubDate":"2023-06-26T17:25:27","title":"超详细教程YoloV8官方推荐免费数据集网站Roboflow一键导出Voc、COCO、Yolo、Csv等格式-CSDN博客","upDate":"2023-06-27T13:30:00"}</script>
+        <link rel="stylesheet" type="text/css" href="https://csdnimg.cn/release/blogv2/dist/pc/themesSkin/skin-blackwhale/skin-blackwhale-fcd12bc8ae.min.css">
+    <script src="https://csdnimg.cn/public/common/libs/jquery/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        var isCorporate = false;//注释删除enterprise
+        var username =  "java1314777";
+        var skinImg = "white";
+        var blog_address = "https://snu77.blog.csdn.net";
+        var currentUserName = "DreamSun527";
+        var isOwner = false;
+        var loginUrl = "http://passport.csdn.net/account/login?from=https://blog.csdn.net/java1314777/article/details/131402056";
+        var blogUrl = "https://blog.csdn.net/";
+        var avatar = "https://profile-avatar.csdnimg.cn/27160f4941a54d07b535ceabcfa4a800_java1314777.jpg!1";
+        var articleTitle = "超详细教程YoloV8官方推荐免费数据集网站Roboflow一键导出Voc、COCO、Yolo、Csv等格式";
+        var articleDesc = "文章浏览阅读5.3k次，点赞11次，收藏54次。YoloV8官方推荐了一个数据集网站，就是Roboflow。Roboflow是一个数据集管理平台，提供了免费的数据集，同时也支持上传自己的数据集进行格式转换。使用Roboflow，开发者可以方便地获取所需格式的数据集，无需手动转换格式。此外，Roboflow还提供了多种数据预处理、数据增强等功能，可帮助开发者更好地优化训练数据_roboflow";
+        var articleTitles = "超详细教程YoloV8官方推荐免费数据集网站Roboflow一键导出Voc、COCO、Yolo、Csv等格式-CSDN博客";
+        var nickName = "Snu77";
+        var articleDetailUrl = "https://snu77.blog.csdn.net/article/details/131402056";
+        var vipUrlV = "https://mall.csdn.net/svip?utm_source=learningVIPX";
+        if(window.location.host.split('.').length == 3) {
+            blog_address = blogUrl + username;
+        }
+        var skinStatus = "Black";
+        var robotModule = '';
+        var robotModuleJs = '';
+        var blogStaticHost = "https://csdnimg.cn/release/blogv2/"
+        var mallTestStyle = "control"
+    </script>
+        <meta name="toolbar" content='{"type":"1","fixModel":"1"}'>
+        <script>
+            window.csdn = window.csdn ? window.csdn : {};
+            window.csdn.toolbarIsBlack = true;
+            window.csdn.sideToolbar = {
+                options: {
+                    theme : "black"
+                }
+            }
+        </script>
+    <script src="https://g.csdnimg.cn/??fixed-sidebar/1.1.7/fixed-sidebar.js" type="text/javascript"></script>
+    <script src='//g.csdnimg.cn/common/csdn-report/report.js' type='text/javascript'></script>
+    <link rel="stylesheet" type="text/css" href="https://csdnimg.cn/public/sandalstrap/1.4/css/sandalstrap.min.css">
+    <style>
+        .MathJax, .MathJax_Message, .MathJax_Preview{
+            display: none
+        }
+    </style>
+    <script src="https://dup.baidustatic.com/js/ds.js"></script>
+</head>
+  <body class="nodata is_black_skin " style="">
+    <div id="toolbarBox" style="min-height: 48px;"></div>
+        <script>
+            var toolbarSearchExt = '{"landingWord":["roboflow"],"queryWord":"","tag":["YOLO","深度学习","人工智能"],"title":"超详细教程YoloV8官方推荐免费数据集网站Roboflow一键导出Voc、COCO、Yolo、Csv等格式"}';
+        </script>
+    <script src="https://g.csdnimg.cn/common/csdn-toolbar/csdn-toolbar.js" type="text/javascript"></script>
+    <script>
+    (function(){
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        }
+        else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+    </script>
+
+    <link rel="stylesheet" href="https://csdnimg.cn/release/blogv2/dist/pc/css/blog_code-01256533b5.min.css">
+    <link rel="stylesheet" href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/editerView/chart-3456820cac.css" />
+    <link rel="stylesheet" href="https://g.csdnimg.cn/lib/swiper/6.0.4/css/swiper.css" />
+    <script src="https://g.csdnimg.cn/lib/swiper/6.0.4/js/swiper.js" async></script>
+    <script>
+      var articleId = 131402056;
+      var commentscount = 4;
+      var commentAuth = 2;
+      var curentUrl = "https://blog.csdn.net/java1314777/article/details/131402056";
+      var myUrl = "https://my.csdn.net/";
+        var highlight = ["yolo","深度学习","coco","人工智能","flow","robo","数据集","csv","voc","v8","一键","推荐","免费","网站","官方","详细","导出","教程","格式","超"];//高亮数组
+        var isRecommendModule = true;
+          var isBaiduPre = true;
+          var baiduCount = 2;
+          var setBaiduJsCount = 10;
+      var share_card_url = "https://app-blog.csdn.net/share?article_id=131402056&username=java1314777"
+      var mallVipUrl = "https://mall.csdn.net/vip?vipSource=article"
+      var vipArticleAbStyle = "t_2"
+      var vipArticleCpStyle = "t_2"
+      var articleType = 1;
+      var baiduKey = "roboflow";
+      var copyPopSwitch = true;
+      var needInsertBaidu = true;
+      var recommendRegularDomainArr = ["blog.csdn.net/.+/article/details/","download.csdn.net/download/","edu.csdn.net/course/detail/","ask.csdn.net/questions/","bbs.csdn.net/topics/","www.csdn.net/gather_.+/"]
+      var codeStyle = "tomorrow-night";
+      var baiduSearchType = "baidulandingword";
+      var sharData = "{\"hot\":[{\"id\":1,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/a5f4260710904e538002a6ab337939b3.png\"},{\"id\":2,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/188b37199a2c4b74b1d9ffc39e0d52de.png\"},{\"id\":3,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/14ded358b631444581edd98a256bc5af.png\"},{\"id\":4,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/1470f23a770444d986ad551b9c33c5be.png\"},{\"id\":5,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/c329f5181dc74f6c9bd28c982bb9f91d.png\"},{\"id\":6,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/ccd8a3305e81460f9c505c95b432a65f.png\"},{\"id\":7,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/bc89d8283389440d97fc4d30e30f45e1.png\"},{\"id\":8,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/452d485b4a654f5592390550d2445edf.png\"},{\"id\":9,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/f8b9939db2ed474a8f43a643015fc8b7.png\"},{\"id\":10,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/6de8864187ab4ed3b1db0856369c36ff.png\"},{\"id\":11,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/673cc3470ff74072acba958dc0c46e2d.png\"},{\"id\":12,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/930c119760ac4491804db80f9c6d4e3f.png\"},{\"id\":13,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/15e6befb05a24233bc2b65e96aa8d972.png\"},{\"id\":14,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/2075fd6822184b95a41e214de4daec13.png\"},{\"id\":15,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/859b1552db244eb6891a809263a5c657.png\"},{\"id\":16,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/0be2f920f1f74290a98921974a9613fd.png\"},{\"id\":17,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/2e97e00b43f14afab494ea55ef3f4a6e.png\"},{\"id\":18,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/ff4ab252f46e444686f5135d6ebbfec0.png\"},{\"id\":19,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/ae029bbe99564e79911657912d36524f.png\"},{\"id\":20,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/b3ece39963de440388728e9e7b9bf427.png\"},{\"id\":21,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/6f14651a99ba486e926d63b6fa692997.png\"},{\"id\":22,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/83ceddf050084875a341e32dcceca721.png\"},{\"id\":23,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/b90368b8fd5d4c6c8c79a707d877cf7c.png\"},{\"id\":24,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/aeffae14ecf14e079b2616528c9a393b.png\"},{\"id\":25,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/c5a06b5a13d44d16bed868fc3384897a.png\"},{\"id\":26,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/08b697658b844b318cea3b119e9541ef.png\"},{\"id\":27,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/68ccb0b8d09346ac961d2b5c1a8c77bf.png\"},{\"id\":28,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/a2227a247e37418cbe0ea972ba6a859b.png\"},{\"id\":29,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/3a42825fede748f9993e5bb844ad350d.png\"},{\"id\":30,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/8882abc1dd484224b636966ea38555c3.png\"},{\"id\":31,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/4f6a5f636a3e444d83cf8cc06d87a159.png\"},{\"id\":32,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/1953ef79c56b4407b78d7181bdff11c3.png\"},{\"id\":33,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/c04a2a4f772948ed85b5b0380ed36287.png\"},{\"id\":34,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/5b4fecd05091405ea04d8c0f53e9f2c7.png\"},{\"id\":35,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/b89f576d700344e280d6ceb2a66c2420.png\"},{\"id\":36,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/1c65780e11804bbd9971ebadb3d78bcf.png\"},{\"id\":37,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/d590db2055f345db9706eb68a7ec151a.png\"},{\"id\":38,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/fe602f80700b4f6fb3c4a9e4c135510e.png\"},{\"id\":39,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/39ff2fcd31e04feba301a071976a0ba7.png\"},{\"id\":40,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/f9b61b3d113f436b828631837f89fb39.png\"},{\"id\":41,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/df1aca5f610c4ad48cd16da88c9c8499.png\"},{\"id\":42,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/d7acf73a1e6b41399a77a85040e10961.png\"},{\"id\":43,\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/b7f1b63542524b97962ff649ab4e7e23.png\"}],\"vip\":[{\"id\":1,\"vipUrl\":\"https:\\/\\/img-home.csdnimg.cn\\/images\\/20220920101150.png\",\"url\":\"https:\\/\\/img-home.csdnimg.cn\\/images\\/20220920101154.png\"},{\"id\":2,\"vipUrl\":\"https:\\/\\/img-home.csdnimg.cn\\/images\\/20220920101204.png\",\"url\":\"https:\\/\\/img-home.csdnimg.cn\\/images\\/20220920101208.png\"},{\"id\":3,\"vipUrl\":\"https:\\/\\/img-home.csdnimg.cn\\/images\\/20220920101211.png\",\"url\":\"https:\\/\\/img-home.csdnimg.cn\\/images\\/20220920101215.png\"},{\"id\":4,\"vipUrl\":\"https:\\/\\/img-home.csdnimg.cn\\/images\\/20220920101218.png\",\"url\":\"https:\\/\\/img-home.csdnimg.cn\\/images\\/20220920101220.png\"},{\"id\":5,\"vipUrl\":\"https:\\/\\/img-home.csdnimg.cn\\/images\\/20220920101223.png\",\"url\":\"https:\\/\\/img-home.csdnimg.cn\\/images\\/20220920101226.png\"},{\"id\":6,\"vipUrl\":\"https:\\/\\/img-home.csdnimg.cn\\/images\\/20220922100635.png\",\"url\":\"https:\\/\\/img-home.csdnimg.cn\\/images\\/20220922100639.png\"},{\"id\":7,\"vipUrl\":\"https:\\/\\/img-home.csdnimg.cn\\/images\\/20220922100642.png\",\"url\":\"https:\\/\\/img-home.csdnimg.cn\\/images\\/20220922100644.png\"},{\"id\":8,\"vipUrl\":\"https:\\/\\/img-home.csdnimg.cn\\/images\\/20220922100647.png\",\"url\":\"https:\\/\\/img-home.csdnimg.cn\\/images\\/20220922100649.png\"},{\"id\":9,\"vipUrl\":\"https:\\/\\/img-home.csdnimg.cn\\/images\\/20220922100652.png\",\"url\":\"https:\\/\\/img-home.csdnimg.cn\\/images\\/20220922100655.png\"},{\"id\":10,\"vipUrl\":\"https:\\/\\/img-blog.csdnimg.cn\\/55de67481fde4b04b97ad78f11fe369a.png\",\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/bb2418fb537e4d78b10d8765ccd810c5.png\"},{\"id\":11,\"vipUrl\":\"https:\\/\\/img-blog.csdnimg.cn\\/579c713394584d128104ef1044023954.png\",\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/f420d9fbcf5548079d31b5e809b6d6cd.png\"},{\"id\":12,\"vipUrl\":\"https:\\/\\/img-blog.csdnimg.cn\\/75b7f3155ba642f5a4cc16b7baf44122.png\",\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/a9030f5877be401f8b340b80b0d91e64.png\"},{\"id\":13,\"vipUrl\":\"https:\\/\\/img-blog.csdnimg.cn\\/0903d33cafa54934be3780aa54ae958d.png\",\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/2cd8c8929f5a42fca5da2a0aeb456203.png\"},{\"id\":14,\"vipUrl\":\"https:\\/\\/img-blog.csdnimg.cn\\/949fd7c22884439fbfc3c0e9c3b8dee7.png\",\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/dafbea9bd9eb4f3b962b48dc41657f89.png\"},{\"id\":15,\"vipUrl\":\"https:\\/\\/img-blog.csdnimg.cn\\/4119cfddd71d4e6a8a27a18dbb74d90e.png\",\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/c56310c8b6384d9e85388e4e342ce508.png\"},{\"id\":16,\"vipUrl\":\"https:\\/\\/img-blog.csdnimg.cn\\/121575274da142bcbbbbc2e8243dd411.png\",\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/5013993de06542f881018bb9abe2edf7.png\"},{\"id\":17,\"vipUrl\":\"https:\\/\\/img-blog.csdnimg.cn\\/4d97aa6dd4fe4f09a6bef5bdf8a6abcd.png\",\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/76f23877b6ad4066ad45ce8e31b4b977.png\"},{\"id\":18,\"vipUrl\":\"https:\\/\\/img-blog.csdnimg.cn\\/fdb619daf21b4c829de63b9ebc78859d.png\",\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/a1abe5d27a5441f599adfe662f510243.png\"},{\"id\":19,\"vipUrl\":\"https:\\/\\/img-blog.csdnimg.cn\\/676b7707bb11410f8f56bc0ed2b2345c.png\",\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/7ac5b467fbf24e1d8c2de3f3332c4f54.png\"},{\"id\":20,\"vipUrl\":\"https:\\/\\/img-blog.csdnimg.cn\\/0becb8cc227e4723b765bdd69a20fd4a.png\",\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/fdec85b26091486b9a89d0b8d45c3749.png\"},{\"id\":21,\"vipUrl\":\"https:\\/\\/img-blog.csdnimg.cn\\/1a6c06235ad44941b38c54cbc25a370c.png\",\"url\":\"https:\\/\\/img-blog.csdnimg.cn\\/410a06cda2d44b0c84578f88275caf70.png\"}],\"map\":{\"hot\":\"热门\",\"vip\":\"VIP\"}}";
+      
+      var canRead = true;
+      var blogMoveHomeArticle = false;
+      var showSearchText = "";
+      var articleSource = 1;
+      var articleReport = '{"pid": "blog", "spm":"1001.2101"}';
+        var baiduSearchChannel = 'pc_relevant'
+        var baiduSearchIdentification = '.235^v43^pc_blog_bottom_relevance_base5'
+        var distRequestId = '1709112333529_57199'
+        var initRewardObject = {
+          giver: "DreamSun527",
+          anchor: "java1314777",
+          articleId: "131402056",
+          sign: "3acd8ec90797a4a2780698416d6c7f86",
+        }
+        var isLikeStatus = false;
+        var isUnLikeStatus = false;
+        var studyLearnWord = "";
+        var unUseCount = 0;
+        var codeMaxSize = 0;
+        var overCost = true;
+        var isCurrentUserVip = false;
+        var contentViewsHeight = 0;
+        var contentViewsCount = 0;
+        var contentViewsCountLimit = 5;
+        var isShowConcision = true
+      var isCookieConcision = false
+      var isHasDirectoryModel = false
+      var isShowSideModel = false
+      var isShowDirectoryModel = true
+      function getCookieConcision(sName){
+        var allCookie = document.cookie.split("; ");
+        for (var i=0; i < allCookie.length; i++){
+          var aCrumb = allCookie[i].split("=");
+          if (sName == aCrumb[0])
+            return aCrumb[1];
+        }
+        return null;
+      }
+      if (getCookieConcision('blog_details_concision') && getCookieConcision('blog_details_concision') == 0){
+        isCookieConcision = true
+        isShowSideModel = true
+        isShowDirectoryModel = false
+      }
+    </script>
+        <div class="main_father clearfix d-flex justify-content-center mainfather-concision" style="height:100%;">
+          <div class="container clearfix container-concision" id="mainBox">
+          <script>
+          if (!isCookieConcision) {
+            $('.main_father').removeClass('mainfather-concision')
+            $('.main_father .container').removeClass('container-concision')
+          } else {
+            $('#mainBox').css('margin-right', '0')
+          }
+          </script>
+          <main>
+<script type="text/javascript">
+    var resourceId =  "";
+    function getQueryString(name) {   
+      var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象  
+      var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+      if( r != null ) return decodeURIComponent( r[2] ); return '';   
+    }
+    function stripscript(s){ 
+      var pattern = new RegExp("[`~!@#$^&*()=|{}':;',\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？%]") 
+      var rs = ""; 
+      for (var i = 0; i < s.length; i++) { 
+        rs = rs+s.substr(i, 1).replace(pattern, ''); 
+      } 
+      return rs;
+    }
+    var blogHotWords = stripscript(getQueryString('utm_term')).length > 1 ? stripscript(getQueryString('utm_term')) : ''
+</script>
+<div class="blog-content-box">
+    <div class="article-header-box">
+        <div class="article-header">
+            <div class="article-title-box">
+                <h1 class="title-article" id="articleContentId">超详细教程YoloV8官方推荐免费数据集网站Roboflow一键导出Voc、COCO、Yolo、Csv等格式</h1>
+            </div>
+            <div class="article-info-box">
+                <div class="article-bar-top">
+                    <img class="article-type-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/original.png" alt="">
+                    <div class="bar-content">
+                      <a class="follow-nickName vip-name" href="https://snu77.blog.csdn.net" target="_blank" rel="noopener" title="Snu77">Snu77</a>
+                    <img class="article-time-img article-heard-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newUpTime2.png" alt="">
+                    <span class="time">已于&nbsp;2024-02-05 02:52:39&nbsp;修改</span>
+                   <div class="read-count-box">
+                      <img class="article-read-img article-heard-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/articleReadEyes2.png" alt="">
+                      <span class="read-count">阅读量5.3k</span>
+                      <a id="blog_detail_zk_collection" class="un-collection" data-report-click='{"mod":"popu_823","spm":"1001.2101.3001.4232","ab":"new"}'>
+                          <img class="article-collect-img article-heard-img un-collect-status isdefault" style="display:inline-block" src="https://csdnimg.cn/release/blogv2/dist/pc/img/tobarCollect2.png" alt="">
+                          <img class="article-collect-img article-heard-img collect-status isactive" style="display:none" src="https://csdnimg.cn/release/blogv2/dist/pc/img/tobarCollectionActive2.png" alt="">
+                          <span class="name">收藏</span>
+                          <span class="get-collection">
+                              54
+                          </span>
+                      </a>
+                      <div class="read-count-box is-like">
+                        <img class="article-read-img article-heard-img" style="display:none" id="is-like-imgactive-new" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newHeart2023Active.png" alt="">
+                        <img class="article-read-img article-heard-img" style="display:block" id="is-like-img-new" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newHeart2023Black.png" alt="">
+                        <span class="read-count" id="blog-digg-num">点赞数
+                            11
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="blog-tags-box">
+                    <div class="tags-box artic-tag-box">
+                            <span class="label">分类专栏：</span>
+                                <a class="tag-link" href="https://blog.csdn.net/java1314777/category_12464694.html" target="_blank" rel="noopener">数据集专栏</a>
+                                <a class="tag-link" href="https://blog.csdn.net/java1314777/category_12483754.html" target="_blank" rel="noopener">YOLOv8有效涨点专栏</a>
+                                <a class="tag-link" href="https://blog.csdn.net/java1314777/category_12500426.html" target="_blank" rel="noopener">YOLOv5改进有效专栏</a>
+                            <span class="label">文章标签：</span>
+                                <a rel="nofollow" data-report-click='{"mod":"popu_626","spm":"1001.2101.3001.4223","strategy":"YOLO","ab":"new","extra":"{\"searchword\":\"YOLO\"}"}' class="tag-link" href="https://so.csdn.net/so/search/s.do?q=YOLO&amp;t=all&amp;o=vip&amp;s=&amp;l=&amp;f=&amp;viparticle=" target="_blank" rel="noopener">YOLO</a>
+                                <a rel="nofollow" data-report-click='{"mod":"popu_626","spm":"1001.2101.3001.4223","strategy":"深度学习","ab":"new","extra":"{\"searchword\":\"深度学习\"}"}' class="tag-link" href="https://so.csdn.net/so/search/s.do?q=%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0&amp;t=all&amp;o=vip&amp;s=&amp;l=&amp;f=&amp;viparticle=" target="_blank" rel="noopener">深度学习</a>
+                                <a rel="nofollow" data-report-click='{"mod":"popu_626","spm":"1001.2101.3001.4223","strategy":"人工智能","ab":"new","extra":"{\"searchword\":\"人工智能\"}"}' class="tag-link" href="https://so.csdn.net/so/search/s.do?q=%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD&amp;t=all&amp;o=vip&amp;s=&amp;l=&amp;f=&amp;viparticle=" target="_blank" rel="noopener">人工智能</a>
+                    </div>
+                </div>
+                <div class="up-time"><span>于&nbsp;2023-06-27 13:30:00&nbsp;首次发布</span></div>
+                <div class="slide-content-box">
+                    <div class="article-copyright">
+                        <div class="creativecommons">
+                            版权声明：本文为博主原创文章，遵循<a href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener"> CC 4.0 BY-SA </a>版权协议，转载请附上原文出处链接和本声明。
+                        </div>
+                        <div class="article-source-link">
+                            本文链接：<a href="https://blog.csdn.net/java1314777/article/details/131402056" target="_blank">https://blog.csdn.net/java1314777/article/details/131402056</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="operating">
+                    <a class="href-article-edit slide-toggle">版权</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="blogHuaweiyunAdvert"></div>
+        <div id="blogColumnPayAdvert">
+            <div class="column-group">
+                <div class="column-group-item column-group0 ">
+                    <div class="item-l">
+                        <a class="item-target" href="https://blog.csdn.net/java1314777/category_12483754.html" target="_blank" title="YOLOv8有效涨点专栏"
+                        data-report-view='{"spm":"1001.2101.3001.6332"}'
+                        data-report-click='{"spm":"1001.2101.3001.6332"}'>
+                            <img class="item-target" src="https://img-blog.csdnimg.cn/direct/d0d498bd4f0c4e17b48ff54e86b67668.png?x-oss-process=image/resize,m_fixed,h_224,w_224" alt="">
+                            <span class="title item-target">
+                                <span>
+                                <span class="tit">YOLOv8有效涨点专栏</span>
+                                    <span class="dec more">同时被 3 个专栏收录<img src="https://csdnimg.cn/release/blogv2/dist/pc/img/newArrowDown1Black.png" alt=""></span>
+                                </span>
+                                <span class="rank"><img src="https://csdnimg.cn/release/blogv2/dist/pc/img/columnHotIcon2.png" alt="">该专栏为热销专栏榜&nbsp;第1名</span>
+                            </span>
+                        </a>
+                    </div>
+                    <div class="item-m">
+                        <span>125 篇文章</span>
+                        <span>339 订阅</span>
+                        <span class="old-add-new-box">
+                            <span class="price price-style">¥199.90</span>
+                            <span class="oldprice price-style">¥99.00</span>
+                        </span>
+                    </div>
+                    <div class="item-r">
+                                <a class="item-target article-column-subscribe">已订阅</a>
+                    </div>
+                </div>
+                <div class="column-group-item column-group1 ">
+                    <div class="item-l">
+                        <a class="item-target" href="https://blog.csdn.net/java1314777/category_12500426.html" target="_blank" title="YOLOv5改进有效专栏"
+                        data-report-view='{"spm":"1001.2101.3001.6332"}'
+                        data-report-click='{"spm":"1001.2101.3001.6332"}'>
+                            <img class="item-target" src="https://img-blog.csdnimg.cn/direct/6029d5920130491c8f52a4b3005e5f84.png?x-oss-process=image/resize,m_fixed,h_224,w_224" alt="">
+                            <span class="title item-target">
+                                <span>
+                                <span class="tit">YOLOv5改进有效专栏</span>
+                                </span>
+                            </span>
+                        </a>
+                    </div>
+                    <div class="item-m">
+                        <span>106 篇文章</span>
+                        <span>63 订阅</span>
+                        <span class="old-add-new-box">
+                            <span class="price price-style">¥129.90</span>
+                            <span class="oldprice price-style">¥99.00</span>
+                        </span>
+                    </div>
+                    <div class="item-r">
+                                    <a class="item-target article-column-bt articleColumnBt" data-id="12500426" data-price="129.90" data-sum="106" data-people="63" data-hotRank="10"  data-oldprice="99.00" 
+                                    data-report-view='{"spm":"1001.2101.3001.6333"}'
+                                    data-report-click='{"spm":"1001.2101.3001.6333"}'>订阅专栏</a>
+                    </div>
+                </div>
+                <div class="column-group-item column-group2 ">
+                    <div class="item-l">
+                        <a class="item-target" href="https://blog.csdn.net/java1314777/category_12464694.html" target="_blank" title="数据集专栏"
+                        data-report-view='{"spm":"1001.2101.3001.6332"}'
+                        data-report-click='{"spm":"1001.2101.3001.6332"}'>
+                            <img class="item-target" src="https://img-blog.csdnimg.cn/20201014180756913.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="">
+                            <span class="title item-target">
+                                <span>
+                                <span class="tit">数据集专栏</span>
+                                </span>
+                            </span>
+                        </a>
+                    </div>
+                    <div class="item-m">
+                        <span>3 篇文章</span>
+                        <span>11 订阅</span>
+                    </div>
+                    <div class="item-r">
+                            <a class="item-target article-column-bt articleColumnFreeBt" data-id="12464694">订阅专栏</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <article class="baidu_pl">
+        <div id="article_content" class="article_content clearfix">
+        <link rel="stylesheet" href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/editerView/kdoc_html_views-1a98987dfd.css">
+        <link rel="stylesheet" href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/editerView/ck_htmledit_views-044f2cf1dc.css">
+                <div id="content_views" class="htmledit_views">
+                    <p>YoloV8。YoloV8是一种高效的目标检测算法&#xff0c;它的训练需要高质量的数据集。然而&#xff0c;获取高质量的数据集是一项耗时且费力的任务。</p> 
+<p><img alt="" height="324" src="https://img-blog.csdnimg.cn/ad4f0d35d5a24785bdf9b5d0517be144.png" width="1152" /></p> 
+<p>YoloV8官方推荐了一个数据集网站&#xff0c;就是Roboflow。Roboflow是一个数据集管理平台&#xff0c;提供了免费的数据集&#xff0c;同时也支持上传自己的数据集进行格式转换。使用Roboflow&#xff0c;开发者可以方便地获取所需格式的数据集&#xff0c;无需手动转换格式。此外&#xff0c;Roboflow还提供了多种数据预处理、数据增强等功能&#xff0c;可帮助开发者更好地优化训练数据&#xff0c;<strong><span style="color:#4da8ee;">从下面官方获取的图片上来YOLOv8官方指定的数据集获取网站就是Roboflow。</span></strong></p> 
+<p><img alt="" height="579" src="https://img-blog.csdnimg.cn/f1d1f09f485f423ba47df662c9c4f451.png" width="867" /></p> 
+<p></p> 
+<p>因此&#xff0c;如果你正在使用YoloV8进行目标检测算法的训练&#xff0c;Roboflow是一个非常好的选择&#xff0c;可以帮助你快速获取高质量的数据集&#xff0c;从而加快训练效率。同时&#xff0c;Roboflow也是YoloV8官方推荐的数据集网站&#xff0c;保证了数据集的质量和可靠性。</p> 
+<h3><strong><span style="color:#fe2c24;">下面首先分享Roboflow的官方地址</span></strong></h3> 
+<p><strong><span style="color:#fe2c24;"><a class="link-info" href="https://roboflow.com/" rel="nofollow" title="请点击此处跳转">请点击此处跳转</a></span></strong></p> 
+<h3><span style="color:#fe2c24;">搜索自己想要的数据集流程</span></h3> 
+<p><span style="color:#fe2c24;">成功利用神秘力量以后并点击连接后会跳转下面的网址,</span></p> 
+<p class="img-center"><img alt="" height="316" src="https://img-blog.csdnimg.cn/2330ab877e144be58a4264f69457bce1.png" width="634" /></p> 
+<p>点击Get Started之后如果你没有之前登录过该网站就会跳转登录和注册的页面</p> 
+<p><img alt="" height="929" src="https://img-blog.csdnimg.cn/a054b6098518427d8ecb840d46f7cf63.png" width="1200" /> 这里有三个登录方式我推荐的是用Google账号也就是第一个选项&#xff0c;点击之后跳转如下界面,</p> 
+<p><img alt="" height="929" src="https://img-blog.csdnimg.cn/83af5512f3b048189a971c3ca94e4bed.png" width="1200" /></p> 
+<p><span style="color:#4da8ee;"><strong>  如果你有Google账户那么就直接登录即可,如果你没有Google账户那么就需要创建一个账号&#xff0c;点击Create account按照操作流程输入即可需要注意的是这里需要一个手机号验证相比于chatgpt的不同这里的Google账户是可以输入中国的手机号的&#xff0c;但是你用中国手机号注册的账户的Google是登陆不了chatgpt的。</strong></span></p> 
+<p><span style="color:#0d0016;"><strong>当注册完账号并登录之后就跳转以下界面</strong></span></p> 
+<p class="img-center"><img alt="" height="929" src="https://img-blog.csdnimg.cn/4116ba4cba7a43feaa3ae597e950bf19.png" width="1200" /></p> 
+<p>在开始之前我们需要创建一个工作组,就是左上角所显示的Workspaces流程如下图所示 </p> 
+<p><img alt="" height="878" src="https://img-blog.csdnimg.cn/18f99ea2585240a68a9be1f457693ef3.png" width="1200" /></p> 
+<p> 按照上面操作之后就建立完成了我们的Workspaces</p> 
+<p>点击下面图示选项</p> 
+<p><img alt="" height="929" src="https://img-blog.csdnimg.cn/725df3223aaf49aa8f065a60aca9db97.png" width="1200" /></p> 
+<p>跳转如下界面</p> 
+<p><img alt="" height="929" src="https://img-blog.csdnimg.cn/5b62b21f8616430088b28f006e8ff810.png" width="1200" /></p> 
+<p> 在上图所示位置输入你想要搜索的数据集<strong><span style="color:#4da8ee;">(需要注意的是这里需要输入英文的名称不像Github那样你输入中文名字它可以给你对应搜索中文的&#xff0c;) </span></strong></p> 
+<p><span style="color:#0d0016;">这里假如我想搜索mask(口罩数据集)他就会跳出一堆数据集提供给你选择</span></p> 
+<p><img alt="" height="929" src="https://img-blog.csdnimg.cn/f9b8fb22d99a48b99393ee39f6eed8a8.png" width="1200" /></p> 
+<p>我们随便选择一个点击进去</p> 
+<p><img alt="" height="929" src="https://img-blog.csdnimg.cn/d39aeb842f7f47f5a3e411b62f1727cd.png" width="1200" /> 然后跳出选项框操作流程如下图所示</p> 
+<p><img alt="" height="490" src="https://img-blog.csdnimg.cn/682b82d399054b718f8e0a5c0ca0ac7c.png" width="1200" /> 根据你想要的格式进行选择,然后记得选择Zip格式进行下载到本地(下载到你的浏览器默认下载地址)跳出第三个框即代表你下载完成了。图二中的第二个选项是你进行一些在线训练时候所用的code代码,如果有需要我后期也会出教程&#xff0c;除此之外roboflow还有需要强大的功能如下&#xff1a;</p> 
+<ol><li> <p>数据增强&#xff1a;Roboflow支持多种数据增强的选项&#xff0c;如旋转、翻转、缩放等&#xff0c;可以帮助开发者扩充数据集&#xff0c;提高模型的泛化能力和准确率。</p> </li><li> <p>数据预处理&#xff1a;Roboflow提供了多种数据预处理的选项&#xff0c;如去除背景、裁剪、缩放等&#xff0c;可以帮助开发者更好地优化训练数据&#xff0c;提高模型的准确率。</p> </li><li> <p>数据集管理&#xff1a;Roboflow可以帮助开发者管理数据集&#xff0c;包括上传、下载、删除等操作&#xff0c;方便管理和使用数据集。</p> </li><li> <p>API支持&#xff1a;Roboflow提供了API支持&#xff0c;可以与其他工具和平台进行集成&#xff0c;方便开发者在不同的应用场景中使用数据集。</p> </li></ol> 
+<p>大家可以进行研究如果有不会的可以在评论区留言我也会进行回答。</p>
+                </div>
+        </div>
+        <div id="treeSkill"></div>
+        <div id="blogExtensionBox" style="width:400px;margin:auto;margin-top:12px" class="blog-extension-box"></div>
+    </article>
+<script>
+  $(function() {
+    setTimeout(function () {
+      var mathcodeList = document.querySelectorAll('.htmledit_views img.mathcode');
+      if (mathcodeList.length > 0) {
+        for (let i = 0; i < mathcodeList.length; i++) {
+          if (mathcodeList[i].naturalWidth === 0 || mathcodeList[i].naturalHeight === 0) {
+            var alt = mathcodeList[i].alt;
+            alt = '\\(' + alt + '\\)';
+            var curSpan = $('<span class="img-codecogs"></span>');
+            curSpan.text(alt);
+            $(mathcodeList[i]).before(curSpan);
+            $(mathcodeList[i]).remove();
+          }
+        }
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+      }
+    }, 1000)
+  });
+</script>
+</div>
+<div class="directory-boxshadow-dialog" style="display:none;">
+  <div class="directory-boxshadow-dialog-box">
+  </div>
+  <div class="vip-limited-time-offer-box">
+    <div class="vip-limited-time-offer-content">
+      <img class="limited-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/vip-limited-close.png">
+      <div class="limited-box">
+        <span class="limited-num"></span>
+        <span class="limited-quan"> 优惠劵</span>
+      </div>
+      <div class="limited-time-box">
+        <span class="time-hour"></span>
+        <span class="time-minite"></span>
+        <span class="time-second"></span>
+      </div>
+      <a class="limited-time-btn" href="https://mall.csdn.net/vip" data-report-click='{"spm":"1001.2101.3001.9621"}' data-report-query='spm=1001.2101.3001.9621'></a>
+    </div>
+  </div>
+</div>    <div class="more-toolbox-new" id="toolBarBox">
+      <div class="left-toolbox">
+        <div class="toolbox-left">
+            <div class="profile-box">
+              <a class="profile-href" target="_blank" href="https://snu77.blog.csdn.net"><img class="profile-img" src="https://profile-avatar.csdnimg.cn/27160f4941a54d07b535ceabcfa4a800_java1314777.jpg!1">
+                <span class="profile-name">
+                  Snu77
+                </span>
+              </a>
+            </div>
+            <div class="profile-attend">
+              
+                <a class="tool-attend tool-bt-button tool-unbt-attend" href="javascript:;" data-report-view='{"mod":"1592215036_002","spm":"1001.2101.3001.4232","extend1":"已关注"}'>已关注</a>
+              <a class="tool-item-follow active-animation" style="display:none;">关注</a>
+            </div>
+        </div>
+        <div class="toolbox-middle">
+          <ul class="toolbox-list">
+            <li class="tool-item tool-item-size tool-active is-like" id="is-like">
+              <a class="tool-item-href">
+                <img style="display:none;" id="is-like-imgactive-animation-like" class="animation-dom active-animation" src="https://csdnimg.cn/release/blogv2/dist/pc/img/tobarThumbUpactive.png" alt="">
+                <img class="isactive" style="display:none" id="is-like-imgactive" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newHeart2021Active.png" alt="">
+                <img class="isdefault" style="display:block" id="is-like-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newHeart2021Black.png" alt="">
+                <span id="spanCount" class="count ">
+                    11
+                </span>
+              </a>
+              <div class="tool-hover-tip"><span class="text space">点赞</span></div>
+            </li>
+            <li class="tool-item tool-item-size tool-active is-unlike" id="is-unlike">
+              <a class="tool-item-href">
+                <img class="isactive" style="margin-right:0px;display:none" id="is-unlike-imgactive" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newUnHeart2021Active.png" alt="">
+                <img class="isdefault" style="margin-right:0px;display:block" id="is-unlike-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newUnHeart2021Black.png" alt="">
+                <span id="unlikeCount" class="count "></span>
+              </a>
+              <div class="tool-hover-tip"><span class="text space">踩</span></div>
+            </li>
+            <li class="tool-item tool-item-size tool-active is-collection ">
+              <a class="tool-item-href" href="javascript:;" data-report-click='{"mod":"popu_824","spm":"1001.2101.3001.4130","ab":"new"}'>
+                <img style="display:none" id="is-collection-img-collection" class="animation-dom active-animation" src="https://csdnimg.cn/release/blogv2/dist/pc/img/tobarCollectionActive.png" alt="">
+                <img class="isdefault" id="is-collection-img" style="display:block" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newCollectBlack.png" alt="">
+                <img class="isactive" id="is-collection-imgactive" style="display:none" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newCollectActive.png" alt="">
+                <span class="count get-collection " data-num="54" id="get-collection">
+                    54
+                </span>
+              </a>
+              <div class="tool-hover-tip collect">
+                <div class="collect-operate-box">
+                  <span class="collect-text" id="is-collection">
+                    收藏
+                  </span>
+                </div>
+              </div>
+              <div class="tool-active-list">
+                <div class="text">
+                  觉得还不错?
+                  <span class="collect-text" id="tool-active-list-collection">
+                    一键收藏
+                  </span>
+                 <img id="tool-active-list-close" src="https://csdnimg.cn/release/blogv2/dist/pc/img/collectionCloseBlack.png" alt="">
+                </div>
+              </div>
+            </li>
+                <li class="tool-item tool-item-size tool-active tool-item-reward">
+                  <a class="tool-item-href" href="javascript:;" data-report-click='{"mod":"popu_830","spm":"1001.2101.3001.4237","dest":"","ab":"new"}'>
+                    <img class="isdefault reward-bt" id="rewardBtNew" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newRewardBlack.png" alt="打赏">
+                    <span class="count"></span>
+                  </a>
+                  <div class="tool-hover-tip"><span class="text space">打赏</span></div>
+                </li>
+          <li class="tool-item tool-item-size tool-active tool-item-comment">
+            <div class="guide-rr-first">
+              <img src="https://csdnimg.cn/release/blogv2/dist/pc/img/guideRedReward01.png" alt="">
+              <button class="btn-guide-known">知道了</button>
+            </div>
+              <a class="tool-item-href go-side-comment" data-report-click='{"spm":"1001.2101.3001.7009"}'>
+              <img class="isdefault" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newComment2021Black.png" alt="">
+              <span class="count">
+                  4
+              </span>
+            </a>
+            <div class="tool-hover-tip"><span class="text space">评论</span></div>
+          </li>
+          <li class="tool-item tool-item-bar">
+          </li>
+          <li class="tool-item tool-item-size tool-active tool-QRcode" data-type="article" id="tool-share">
+            <a class="tool-item-href" href="javascript:;" data-report-click='{"mod":"1582594662_002","spm":"1001.2101.3001.4129","ab":"new"}'>
+              <img class="isdefault" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newShareBlack.png" alt="">
+            </a>
+              <div class="QRcode" id="tool-QRcode">
+            <div class="share-bg-icon icon1" id="shareBgIcon"></div>
+              <div class="share-bg-box">
+                <div class="share-content">
+                    <img class="share-avatar" src="https://profile-avatar.csdnimg.cn/27160f4941a54d07b535ceabcfa4a800_java1314777.jpg!1" alt="">
+                  <div class="share-tit">
+                    超详细教程YoloV8官方推荐免费数据集网站Roboflow一键导出Voc、COCO、Yolo、Csv等格式
+                  </div>
+                  <div class="share-dec">
+                    YoloV8官方推荐了一个数据集网站，就是Roboflow。Roboflow是一个数据集管理平台，提供了免费的数据集，同时也支持上传自己的数据集进行格式转换。使用Roboflow，开发者可以方便地获取所需格式的数据集，无需手动转换格式。此外，Roboflow还提供了多种数据预处理、数据增强等功能，可帮助开发者更好地优化训练数据
+                  </div>
+                  <a id="copyPosterUrl" class="url" data-report-click='{"spm":"1001.2101.3001.7493"}' data-report-view='{"spm":"1001.2101.3001.7493"}'>复制链接</a>
+                </div>
+                <div class="share-code">
+                  <div class="share-code-box" id='shareCode'></div>
+                  <div class="share-code-text">扫一扫</div>
+                </div>
+              </div>
+                <div class="share-code-type">
+                </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="toolbox-right">
+            <div class="tool-directory">
+                <a class="bt-columnlist-show"
+                  data-id="12483754"
+                  data-free="false"
+                  data-subscribe="true"
+                  data-title="YOLOv8有效涨点专栏"
+                  data-img="https://img-blog.csdnimg.cn/direct/d0d498bd4f0c4e17b48ff54e86b67668.png?x-oss-process=image/resize,m_fixed,h_224,w_224"
+                  data-url="https://blog.csdn.net/java1314777/category_12483754.html"
+                  data-sum="125"
+                  data-people="339"
+                  data-price="199.90"
+                  data-hotRank="1"
+                  data-status="true"
+                  data-oldprice="99.00"
+                  data-join="false"
+                  data-studyvip="false"
+                  data-studysubscribe="false"
+                  data-report-view='{"spm":"1001.2101.3001.6334","extend1":"专栏目录"}'
+                  data-report-click='{"spm":"1001.2101.3001.6334","extend1":"专栏目录"}'>专栏目录</a>
+          </div>
+                <div class="tool-column">
+                    <a class="tool-bt-button tool-unbt-subscribe" href="javascript:;" data-report-view='{"mod":"1592215036_001","spm":"1001.2101.3001.4405","extend1":"已订阅"}' data-report-click='{"mod":"1592215036_001","spm":"1001.2101.3001.4405","extend1":"已订阅"}'>已订阅</a>
+                </div>
+</div>
+</div>
+</div>
+<script type=text/javascript crossorigin src="https://csdnimg.cn/release/phoenix/production/qrcode-7c90a92189.min.js"></script>
+<script src="//g.csdnimg.cn/??sharewx/1.2.1/sharewx.js" type="text/javascript"></script>
+<script type="text/javascript" crossorigin src="https://g.csdnimg.cn/common/csdn-login-box/csdn-login-box.js"></script>
+<script type="text/javascript" crossorigin src="https://g.csdnimg.cn/collection-box/2.1.2/collection-box.js"></script>                <div class="first-recommend-box recommend-box ">
+<div class="recommend-item-box type_blog clearfix" data-url="https://snu77.blog.csdn.net/article/details/133814416"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6661.1","mod":"popu_871","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant_t0.none-task-blog-2~default~CTRLIST~Rate-1-133814416-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"1","strategy":"2~default~CTRLIST~Rate","dest":"https://snu77.blog.csdn.net/article/details/133814416"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://snu77.blog.csdn.net/article/details/133814416" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6661.1","mod":"popu_871","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant_t0.none-task-blog-2~default~CTRLIST~Rate-1-133814416-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"1","strategy":"2~default~CTRLIST~Rate","dest":"https://snu77.blog.csdn.net/article/details/133814416"}'  data-report-query='spm=1001.2101.3001.6661.1&utm_medium=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-133814416-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-133814416-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+					<div class="left ellipsis-online ellipsis-online-1"><em>YOLO</em><em>v8</em><em>官方</em><em>推荐</em><em>免费</em><em>数据集</em><em>网站</em><em>Robo</em><em>flow</em>数据预处理<em>教程</em></div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/java1314777" target="_blank"><span class="blog-title">Snu77的博客</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">10-18</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountBlack.png" alt="">
+					1395
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://snu77.blog.csdn.net/article/details/133814416" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6661.1","mod":"popu_871","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant_t0.none-task-blog-2~default~CTRLIST~Rate-1-133814416-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"1","strategy":"2~default~CTRLIST~Rate","dest":"https://snu77.blog.csdn.net/article/details/133814416"}'  data-report-query='spm=1001.2101.3001.6661.1&utm_medium=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-133814416-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-133814416-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+				<div class="desc ellipsis-online ellipsis-online-1"><em>Yolo</em><em>V8</em><em>官方</em><em>推荐</em>了一个名为<em>Robo</em><em>flow</em>的<em>数据集</em><em>网站</em>。<em>Robo</em><em>flow</em>是一个<em>免费</em>开源<em>数据集</em>管理平台，它不仅提供<em>免费</em>的<em>数据集</em>，还支持上传自己的<em>数据集</em>并进行<em>格式</em>转换。通过使用<em>Robo</em><em>flow</em>，开发者可以轻松获取所需<em>格式</em>的<em>数据集</em>，无需手动进行繁琐的<em>格式</em>转换工作。此外，<em>Robo</em><em>flow</em>还提供了多种数据预处理和数据增强功能，帮助开发者优化训练数据。总之，<em>Robo</em><em>flow</em>是<em>官方</em><em>推荐</em>的<em>数据集</em>获取<em>网站</em>，可以从中获取<em>YOLO</em><em>v8</em><em>官方</em>指定的<em>数据集</em>，并提供了便捷的数据处理工具。</div>
+			</a>
+		</div>
+	</div>
+</div>
+                </div>
+              <script src="https://csdnimg.cn/release/blogv2/dist/components/js/pc_wap_commontools-094b8ec121.min.js" type="text/javascript" async></script>
+                <div class="second-recommend-box recommend-box ">
+<div class="recommend-item-box type_download clearfix" data-url="https://download.csdn.net/download/qq_19309473/87665756"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.1","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-download-2~default~CTRLIST~Paid-1-87665756-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"1","strategy":"2~default~CTRLIST~Paid","dest":"https://download.csdn.net/download/qq_19309473/87665756"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://download.csdn.net/download/qq_19309473/87665756" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.1","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-download-2~default~CTRLIST~Paid-1-87665756-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"1","strategy":"2~default~CTRLIST~Paid","dest":"https://download.csdn.net/download/qq_19309473/87665756"}'  data-report-query='spm=1001.2101.3001.6650.1&utm_medium=distribute.pc_relevant.none-task-download-2%7Edefault%7ECTRLIST%7EPaid-1-87665756-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-download-2%7Edefault%7ECTRLIST%7EPaid-1-87665756-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+					<div class="left ellipsis-online ellipsis-online-1">目标检测<em>数据集</em>制作:<em>VOC</em>,<em>COCO</em>,<em>YOLO</em>等常用<em>数据集</em><em>格式</em>的制作和互相转换脚本</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info display-flex">
+					<span class="info-block">04-08</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://download.csdn.net/download/qq_19309473/87665756" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.1","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-download-2~default~CTRLIST~Paid-1-87665756-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"1","strategy":"2~default~CTRLIST~Paid","dest":"https://download.csdn.net/download/qq_19309473/87665756"}'  data-report-query='spm=1001.2101.3001.6650.1&utm_medium=distribute.pc_relevant.none-task-download-2%7Edefault%7ECTRLIST%7EPaid-1-87665756-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-download-2%7Edefault%7ECTRLIST%7EPaid-1-87665756-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+				<div class="desc ellipsis-online ellipsis-online-1">目标检测<em>数据集</em>制作:<em>VOC</em>,<em>COCO</em>,<em>YOLO</em>等常用<em>数据集</em><em>格式</em>的制作和互相转换脚本</div>
+			</a>
+		</div>
+	</div>
+</div>
+                </div>
+<a id="commentBox" name="commentBox"></a>
+  <div id="pcCommentBox" class="comment-box comment-box-new2 login-comment-box-new" style="display:none">
+      <div class="has-comment" style="display:block">
+        <div class="one-line-box">
+          <div class="has-comment-tit go-side-comment">
+            <span class="count">4</span>&nbsp;条评论
+          </div>
+          <div class="has-comment-con comment-operate-item"></div>
+          <a class="has-comment-bt-right go-side-comment focus">写评论</a>
+        </div>
+      </div>
+  </div>
+              <div class="recommend-box insert-baidu-box recommend-box-style ">
+                <div class="recommend-item-box no-index" style="display:none"></div>
+<div class="recommend-item-box type_blog clearfix" data-url="https://blog.csdn.net/m0_56863547/article/details/135368382"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.2","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~YuanLiJiHua~Position-2-135368382-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"2","strategy":"2~default~YuanLiJiHua~Position","dest":"https://blog.csdn.net/m0_56863547/article/details/135368382"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://blog.csdn.net/m0_56863547/article/details/135368382" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.2","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~YuanLiJiHua~Position-2-135368382-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"2","strategy":"2~default~YuanLiJiHua~Position","dest":"https://blog.csdn.net/m0_56863547/article/details/135368382"}'  data-report-query='spm=1001.2101.3001.6650.2&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EYuanLiJiHua%7EPosition-2-135368382-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EYuanLiJiHua%7EPosition-2-135368382-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+					<div class="left ellipsis-online ellipsis-online-1"><em>YOLO</em><em>v8</em>一条龙<em>教程</em>---------安装<em>教程</em></div>
+					<div class="tag">最新发布</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/m0_56863547" target="_blank"><span class="blog-title">m0_56863547的博客</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">01-03</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountBlack.png" alt="">
+					1028
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://blog.csdn.net/m0_56863547/article/details/135368382" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.2","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~YuanLiJiHua~Position-2-135368382-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"2","strategy":"2~default~YuanLiJiHua~Position","dest":"https://blog.csdn.net/m0_56863547/article/details/135368382"}'  data-report-query='spm=1001.2101.3001.6650.2&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EYuanLiJiHua%7EPosition-2-135368382-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EYuanLiJiHua%7EPosition-2-135368382-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+				<div class="desc ellipsis-online ellipsis-online-1"><em>yolo</em><em>v8</em>一条龙<em>教程</em></div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_blog clearfix" data-url="https://blog.csdn.net/qq_45906101/article/details/130799460"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.3","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-3-130799460-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"3","strategy":"2~default~CTRLIST~Rate","dest":"https://blog.csdn.net/qq_45906101/article/details/130799460"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://blog.csdn.net/qq_45906101/article/details/130799460" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.3","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-3-130799460-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"3","strategy":"2~default~CTRLIST~Rate","dest":"https://blog.csdn.net/qq_45906101/article/details/130799460"}'  data-report-query='spm=1001.2101.3001.6650.3&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-3-130799460-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-3-130799460-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+					<div class="left ellipsis-online ellipsis-online-1"><em>Robo</em><em>flow</em>的使用</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/qq_45906101" target="_blank"><span class="blog-title">qq_45906101的博客</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">05-22</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountBlack.png" alt="">
+					1035
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://blog.csdn.net/qq_45906101/article/details/130799460" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.3","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-3-130799460-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"3","strategy":"2~default~CTRLIST~Rate","dest":"https://blog.csdn.net/qq_45906101/article/details/130799460"}'  data-report-query='spm=1001.2101.3001.6650.3&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-3-130799460-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-3-130799460-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+				<div class="desc ellipsis-online ellipsis-online-1"><em>Robo</em><em>flow</em>的使用</div>
+			</a>
+		</div>
+	</div>
+</div>
+		<dl id="recommend-item-box-tow" class="recommend-item-box type_blog clearfix">
+			
+		</dl>
+<div class="recommend-item-box type_download clearfix" data-url="https://download.csdn.net/download/liufang_imei/88285196"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.4","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-download-2~default~CTRLIST~AntiPaid-4-88285196-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"4","strategy":"2~default~CTRLIST~AntiPaid","dest":"https://download.csdn.net/download/liufang_imei/88285196"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://download.csdn.net/download/liufang_imei/88285196" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.4","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-download-2~default~CTRLIST~AntiPaid-4-88285196-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"4","strategy":"2~default~CTRLIST~AntiPaid","dest":"https://download.csdn.net/download/liufang_imei/88285196"}'  data-report-query='spm=1001.2101.3001.6650.4&utm_medium=distribute.pc_relevant.none-task-download-2%7Edefault%7ECTRLIST%7EAntiPaid-4-88285196-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-download-2%7Edefault%7ECTRLIST%7EAntiPaid-4-88285196-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+					<div class="left ellipsis-online ellipsis-online-1">适用于<em>YOLO</em>v5<em>YOLO</em>v6<em>YOLO</em>v7<em>YOLO</em><em>v8</em>摩托车识别检测<em>数据集</em>3171张(含<em>voc</em><em>格式</em><em>yolo</em><em>格式</em>标签).zip</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info display-flex">
+					<span class="info-block">09-01</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://download.csdn.net/download/liufang_imei/88285196" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.4","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-download-2~default~CTRLIST~AntiPaid-4-88285196-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"4","strategy":"2~default~CTRLIST~AntiPaid","dest":"https://download.csdn.net/download/liufang_imei/88285196"}'  data-report-query='spm=1001.2101.3001.6650.4&utm_medium=distribute.pc_relevant.none-task-download-2%7Edefault%7ECTRLIST%7EAntiPaid-4-88285196-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-download-2%7Edefault%7ECTRLIST%7EAntiPaid-4-88285196-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+				<div class="desc ellipsis-online ellipsis-online-1">适用于<em>YOLO</em>v5<em>YOLO</em>v6<em>YOLO</em>v7<em>YOLO</em><em>v8</em>摩托车识别检测<em>数据集</em>3171张(含<em>voc</em><em>格式</em><em>yolo</em><em>格式</em>标签).zip
+【<em>数据集</em>说明】
+该<em>数据集</em>包含各种摩托车照片3171张，每张照片对应有<em>voc</em>和<em>yolo</em><em>格式</em>标签，标注精准无误，图像背景丰富，算法拟合很好，模型鲁棒性好，通用性强。
+适用各种目标检测算法，直接训练使用！
+欢迎下载使用！可用于科研、学习、毕设、课设、实验等</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_download clearfix" data-url="https://download.csdn.net/download/zxggghjju/87923217"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.5","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-download-2~default~CTRLIST~AntiPaid-5-87923217-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"5","strategy":"2~default~CTRLIST~AntiPaid","dest":"https://download.csdn.net/download/zxggghjju/87923217"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://download.csdn.net/download/zxggghjju/87923217" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.5","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-download-2~default~CTRLIST~AntiPaid-5-87923217-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"5","strategy":"2~default~CTRLIST~AntiPaid","dest":"https://download.csdn.net/download/zxggghjju/87923217"}'  data-report-query='spm=1001.2101.3001.6650.5&utm_medium=distribute.pc_relevant.none-task-download-2%7Edefault%7ECTRLIST%7EAntiPaid-5-87923217-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-download-2%7Edefault%7ECTRLIST%7EAntiPaid-5-87923217-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+					<div class="left ellipsis-online ellipsis-online-1">目标检测-将<em>VOC</em><em>格式</em>的<em>数据集</em><em>一键</em>转化为<em>COCO</em>和<em>YOLO</em><em>格式</em></div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info display-flex">
+					<span class="info-block">06-17</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://download.csdn.net/download/zxggghjju/87923217" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.5","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-download-2~default~CTRLIST~AntiPaid-5-87923217-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"5","strategy":"2~default~CTRLIST~AntiPaid","dest":"https://download.csdn.net/download/zxggghjju/87923217"}'  data-report-query='spm=1001.2101.3001.6650.5&utm_medium=distribute.pc_relevant.none-task-download-2%7Edefault%7ECTRLIST%7EAntiPaid-5-87923217-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-download-2%7Edefault%7ECTRLIST%7EAntiPaid-5-87923217-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+				<div class="desc ellipsis-online ellipsis-online-1"><em>VOC</em><em>格式</em>的<em>数据集</em>转<em>COCO</em><em>格式</em><em>数据集</em>
+<em>VOC</em><em>格式</em>的<em>数据集</em>转<em>YOLO</em><em>格式</em><em>数据集</em></div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_download clearfix" data-url="https://download.csdn.net/download/m0_62143653/87767055"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.6","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-download-2~default~BlogCommendFromBaidu~AntiPaid-6-87767055-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"6","strategy":"2~default~BlogCommendFromBaidu~AntiPaid","dest":"https://download.csdn.net/download/m0_62143653/87767055"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://download.csdn.net/download/m0_62143653/87767055" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.6","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-download-2~default~BlogCommendFromBaidu~AntiPaid-6-87767055-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"6","strategy":"2~default~BlogCommendFromBaidu~AntiPaid","dest":"https://download.csdn.net/download/m0_62143653/87767055"}'  data-report-query='spm=1001.2101.3001.6650.6&utm_medium=distribute.pc_relevant.none-task-download-2%7Edefault%7EBlogCommendFromBaidu%7EAntiPaid-6-87767055-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-download-2%7Edefault%7EBlogCommendFromBaidu%7EAntiPaid-6-87767055-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+					<div class="left ellipsis-online ellipsis-online-1"><em>yolo</em><em>v8</em>训练自己的<em>数据集</em>（源码）.rar</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info display-flex">
+					<span class="info-block">05-09</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://download.csdn.net/download/m0_62143653/87767055" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.6","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-download-2~default~BlogCommendFromBaidu~AntiPaid-6-87767055-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"6","strategy":"2~default~BlogCommendFromBaidu~AntiPaid","dest":"https://download.csdn.net/download/m0_62143653/87767055"}'  data-report-query='spm=1001.2101.3001.6650.6&utm_medium=distribute.pc_relevant.none-task-download-2%7Edefault%7EBlogCommendFromBaidu%7EAntiPaid-6-87767055-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-download-2%7Edefault%7EBlogCommendFromBaidu%7EAntiPaid-6-87767055-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+				<div class="desc ellipsis-online ellipsis-online-1"><em>yolo</em><em>v8</em>训练自己的<em>数据集</em>（源码）</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_blog clearfix" data-url="https://blog.csdn.net/yohnyang/article/details/131353572"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.7","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-7-131353572-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"7","strategy":"2~default~BlogCommendFromBaidu~Rate","dest":"https://blog.csdn.net/yohnyang/article/details/131353572"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://blog.csdn.net/yohnyang/article/details/131353572" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.7","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-7-131353572-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"7","strategy":"2~default~BlogCommendFromBaidu~Rate","dest":"https://blog.csdn.net/yohnyang/article/details/131353572"}'  data-report-query='spm=1001.2101.3001.6650.7&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-7-131353572-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-7-131353572-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+					<div class="left ellipsis-online ellipsis-online-1"><em>深度学习</em>（10）之<em>Robo</em><em>flow</em> 使用详解：<em>数据集</em>标注、训练 及 下载</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/yohnyang" target="_blank"><span class="blog-title">yohnyang的博客</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">06-23</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountBlack.png" alt="">
+					7877
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://blog.csdn.net/yohnyang/article/details/131353572" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.7","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-7-131353572-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"7","strategy":"2~default~BlogCommendFromBaidu~Rate","dest":"https://blog.csdn.net/yohnyang/article/details/131353572"}'  data-report-query='spm=1001.2101.3001.6650.7&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-7-131353572-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-7-131353572-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+				<div class="desc ellipsis-online ellipsis-online-1"><em>Robo</em><em>flow</em> 使用详解：<em>数据集</em>标注、训练 及 下载</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_blog clearfix" data-url="https://devpress.csdn.net/v1/article/detail/128953318"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.8","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~activity-8-128953318-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"8","strategy":"2~default~BlogCommendFromBaidu~activity","dest":"https://devpress.csdn.net/v1/article/detail/128953318"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://devpress.csdn.net/v1/article/detail/128953318" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.8","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~activity-8-128953318-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"8","strategy":"2~default~BlogCommendFromBaidu~activity","dest":"https://devpress.csdn.net/v1/article/detail/128953318"}'  data-report-query='spm=1001.2101.3001.6650.8&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7Eactivity-8-128953318-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7Eactivity-8-128953318-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+					<div class="left ellipsis-online ellipsis-online-1">用<em>YOLO</em><em>v8</em><em>推荐</em>的<em>Robo</em><em>flow</em>工具来训练自己的<em>数据集</em></div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/msq19895070" target="_blank"><span class="blog-title">AMOVLAB(阿木实验室)</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">02-09</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountBlack.png" alt="">
+					9075
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://devpress.csdn.net/v1/article/detail/128953318" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.8","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~activity-8-128953318-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"8","strategy":"2~default~BlogCommendFromBaidu~activity","dest":"https://devpress.csdn.net/v1/article/detail/128953318"}'  data-report-query='spm=1001.2101.3001.6650.8&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7Eactivity-8-128953318-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7Eactivity-8-128953318-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+				<div class="desc ellipsis-online ellipsis-online-1">总而言之，<em>Robo</em><em>flow</em>是一种非常有用的工具，它提供了一种简单的方式来调整训练数据，使其能够更好地适应<em>YOLO</em><em>v8</em>的要求，帮助我们更轻松地准备<em>YOLO</em> <em>v8</em>所需的训练数据。用验证后的训练集模型预测新数据，需要先收集和我们的<em>数据集</em>相关的同类型图片，做成新的文件夹，图片大小和<em>格式</em>保持与之前的<em>数据集</em>图片一致，这里我们将新的图片文件夹命名为&ldquo;images&rdquo;，并放进仓库主路径中。的最新版本，相较于之前的版本，<em>YOLO</em><em>v8</em>可以更快速有效地识别和定位图像中的物体，以及更准确地分类它们。</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_blog clearfix" data-url="https://blog.csdn.net/weixin_46600060/article/details/123154453"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.9","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-9-123154453-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"9","strategy":"2~default~BlogCommendFromBaidu~Rate","dest":"https://blog.csdn.net/weixin_46600060/article/details/123154453"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://blog.csdn.net/weixin_46600060/article/details/123154453" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.9","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-9-123154453-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"9","strategy":"2~default~BlogCommendFromBaidu~Rate","dest":"https://blog.csdn.net/weixin_46600060/article/details/123154453"}'  data-report-query='spm=1001.2101.3001.6650.9&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-9-123154453-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-9-123154453-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+					<div class="left ellipsis-online ellipsis-online-1">【<em>Robo</em><em>flow</em>】强大工具：<em>一键</em>生成<em>voc</em>、<em>coco</em>、<em>yolo</em>、<em>csv</em>等<em>格式</em>的<em>数据集</em></div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/weixin_46600060" target="_blank"><span class="blog-title">weixin_46600060的博客</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">02-26</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountBlack.png" alt="">
+					1万+
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://blog.csdn.net/weixin_46600060/article/details/123154453" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.9","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-9-123154453-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"9","strategy":"2~default~BlogCommendFromBaidu~Rate","dest":"https://blog.csdn.net/weixin_46600060/article/details/123154453"}'  data-report-query='spm=1001.2101.3001.6650.9&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-9-123154453-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-9-123154453-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+				<div class="desc ellipsis-online ellipsis-online-1"><em>yolo</em>v5<em>官方</em><em>推荐</em><em>数据集</em>制作、生成及管理<em>网站</em>
+最近在用<em>yolo</em>v5训练测试自己的<em>数据集</em>，下载的是西班牙 Ultralytics 公司发布的<em>官方</em>版本，发现要用<em>yolo</em> <em>格式</em>的<em>数据集</em>。网上也有一些vco转<em>yolo</em><em>格式</em>的<em>教程</em>，但是觉得麻烦，因此给大家<em>推荐</em>一个比较全能的<em>网站</em>用于<em>一键</em>制作<em>voc</em>、<em>coco</em>、<em>yolo</em>等<em>格式</em>的<em>数据集</em>。
+
+点击页面上的 &ldquo;Train Custom Data&rdquo; 按钮，进入该页面，下拉到第一条 &ldquo;1.Create Dataset&rdquo; 处，点击 &ldquo;<em>Robo</em><em>flow</em>&rdquo; ,进入其官网。
+值得注意的是，</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_blog clearfix" data-url="https://blog.csdn.net/m0_67241828/article/details/130356928"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.10","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-10-130356928-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"10","strategy":"2~default~BlogCommendFromBaidu~Rate","dest":"https://blog.csdn.net/m0_67241828/article/details/130356928"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://blog.csdn.net/m0_67241828/article/details/130356928" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.10","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-10-130356928-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"10","strategy":"2~default~BlogCommendFromBaidu~Rate","dest":"https://blog.csdn.net/m0_67241828/article/details/130356928"}'  data-report-query='spm=1001.2101.3001.6650.10&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-10-130356928-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-10-130356928-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+					<div class="left ellipsis-online ellipsis-online-1"><em>Robo</em><em>flow</em>标注平台使用----小白都能看懂</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/m0_67241828" target="_blank"><span class="blog-title">m0_67241828的博客</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">04-25</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountBlack.png" alt="">
+					4862
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://blog.csdn.net/m0_67241828/article/details/130356928" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.10","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-10-130356928-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"10","strategy":"2~default~BlogCommendFromBaidu~Rate","dest":"https://blog.csdn.net/m0_67241828/article/details/130356928"}'  data-report-query='spm=1001.2101.3001.6650.10&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-10-130356928-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-10-130356928-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+				<div class="desc ellipsis-online ellipsis-online-1">注：（一个工作站最多只能上传10000张图片，如果你的数据很多，为了上传时间快，建议在一个工作站里创建多个项目，每一个项目分到2000左右数据，上传速度就会比较快。注：(如果输入的标签在历史标签里没有，系统会自动添加，在下次需要用到相同标签时候，可以直接拿来用，在classes中包含了图片的所有标签，可以用来判断是否标重复或标错)（3）若要进行数据增强，选择Augmentation点击Add Augmentation Step，选择你要增强的方式，以及增强的数量和修改参数。将邀请放在分配数据那一步骤。</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_download clearfix" data-url="https://download.csdn.net/download/liufang_imei/87959822"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.11","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-download-2~default~OPENSEARCH~AntiPaid-11-87959822-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"11","strategy":"2~default~OPENSEARCH~AntiPaid","dest":"https://download.csdn.net/download/liufang_imei/87959822"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://download.csdn.net/download/liufang_imei/87959822" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.11","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-download-2~default~OPENSEARCH~AntiPaid-11-87959822-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"11","strategy":"2~default~OPENSEARCH~AntiPaid","dest":"https://download.csdn.net/download/liufang_imei/87959822"}'  data-report-query='spm=1001.2101.3001.6650.11&utm_medium=distribute.pc_relevant.none-task-download-2%7Edefault%7EOPENSEARCH%7EAntiPaid-11-87959822-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-download-2%7Edefault%7EOPENSEARCH%7EAntiPaid-11-87959822-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+					<div class="left ellipsis-online ellipsis-online-1">可用于<em>YOLO</em>v5<em>YOLO</em>v7<em>YOLO</em><em>v8</em>的摔倒检测<em>数据集</em>+<em>VOC</em><em>格式</em>标签.zip</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info display-flex">
+					<span class="info-block">06-28</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://download.csdn.net/download/liufang_imei/87959822" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.11","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-download-2~default~OPENSEARCH~AntiPaid-11-87959822-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"11","strategy":"2~default~OPENSEARCH~AntiPaid","dest":"https://download.csdn.net/download/liufang_imei/87959822"}'  data-report-query='spm=1001.2101.3001.6650.11&utm_medium=distribute.pc_relevant.none-task-download-2%7Edefault%7EOPENSEARCH%7EAntiPaid-11-87959822-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-download-2%7Edefault%7EOPENSEARCH%7EAntiPaid-11-87959822-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+				<div class="desc ellipsis-online ellipsis-online-1">可用于<em>YOLO</em>v5<em>YOLO</em>v7<em>YOLO</em><em>v8</em>的摔倒检测<em>数据集</em>+<em>VOC</em><em>格式</em>标签.zip 可用于<em>YOLO</em>v5<em>YOLO</em>v7<em>YOLO</em><em>v8</em>的摔倒检测<em>数据集</em>+<em>VOC</em><em>格式</em>标签.zip 可用于<em>YOLO</em>v5<em>YOLO</em>v7<em>YOLO</em><em>v8</em>的摔倒检测<em>数据集</em>+<em>VOC</em><em>格式</em>标签.zip 可用于<em>YOLO</em>v5<em>YOLO</em>v7<em>YOLO</em><em>v8</em>的...</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_download clearfix" data-url="https://download.csdn.net/download/weixin_42614745/85278721"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.12","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-download-2~default~OPENSEARCH~AntiPaid-12-85278721-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"12","strategy":"2~default~OPENSEARCH~AntiPaid","dest":"https://download.csdn.net/download/weixin_42614745/85278721"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://download.csdn.net/download/weixin_42614745/85278721" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.12","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-download-2~default~OPENSEARCH~AntiPaid-12-85278721-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"12","strategy":"2~default~OPENSEARCH~AntiPaid","dest":"https://download.csdn.net/download/weixin_42614745/85278721"}'  data-report-query='spm=1001.2101.3001.6650.12&utm_medium=distribute.pc_relevant.none-task-download-2%7Edefault%7EOPENSEARCH%7EAntiPaid-12-85278721-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-download-2%7Edefault%7EOPENSEARCH%7EAntiPaid-12-85278721-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+					<div class="left ellipsis-online ellipsis-online-1">objectDetectionDatasets
+目标检测<em>数据集</em>制作:<em>VOC</em>,<em>COCO</em>,<em>YOLO</em>等常用<em>数据集</em><em>格式</em>的制作和互相转换</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info display-flex">
+					<span class="info-block">05-04</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://download.csdn.net/download/weixin_42614745/85278721" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.12","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-download-2~default~OPENSEARCH~AntiPaid-12-85278721-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"12","strategy":"2~default~OPENSEARCH~AntiPaid","dest":"https://download.csdn.net/download/weixin_42614745/85278721"}'  data-report-query='spm=1001.2101.3001.6650.12&utm_medium=distribute.pc_relevant.none-task-download-2%7Edefault%7EOPENSEARCH%7EAntiPaid-12-85278721-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-download-2%7Edefault%7EOPENSEARCH%7EAntiPaid-12-85278721-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+				<div class="desc ellipsis-online ellipsis-online-1">目标检测<em>数据集</em>制作:<em>VOC</em>,<em>COCO</em>,<em>YOLO</em>等常用<em>数据集</em><em>格式</em>的制作和互相转换脚本,demo/目录提供的原始的<em>voc</em><em>格式</em>的20张原图和对应20个.xml标注． 下面的脚本都可以通过这个demo数据跑通. <em>voc</em>_split_trainVal.py 该脚本用于...</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_blog clearfix" data-url="https://yolov5.blog.csdn.net/article/details/129814232"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.13","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-13-129814232-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"13","strategy":"2~default~CTRLIST~Rate","dest":"https://yolov5.blog.csdn.net/article/details/129814232"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://yolov5.blog.csdn.net/article/details/129814232" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.13","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-13-129814232-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"13","strategy":"2~default~CTRLIST~Rate","dest":"https://yolov5.blog.csdn.net/article/details/129814232"}'  data-report-query='spm=1001.2101.3001.6650.13&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-13-129814232-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-13-129814232-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+					<div class="left ellipsis-online ellipsis-online-1">【3】使用<em>YOLO</em><em>v8</em>训练自己的【目标检测】<em>数据集</em>-【收集<em>数据集</em>】-【标注<em>数据集</em>】-【划分<em>数据集</em>】-【配置训练环境】-【训练模型】-【评估模型】-【<em>导出</em>模型】</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/weixin_43694096" target="_blank"><span class="blog-title">Blue Book Is All You Need</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">04-08</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountBlack.png" alt="">
+					2万+
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://yolov5.blog.csdn.net/article/details/129814232" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.13","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-13-129814232-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"13","strategy":"2~default~CTRLIST~Rate","dest":"https://yolov5.blog.csdn.net/article/details/129814232"}'  data-report-query='spm=1001.2101.3001.6650.13&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-13-129814232-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-13-129814232-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+				<div class="desc ellipsis-online ellipsis-online-1">在自定义数据上训练<em>YOLO</em><em>v8</em>目标检测模型的步骤可以总结如下</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_blog clearfix" data-url="https://blog.csdn.net/level_code/article/details/134034692"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.14","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-14-134034692-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"14","strategy":"2~default~CTRLIST~Rate","dest":"https://blog.csdn.net/level_code/article/details/134034692"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://blog.csdn.net/level_code/article/details/134034692" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.14","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-14-134034692-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"14","strategy":"2~default~CTRLIST~Rate","dest":"https://blog.csdn.net/level_code/article/details/134034692"}'  data-report-query='spm=1001.2101.3001.6650.14&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-14-134034692-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-14-134034692-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+					<div class="left ellipsis-online ellipsis-online-1"><em>robo</em><em>flow</em>标注检测 / 分割<em>数据集</em></div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/level_code" target="_blank"><span class="blog-title">蓝羽飞鸟的博客</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">10-25</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountBlack.png" alt="">
+					445
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://blog.csdn.net/level_code/article/details/134034692" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.14","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-14-134034692-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"14","strategy":"2~default~CTRLIST~Rate","dest":"https://blog.csdn.net/level_code/article/details/134034692"}'  data-report-query='spm=1001.2101.3001.6650.14&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-14-134034692-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-14-134034692-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+				<div class="desc ellipsis-online ellipsis-online-1"><em>robo</em><em>flow</em>标注检测，分割<em>数据集</em></div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_blog clearfix" data-url="https://blog.csdn.net/weixin_43229348/article/details/123502639"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.15","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-15-123502639-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"15","strategy":"2~default~CTRLIST~Rate","dest":"https://blog.csdn.net/weixin_43229348/article/details/123502639"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://blog.csdn.net/weixin_43229348/article/details/123502639" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.15","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-15-123502639-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"15","strategy":"2~default~CTRLIST~Rate","dest":"https://blog.csdn.net/weixin_43229348/article/details/123502639"}'  data-report-query='spm=1001.2101.3001.6650.15&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-15-123502639-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-15-123502639-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+					<div class="left ellipsis-online ellipsis-online-1">如何使用 <em>Robo</em><em>flow</em> 标注关键点</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/weixin_43229348" target="_blank"><span class="blog-title">weixin_43229348的博客</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">03-18</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountBlack.png" alt="">
+					4870
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://blog.csdn.net/weixin_43229348/article/details/123502639" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.15","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-15-123502639-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"15","strategy":"2~default~CTRLIST~Rate","dest":"https://blog.csdn.net/weixin_43229348/article/details/123502639"}'  data-report-query='spm=1001.2101.3001.6650.15&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-15-123502639-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-15-123502639-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+				<div class="desc ellipsis-online ellipsis-online-1"><em>Robo</em><em>flow</em> 是一款易于使用的在线图像标注软件。当我需要标注<em>数据集</em>以进行对象检测时，我总是使用它。
+对图像进行对象检测标注是指在图像上绘制和标注对象周围的边界框。
+但是，当涉及到关键点的标注时，<em>Robo</em><em>flow</em> 会显示以下消息：
+目前，我们只支持对象检测（边界框）和单类分类项目。我们根据用户需求进行优先排序。您可以通过添加投票记录您的支持并请求此功能。
+最近，我需要使用胶管对图像<em>数据集</em>进行关键点标注，以训练自定义关键点 RCNN。
+以下是<em>数据集</em>中的几张随机图像：
+
+每个图像的标注应包括：
+
+边界框坐标（</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_blog clearfix" data-url="https://blog.csdn.net/qq_51536608/article/details/130160592"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.16","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-16-130160592-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"16","strategy":"2~default~BlogCommendFromBaidu~Rate","dest":"https://blog.csdn.net/qq_51536608/article/details/130160592"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://blog.csdn.net/qq_51536608/article/details/130160592" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.16","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-16-130160592-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"16","strategy":"2~default~BlogCommendFromBaidu~Rate","dest":"https://blog.csdn.net/qq_51536608/article/details/130160592"}'  data-report-query='spm=1001.2101.3001.6650.16&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-16-130160592-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-16-130160592-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+					<div class="left ellipsis-online ellipsis-online-1">利用<em>Robo</em><em>flow</em>对<em>数据集</em>进行图像增强处理，此方法简单实用</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/qq_51536608" target="_blank"><span class="blog-title">qq_51536608的博客</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">04-14</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountBlack.png" alt="">
+					1678
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://blog.csdn.net/qq_51536608/article/details/130160592" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.16","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-16-130160592-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"16","strategy":"2~default~BlogCommendFromBaidu~Rate","dest":"https://blog.csdn.net/qq_51536608/article/details/130160592"}'  data-report-query='spm=1001.2101.3001.6650.16&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-16-130160592-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-16-130160592-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+				<div class="desc ellipsis-online ellipsis-online-1">我的代码路径是将图片和标签分开的，所以图片和标签不在同一文件里，如果你的在同一文件里，就会显示到Annotated里面了，下面我传一下标签文件，大家就明白了。在网上搜索后，大多数博主是采用写好的python程序来对图像进行增强的，但是这种程序大部分虽说符合<em>yolo</em>v5的<em>格式</em>，但是要么输出的图片<em>格式</em>不对，要么输出的标签文本<em>格式</em>不对，而且程序如果出现bug也是一件很头疼的事。点击后会有一个此<em>数据集</em>train，valid，test的比例，你自己根据自己的需求设置就好，之后点击Continue。</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_blog clearfix" data-url="https://devpress.csdn.net/v1/article/detail/129391260"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.17","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~activity-17-129391260-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"17","strategy":"2~default~BlogCommendFromBaidu~activity","dest":"https://devpress.csdn.net/v1/article/detail/129391260"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://devpress.csdn.net/v1/article/detail/129391260" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.17","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~activity-17-129391260-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"17","strategy":"2~default~BlogCommendFromBaidu~activity","dest":"https://devpress.csdn.net/v1/article/detail/129391260"}'  data-report-query='spm=1001.2101.3001.6650.17&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7Eactivity-17-129391260-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7Eactivity-17-129391260-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+					<div class="left ellipsis-online ellipsis-online-1">【<em>YOLO</em>】<em>YOLO</em><em>v8</em>训练自定义<em>数据集</em>（4种方式）</div>
+					<div class="tag">热门推荐</div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/weixin_42166222" target="_blank"><span class="blog-title">MangoloD的博客</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">03-08</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountBlack.png" alt="">
+					4万+
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://devpress.csdn.net/v1/article/detail/129391260" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.17","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~activity-17-129391260-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"17","strategy":"2~default~BlogCommendFromBaidu~activity","dest":"https://devpress.csdn.net/v1/article/detail/129391260"}'  data-report-query='spm=1001.2101.3001.6650.17&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7Eactivity-17-129391260-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7Eactivity-17-129391260-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+				<div class="desc ellipsis-online ellipsis-online-1">使用<em>YOLO</em><em>v8</em>训练自定义<em>数据集</em></div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_blog clearfix" data-url="https://blog.csdn.net/Friedrichor/article/details/124573520"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.18","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-18-124573520-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"18","strategy":"2~default~BlogCommendFromBaidu~Rate","dest":"https://blog.csdn.net/Friedrichor/article/details/124573520"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://blog.csdn.net/Friedrichor/article/details/124573520" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.18","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-18-124573520-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"18","strategy":"2~default~BlogCommendFromBaidu~Rate","dest":"https://blog.csdn.net/Friedrichor/article/details/124573520"}'  data-report-query='spm=1001.2101.3001.6650.18&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-18-124573520-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-18-124573520-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+					<div class="left ellipsis-online ellipsis-online-1">使用 <em>robo</em><em>flow</em> 将自己的<em>数据集</em>转化为 <em>YOLO</em>v5 所需的<em>格式</em></div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info">
+					<a href="https://blog.csdn.net/Friedrichor" target="_blank"><span class="blog-title">Friedrichor的博客</span></a>
+				</div>
+				<div class="info display-flex">
+					<span class="info-block time">05-04</span>
+					<span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountBlack.png" alt="">
+					5246
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://blog.csdn.net/Friedrichor/article/details/124573520" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.18","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-18-124573520-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"18","strategy":"2~default~BlogCommendFromBaidu~Rate","dest":"https://blog.csdn.net/Friedrichor/article/details/124573520"}'  data-report-query='spm=1001.2101.3001.6650.18&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-18-124573520-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-18-124573520-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+				<div class="desc ellipsis-online ellipsis-online-1"><em>robo</em><em>flow</em>
+<em>YOLO</em>v5
+
+
+</div>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="recommend-item-box type_chatgpt clearfix" data-url="https://wenku.csdn.net/answer/2p398gu51e"  data-report-view='{"ab":"new","spm":"1001.2101.3001.6650.19","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-chatgpt-2~default~CTRLIST~Position-19-2p398gu51e-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"19","strategy":"2~default~CTRLIST~Position","dest":"https://wenku.csdn.net/answer/2p398gu51e"}'>
+	<div class="content-box">
+		<div class="content-blog display-flex">
+			<div class="title-box">
+				<a href="https://wenku.csdn.net/answer/2p398gu51e" class="tit" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.19","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-chatgpt-2~default~CTRLIST~Position-19-2p398gu51e-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"19","strategy":"2~default~CTRLIST~Position","dest":"https://wenku.csdn.net/answer/2p398gu51e"}'  data-report-query='spm=1001.2101.3001.6650.19&utm_medium=distribute.pc_relevant.none-task-chatgpt-2%7Edefault%7ECTRLIST%7EPosition-19-2p398gu51e-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-chatgpt-2%7Edefault%7ECTRLIST%7EPosition-19-2p398gu51e-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+					<div class="left ellipsis-online ellipsis-online-1"><em>yolo</em><em>v8</em>pose <em>coco</em><em>格式</em><em>数据集</em>转换为<em>yolo</em></div>
+				</a>
+			</div>
+			<div class="info-box display-flex">
+				<div class="info display-flex">
+					<span class="info-block">08-31</span>
+				</div>
+			</div>
+		</div>
+		<div class="desc-box">
+			<a href="https://wenku.csdn.net/answer/2p398gu51e" target="_blank"  data-report-click='{"ab":"new","spm":"1001.2101.3001.6650.19","mod":"popu_387","extra":"{\"highlightScore\":0.0,\"utm_medium\":\"distribute.pc_relevant.none-task-chatgpt-2~default~CTRLIST~Position-19-2p398gu51e-blog-131402056.235^v43^pc_blog_bottom_relevance_base5\",\"dist_request_id\":\"1709112333529_57199\"}","dist_request_id":"1709112333529_57199","ab_strategy":"increase_t0_anti_vip","index":"19","strategy":"2~default~CTRLIST~Position","dest":"https://wenku.csdn.net/answer/2p398gu51e"}'  data-report-query='spm=1001.2101.3001.6650.19&utm_medium=distribute.pc_relevant.none-task-chatgpt-2%7Edefault%7ECTRLIST%7EPosition-19-2p398gu51e-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5&depth_1-utm_source=distribute.pc_relevant.none-task-chatgpt-2%7Edefault%7ECTRLIST%7EPosition-19-2p398gu51e-blog-131402056.235%5Ev43%5Epc_blog_bottom_relevance_base5'>
+				<div class="desc ellipsis-online ellipsis-online-1"><em>YOLO</em><em>v8</em>Pose是基于<em>YOLO</em>v3的姿态估计模型，而<em>COCO</em><em>格式</em><em>数据集</em>是一种常用的姿势估计<em>数据集</em><em>格式</em>。将<em>YOLO</em><em>v8</em>Pose的<em>COCO</em><em>格式</em><em>数据集</em>转换为<em>YOLO</em><em>格式</em><em>数据集</em>的过程可以分为以下几个步骤：
+
+1. 首先，我们需要理解<em>YOLO</em><em>格式</em><em>数据集</em>的标注<em>格式</em>。<em>YOLO</em><em>格式</em>的标注通常使用文本文件保存，每个文本文件对应一张图像，文件中每一行代表图片中一个物体，每一行包含以下信息：物体的类别ID、物体在图像中的中心坐标（相对于图像宽和高的比例）、物体的宽度和高度（相对于图像宽和高的比例）。
+
+2. 将<em>COCO</em><em>格式</em><em>数据集</em>转换为<em>YOLO</em><em>格式</em><em>数据集</em>的第一步是读取<em>COCO</em>标注文件。可以使用相应的<em>数据集</em>处理库，如Python中的<em>COCO</em> API，来读取<em>COCO</em><em>格式</em>的标注文件并获取标注信息。
+
+3. 遍历每张图像，将<em>COCO</em>标注的每个物体转换为<em>YOLO</em><em>格式</em>的标注信息。对于每个物体，我们可以根据其类别ID在类别列表中找到对应的索引，并将中心坐标、宽度和高度都计算为相对于图像宽和高的比例。
+
+4. 将每个物体的<em>YOLO</em><em>格式</em>标注信息写入对应的文本文件中，每行代表一个物体。
+
+5. 重复上述步骤，直到处理完所有图像，并得到了所有图像对应的<em>YOLO</em><em>格式</em>标注文件。
+
+通过上述步骤，我们可以将<em>YOLO</em><em>v8</em>Pose的<em>COCO</em><em>格式</em><em>数据集</em>转换为<em>YOLO</em><em>格式</em><em>数据集</em>，以便于后续在<em>YOLO</em><em>v8</em>Pose模型中使用。</div>
+			</a>
+		</div>
+	</div>
+</div>
+              </div>
+<div id="recommendNps" class="recommend-nps-box common-nps-box">
+  <h3 class="aside-title">“相关推荐”对你有帮助么？</h3>
+  <div class="aside-content">
+      <ul class="newnps-list">
+          <li class="newnps-item" data-type="非常没帮助">
+              <div class="newnps-img-box">
+                  <img class="newnps-img active" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeel1.png" alt="">
+                  <img class="newnps-img default" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeelGrey1.png" alt="">
+              </div>
+              <div class="newnps-text">非常没帮助</div>
+          </li>
+          <li class="newnps-item" data-type="没帮助">
+              <div class="newnps-img-box">
+                  <img class="newnps-img active" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeel2.png" alt="">
+                  <img class="newnps-img default" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeelGrey2.png" alt="">
+              </div>
+              <div class="newnps-text">没帮助</div>
+          </li>
+          <li class="newnps-item" data-type="一般">
+              <div class="newnps-img-box">
+                  <img class="newnps-img active" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeel3.png" alt="">
+                  <img class="newnps-img default" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeelGrey3.png" alt="">
+              </div>
+              <div class="newnps-text">一般</div>
+          </li>
+          <li class="newnps-item" data-type="有帮助">
+              <div class="newnps-img-box">
+                  <img class="newnps-img active" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeel4.png" alt="">
+                  <img class="newnps-img default" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeelGrey4.png" alt="">
+              </div>
+              <div class="newnps-text">有帮助</div>
+          </li>
+          <li class="newnps-item" data-type="非常有帮助">
+              <div class="newnps-img-box">
+                  <img class="newnps-img active" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeel5.png" alt="">
+                  <img class="newnps-img default" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeelGrey5.png" alt="">
+              </div>
+              <div class="newnps-text">非常有帮助</div>
+          </li>
+      </ul>
+      <div class="newnps-form-box">
+      <div class="newnps-form">
+          <input type="text" placeholder="请输入建议或反馈后点击提交" class="newnps-input">
+          <span class="newnps-btn">提交</span>
+      </div>
+      </div>
+  </div>
+</div><div class="blog-footer-bottom" style="margin-top:10px;"></div>
+<script src="https://g.csdnimg.cn/common/csdn-footer/csdn-footer.js" data-isfootertrack="false" type="text/javascript"></script>
+<script type="text/javascript">
+    window.csdn.csdnFooter.options = {
+        el: '.blog-footer-bottom',
+        type: 2
+    }
+</script>          </main>
+<aside class="blog_container_aside">
+<div id="asideProfile" class="aside-box">
+    <div class="profile-intro d-flex">
+        <div class="avatar-box d-flex justify-content-center flex-column">
+            <a href="https://snu77.blog.csdn.net" target="_blank" data-report-click='{"mod":"popu_379","spm":"1001.2101.3001.4121","dest":"https://snu77.blog.csdn.net","ab":"new"}'>
+                <img src="https://profile-avatar.csdnimg.cn/27160f4941a54d07b535ceabcfa4a800_java1314777.jpg!1" class="avatar_pic">
+            </a>
+        </div>
+        <div class="user-info d-flex flex-column profile-intro-name-box">
+            <div class="profile-intro-name-boxTop">
+                <a href="https://snu77.blog.csdn.net" target="_blank" class="" id="uid" title="Snu77" data-report-click='{"mod":"popu_379","spm":"1001.2101.3001.4122","dest":"https://snu77.blog.csdn.net","ab":"new"}'>
+                    <span class="name vip-name" username="java1314777">Snu77</span>
+                </a>
+                <span>
+                <a href="https://snu77.blog.csdn.net"  data-report-click='{"spm":"1001.2101.3001.9180"}' target="_blank"><img class="identity" src="https://csdnimg.cn/release/blogv2/dist/mobile/img/vipNew.png" alt=""></a>
+                </span>
+                <span class="flag expert-blog">
+                <span class="bubble">CSDN认证博客专家</span>
+                </span>
+                <span class="flag company-blog">
+                <span class="bubble">CSDN认证企业博客</span>
+                </span>
+            </div>
+            <div class="profile-intro-name-boxFooter">
+                <span class="personal-home-page personal-home-years" title="已加入 CSDN 2年">码龄2年</span>
+                    <span class="personal-home-page">
+                    <a class="personal-home-certification" href="https://i.csdn.net/#/uc/profile?utm_source=14998968" target="_blank" title="人工智能领域优质创作者">
+                    <img src="https://img-home.csdnimg.cn/images/20210412060958.png" alt="">
+                    人工智能领域优质创作者
+                    </a>
+                    </span>
+            </div>
+        </div>
+    </div>
+    <div class="data-info d-flex item-tiling">
+        <dl class="text-center" title="337">
+            <a href="https://snu77.blog.csdn.net" data-report-click='{"mod":"1598321000_001","spm":"1001.2101.3001.4310"}' data-report-query="t=1">  
+                <dt><span class="count">337</span></dt>
+                <dd class="font">原创</dd>
+            </a>
+        </dl>
+        <dl class="text-center" data-report-click='{"mod":"1598321000_002","spm":"1001.2101.3001.4311"}' title="7">
+            <a href="https://blog.csdn.net/rank/list/weekly" target="_blank">
+                <dt><span class="count">7</span></dt>
+                <dd class="font">周排名</dd>
+            </a>
+        </dl>
+        <dl class="text-center" title="1140">
+            <a href="https://blog.csdn.net/rank/list/total" data-report-click='{"mod":"1598321000_003","spm":"1001.2101.3001.4312"}' target="_blank">
+                <dt><span class="count">1140</span></dt>
+                <dd class="font">总排名</dd>
+            </a>
+        </dl>
+        <dl class="text-center" style="min-width:58px" title="591894">  
+            <dt><span class="count">59万+</span></dt>
+            <dd>访问</dd>
+        </dl>
+        <dl class="text-center" title="7级,点击查看等级说明">
+            <dt><a href="https://blog.csdn.net/blogdevteam/article/details/103478461" target="_blank">
+                <img class="level" src="https://csdnimg.cn/identity/blog7.png">
+            </a>
+            </dt>
+            <dd>等级</dd>
+        </dl>
+    </div>
+    <div class="item-rank"></div>
+    <div class="data-info d-flex item-tiling">
+        <dl class="text-center" title="13262">
+            <dt><span class="count">1万+</span></dt>
+            <dd>积分</dd>
+        </dl>
+         <dl class="text-center" id="fanBox" title="25732">
+            <dt><span class="count" id="fan">2万+</span></dt>
+            <dd>粉丝</dd>
+        </dl>
+        <dl class="text-center" title="7603">
+            <dt><span class="count">7603</span></dt>
+            <dd>获赞</dd>
+        </dl>
+        <dl class="text-center" title="3465">
+            <dt><span class="count">3465</span></dt>
+            <dd>评论</dd>
+        </dl>
+        <dl class="text-center" title="9395">
+            <dt><span class="count">9395</span></dt>
+            <dd>收藏</dd>
+        </dl>
+    </div>
+    <div class="aside-box-footer" data-report-view='{"spm":"3001.4296"}'>
+        <div class="badge-box d-flex">
+            <div class="badge d-flex">
+                <div class="icon-badge" title="MarkDown">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/11887cd76794439ba69942cd77e81457.png" alt="MarkDown">
+                    </div>
+                </div>
+                <div class="icon-badge" title="CUDA入门">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/cd999bc9a00b4283abaff17a468ff189.png" alt="CUDA入门">
+                    </div>
+                </div>
+                <div class="icon-badge" title="云原生入门">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/3d0f343b511d482892084e4bec9ef37b.png" alt="云原生入门">
+                    </div>
+                </div>
+                <div class="icon-badge" title="学无止境">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/0af32a292d094a4cbfd0feff60f3590d.png" alt="学无止境">
+                    </div>
+                </div>
+                <div class="icon-badge" title="习惯养成">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/medal/xiguanyangchengLv1.png" alt="习惯养成">
+                    </div>
+                </div>
+                <div class="icon-badge" title="笔记达人">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/medal/bijidarenLv1.png" alt="笔记达人">
+                    </div>
+                </div>
+                <div class="icon-badge" title="Java工程师·初级">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/medal/s_java_b_lv1@240.png" alt="Java工程师·初级">
+                    </div>
+                </div>
+                <div class="icon-badge" title="Java工程师·高级">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/medal/s_java_a_lv1@240.png" alt="Java工程师·高级">
+                    </div>
+                </div>
+                <div class="icon-badge" title="博客之星–参与">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/76b1d0d897bc4bdabc11a5d89fe552d3.png" alt="博客之星–参与">
+                    </div>
+                </div>
+                <div class="icon-badge" title="Python工程师·初级">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/medal/s_python_b_lv1@240.png" alt="Python工程师·初级">
+                    </div>
+                </div>
+                <div class="icon-badge" title="Vue进阶">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/c1369b46fc9140c3808c8189382cf046.png" alt="Vue进阶">
+                    </div>
+                </div>
+                <div class="icon-badge" title="Python工程师·高级">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/medal/s_python_a_lv1@240.png" alt="Python工程师·高级">
+                    </div>
+                </div>
+                <div class="icon-badge" title="勤写标兵">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/eabb492c5e3343738376cdb052649492.png" alt="勤写标兵">
+                    </div>
+                </div>
+                <div class="icon-badge" title="创作能手">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/medal/qixiebiaobing4@240.png" alt="创作能手">
+                    </div>
+                </div>
+                <div class="icon-badge" title="新秀勋章">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/medal/xinxiu@240.png" alt="新秀勋章">
+                    </div>
+                </div>
+                <div class="icon-badge" title="持之以恒">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/a73a5facfe464b5a9e2b0393b1189042.png" alt="持之以恒">
+                    </div>
+                </div>
+                <div class="icon-badge" title="创作纪念日">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/medal/cz1th.png" alt="创作纪念日">
+                    </div>
+                </div>
+                <div class="icon-badge" title="GitHub">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/medal/github@240.png" alt="GitHub">
+                    </div>
+                </div>
+                <div class="icon-badge" title="笔耕不辍">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/02d34b42a3ee476fb50850304ab67017.png" alt="笔耕不辍">
+                    </div>
+                </div>
+                <div class="icon-badge" title="话题达人">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/dff63da017d0435d83f26031510a70f0.png" alt="话题达人">
+                    </div>
+                </div>
+                <div class="icon-badge" title="知无不言">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/f19b84c244aa4e6d8bf469b4aff1f98c.png" alt="知无不言">
+                    </div>
+                </div>
+                <div class="icon-badge" title="授人以渔">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/53a3e1cbc8b643cd88e0be2ea68200f7.png" alt="授人以渔">
+                    </div>
+                </div>
+                <div class="icon-badge" title="求知">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/c0535f9cefbd4cc0a4878be28bfc4590.png" alt="求知">
+                    </div>
+                </div>
+                <div class="icon-badge" title="受益良多">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/f36bcf8b59434f7e8e4fe5cab12ed731.png" alt="受益良多">
+                    </div>
+                </div>
+                <div class="icon-badge" title="MySQL进阶">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/2b34833c180244d581b07e8aaa9ae3d9.png" alt="MySQL进阶">
+                    </div>
+                </div>
+                <div class="icon-badge" title="Go">
+                    <div class="mouse-box">
+                        <img class="medal-img" data-report-click='{"spm":"3001.4296"}' src="https://csdnimg.cn/23159beb43324e31b1a0ffa3bd651a22.png" alt="Go">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="profile-intro-name-boxOpration">
+        <div class="opt-letter-watch-box">
+        <a rel="nofollow" class="bt-button personal-letter" href="https://im.csdn.net/chat/java1314777" target="_blank" rel="noopener">私信</a>
+        </div>
+        <div class="opt-letter-watch-box"> 
+            <a class="attented personal-watch bt-button" id="btnAttent">已关注</a>
+        </div>
+    </div>
+</div>
+<a id="remuneration" data-report-click='{"spm":"1001.2101.3001.9809"}' rel="nofollow" href="" class="remuneration-box">
+  <img src="" alt="">
+</a>
+  <div id="asideWriteGuide" class="aside-box side-write-guide-box type-1" data-report-view='{"spm":"3001.9727"}'>
+    <div class="content-box">
+      <a rel="nofollow" href="https://mp.csdn.net" target="_blank" class="btn-go-write" data-report-query="spm=3001.9727" data-report-click='{"spm":"3001.9727"}'>
+        <img src="https://img-home.csdnimg.cn/images/20240218021837.png" alt="写文章">
+      </a>
+    </div>
+  </div>
+<div id="asideSearchArticle" class="aside-box">
+	<div class="aside-content search-comter">
+    <div class="aside-search aside-search-blog">         
+        <input type="text" class="input-serch-blog" name="" autocomplete="off" value="" id="search-blog-words" placeholder="搜博主文章">
+        <a class="btn-search-blog" data-report-click='{"spm":"1001.2101.3001.9182"}'>
+            <img src="//csdnimg.cn/cdn/content-toolbar/csdn-white-search.png?v=1587006908">
+        </a>
+    </div>
+    </div>
+</div>
+
+
+
+<div id="asideHotArticle" class="aside-box">
+	<h3 class="aside-title">热门文章</h3>
+	<div class="aside-content">
+		<ul class="hotArticle-list">
+			<li>
+				<a href="https://snu77.blog.csdn.net/article/details/132974960" target="_blank"  data-report-click='{"mod":"popu_541","spm":"1001.2101.3001.4139","dest":"https://snu77.blog.csdn.net/article/details/132974960","ab":"new"}'>
+				时间序列预测模型实战案例(三)(LSTM)(Python)(深度学习)时间序列预测(包括运行代码以及代码讲解)
+					<img src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountBlack.png" alt="">
+					<span class="read">18875</span>
+                </a>
+			</li>
+			<li>
+				<a href="https://snu77.blog.csdn.net/article/details/135309007" target="_blank"  data-report-click='{"mod":"popu_541","spm":"1001.2101.3001.4139","dest":"https://snu77.blog.csdn.net/article/details/135309007","ab":"new"}'>
+				YOLOv8改进有效系列目录 | 包含卷积、主干、检测头、注意力机制、Neck上百种创新机制
+					<img src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountBlack.png" alt="">
+					<span class="read">17067</span>
+                </a>
+			</li>
+			<li>
+				<a href="https://snu77.blog.csdn.net/article/details/134154676" target="_blank"  data-report-click='{"mod":"popu_541","spm":"1001.2101.3001.4139","dest":"https://snu77.blog.csdn.net/article/details/134154676","ab":"new"}'>
+				YOLOv8性能评估指标-＞mAP、Precision、Recall、FPS、IoU
+					<img src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountBlack.png" alt="">
+					<span class="read">16119</span>
+                </a>
+			</li>
+			<li>
+				<a href="https://snu77.blog.csdn.net/article/details/134097996" target="_blank"  data-report-click='{"mod":"popu_541","spm":"1001.2101.3001.4139","dest":"https://snu77.blog.csdn.net/article/details/134097996","ab":"new"}'>
+				详解YOLOv8网络结构/环境搭建/数据集获取/训练/推理/验证/导出/部署
+					<img src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountBlack.png" alt="">
+					<span class="read">12428</span>
+                </a>
+			</li>
+			<li>
+				<a href="https://snu77.blog.csdn.net/article/details/128027977" target="_blank"  data-report-click='{"mod":"popu_541","spm":"1001.2101.3001.4139","dest":"https://snu77.blog.csdn.net/article/details/128027977","ab":"new"}'>
+				Win11上Pytorch的安装并在Pycharm上调用PyTorch最新超详细过程并附详细的系统变量添加过程,可解决pycharm中pip不好使的问题
+					<img src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountBlack.png" alt="">
+					<span class="read">9005</span>
+                </a>
+			</li>
+		</ul>
+	</div>
+</div>
+<div id="asideCategory" class="aside-box flexible-box">
+    <h3 class="aside-title">分类专栏</h3>
+    <div class="aside-content">
+        <ul>
+            <li>
+                <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12483754.html" data-report-click='{"mod":"popu_826","spm":"1001.2101.3001.4230","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12483754.html","ab":"new"}'>
+                    <div class="special-column-bar "></div>
+                    <img src="https://img-blog.csdnimg.cn/direct/d0d498bd4f0c4e17b48ff54e86b67668.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                    <div class="img-mantle "></div>
+                    <span class="title oneline">
+                        YOLOv8有效涨点专栏
+                    </span>
+                        <span class="pay-tag">付费</span>
+                </a>
+                <span class="special-column-num">125篇</span>
+            </li>
+            <li>
+                <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12500428.html" data-report-click='{"mod":"popu_826","spm":"1001.2101.3001.4230","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12500428.html","ab":"new"}'>
+                    <div class="special-column-bar "></div>
+                    <img src="https://img-blog.csdnimg.cn/direct/bce35723af3f466e97009ebf18e827aa.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                    <div class="img-mantle "></div>
+                    <span class="title oneline">
+                        RT-DETR有效改进专栏
+                    </span>
+                        <span class="pay-tag">付费</span>
+                </a>
+                <span class="special-column-num">61篇</span>
+            </li>
+            <li>
+                <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12500426.html" data-report-click='{"mod":"popu_826","spm":"1001.2101.3001.4230","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12500426.html","ab":"new"}'>
+                    <div class="special-column-bar "></div>
+                    <img src="https://img-blog.csdnimg.cn/direct/6029d5920130491c8f52a4b3005e5f84.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                    <div class="img-mantle "></div>
+                    <span class="title oneline">
+                        YOLOv5改进有效专栏
+                    </span>
+                        <span class="pay-tag">付费</span>
+                </a>
+                <span class="special-column-num">106篇</span>
+            </li>
+            <li>
+                <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12583198.html" data-report-click='{"mod":"popu_537","spm":"1001.2101.3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12583198.html","ab":"new"}'>
+                    <div class="special-column-bar "></div>
+                    <img src="https://img-blog.csdnimg.cn/direct/ba2519e7272a4267a3ded30aaa79eb09.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                    <div class="img-mantle "></div>
+                    <span class="title oneline">
+                        YOLOv9有效涨点专栏
+                    </span>
+                </a>
+                <span class="special-column-num">2篇</span>
+            </li>
+            <li>
+                <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12464694.html" data-report-click='{"mod":"popu_537","spm":"1001.2101.3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12464694.html","ab":"new"}'>
+                    <div class="special-column-bar "></div>
+                    <img src="https://img-blog.csdnimg.cn/20201014180756913.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                    <div class="img-mantle "></div>
+                    <span class="title oneline">
+                        数据集专栏
+                    </span>
+                </a>
+                <span class="special-column-num">3篇</span>
+            </li>
+            <li>
+                <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12551123.html" data-report-click='{"mod":"popu_537","spm":"1001.2101.3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12551123.html","ab":"new"}'>
+                    <div class="special-column-bar "></div>
+                    <img src="https://img-blog.csdnimg.cn/direct/85c6dd75fec842e7a1a36ea95aa69562.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                    <div class="img-mantle "></div>
+                    <span class="title oneline">
+                        YOLOv5/v7有效涨点
+                    </span>
+                </a>
+                <span class="special-column-num">1篇</span>
+            </li>
+            <li>
+                <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12510496.html" data-report-click='{"mod":"popu_537","spm":"1001.2101.3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12510496.html","ab":"new"}'>
+                    <div class="special-column-bar "></div>
+                    <img src="https://img-blog.csdnimg.cn/direct/e44ee41c806043f0a3245f74fd5de1db.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                    <div class="img-mantle "></div>
+                    <span class="title oneline">
+                        深度学习100题大战
+                    </span>
+                </a>
+                <span class="special-column-num">1篇</span>
+            </li>
+            <li>
+                <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12486438.html" data-report-click='{"mod":"popu_537","spm":"1001.2101.3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12486438.html","ab":"new"}'>
+                    <div class="special-column-bar "></div>
+                    <img src="https://img-blog.csdnimg.cn/20201014180756738.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                    <div class="img-mantle "></div>
+                    <span class="title oneline">
+                        活动专栏
+                    </span>
+                </a>
+                <span class="special-column-num">2篇</span>
+            </li>
+            <li>
+                <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12285732.html" data-report-click='{"mod":"popu_537","spm":"1001.2101.3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12285732.html","ab":"new"}'>
+                    <div class="special-column-bar "></div>
+                    <img src="https://img-blog.csdnimg.cn/20201014180756919.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                    <div class="img-mantle "></div>
+                    <span class="title oneline">
+                        目标检测专栏
+                    </span>
+                </a>
+                <span class="special-column-num">3篇</span>
+            </li>
+            <li>
+                <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12441087.html" data-report-click='{"mod":"popu_537","spm":"1001.2101.3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12441087.html","ab":"new"}'>
+                    <div class="special-column-bar "></div>
+                    <img src="https://img-blog.csdnimg.cn/direct/5ae08a29357d42a9b849b054be235894.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                    <div class="img-mantle "></div>
+                    <span class="title oneline">
+                        时间序列预测专栏
+                    </span>
+                </a>
+                <span class="special-column-num">35篇</span>
+            </li>
+        </ul>
+    </div>
+    <p class="text-center">
+        <a class="flexible-btn" data-fbox="aside-archive"><img class="look-more" src="https://csdnimg.cn/release/blogv2/dist/pc/img/arrowDownBlack.png" alt=""></a>
+    </p>
+</div>
+<div id="asideNewComments" class="aside-box">
+    <h3 class="aside-title">最新评论</h3>
+    <div class="aside-content">
+        <ul class="newcomment-list">
+            <li>
+                <a class="title text-truncate" target="_blank" href="https://snu77.blog.csdn.net/article/details/135305515#comments_31435440" data-report-click='{"mod":"popu_542","spm":"1001.2101.3001.4231","dest":"https://snu77.blog.csdn.net/article/details/135305515#comments_31435440","ab":"new"}' data-report-view='{"mod":"popu_542","spm":"1001.2101.3001.4231","dest":"https://snu77.blog.csdn.net/article/details/135305515#comments_31435440","ab":"new"}'>YOLOv8改进 | 检测头篇 | DynamicHead原论文一比一复现 （不同于网上版本，全网首发）</a>
+                <p class="comment ellipsis">
+                    <a href="https://snu77.blog.csdn.net" class="user-name" target="_blank">Snu77: </a>
+                    <span class="code-comments">安装一下就行，mmcv这是个第三方库。</span>
+                </p>
+            </li>
+            <li>
+                <a class="title text-truncate" target="_blank" href="https://snu77.blog.csdn.net/article/details/135305515#comments_31435053" data-report-click='{"mod":"popu_542","spm":"1001.2101.3001.4231","dest":"https://snu77.blog.csdn.net/article/details/135305515#comments_31435053","ab":"new"}' data-report-view='{"mod":"popu_542","spm":"1001.2101.3001.4231","dest":"https://snu77.blog.csdn.net/article/details/135305515#comments_31435053","ab":"new"}'>YOLOv8改进 | 检测头篇 | DynamicHead原论文一比一复现 （不同于网上版本，全网首发）</a>
+                <p class="comment ellipsis">
+                    <a href="https://blog.csdn.net/m0_59403586" class="user-name" target="_blank">m0_59403586: </a>
+                    <span class="code-comments">博主你好，   from mmcv.ops import ModulatedDeformConv2d
+ModuleNotFoundError: No module named &#39;mmcv&#39; 这个问题怎么解决</span>
+                </p>
+            </li>
+            <li>
+                <a class="title text-truncate" target="_blank" href="https://snu77.blog.csdn.net/article/details/136346900#comments_31434710" data-report-click='{"mod":"popu_542","spm":"1001.2101.3001.4231","dest":"https://snu77.blog.csdn.net/article/details/136346900#comments_31434710","ab":"new"}' data-report-view='{"mod":"popu_542","spm":"1001.2101.3001.4231","dest":"https://snu77.blog.csdn.net/article/details/136346900#comments_31434710","ab":"new"}'>YOLOv8改进 | 独家创新篇 | 结合SOTA思想利用双主干网络改进YOLOv8（全网独家创新，最重磅的更新）</a>
+                <p class="comment ellipsis">
+                    <a href="https://blog.csdn.net/WTYuong" class="user-name" target="_blank">是Yu欸: </a>
+                    <span class="code-comments">这是一篇高质量的好文，深度理解和清晰的表达方式使复杂的技术概念变得容易理解，值得收藏点赞。博主用心很有耐心，更有对知识的热忱和热爱，写了这么实用有效的分享，期盼博主能够光顾我的博客，给予宝贵的指导！</span>
+                </p>
+            </li>
+            <li>
+                <a class="title text-truncate" target="_blank" href="https://snu77.blog.csdn.net/article/details/136237323#comments_31434267" data-report-click='{"mod":"popu_542","spm":"1001.2101.3001.4231","dest":"https://snu77.blog.csdn.net/article/details/136237323#comments_31434267","ab":"new"}' data-report-view='{"mod":"popu_542","spm":"1001.2101.3001.4231","dest":"https://snu77.blog.csdn.net/article/details/136237323#comments_31434267","ab":"new"}'>YOLOv9 | 利用yolov9训练自己的数据集 -＞ 推理、验证（源码解读 + 手撕结构图）</a>
+                <p class="comment ellipsis">
+                    <a href="https://blog.csdn.net/weixin_42660331" class="user-name" target="_blank">weixin_42660331: </a>
+                    <span class="code-comments">谢谢大大~</span>
+                </p>
+            </li>
+            <li>
+                <a class="title text-truncate" target="_blank" href="https://snu77.blog.csdn.net/article/details/136237323#comments_31433994" data-report-click='{"mod":"popu_542","spm":"1001.2101.3001.4231","dest":"https://snu77.blog.csdn.net/article/details/136237323#comments_31433994","ab":"new"}' data-report-view='{"mod":"popu_542","spm":"1001.2101.3001.4231","dest":"https://snu77.blog.csdn.net/article/details/136237323#comments_31433994","ab":"new"}'>YOLOv9 | 利用yolov9训练自己的数据集 -＞ 推理、验证（源码解读 + 手撕结构图）</a>
+                <p class="comment ellipsis">
+                    <a href="https://snu77.blog.csdn.net" class="user-name" target="_blank">Snu77: </a>
+                    <span class="code-comments">我昨天看官方的Issue和版本记录好像是有问题，然后官方说修复了你可以从下一下试试。</span>
+                </p>
+            </li>
+        </ul>
+    </div>
+</div>
+<div id="asideNewNps" class="aside-box common-nps-box">
+    <h3 class="aside-title">您愿意向朋友推荐“博客详情页”吗？</h3>
+    <div class="aside-content">
+        <ul class="newnps-list">
+            <li class="newnps-item" data-type="强烈不推荐">
+                <div class="newnps-img-box">
+                    <img class="newnps-img active" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeel1.png" alt="">
+                    <img class="newnps-img default" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeelGrey1.png" alt="">
+                </div>
+                <div class="newnps-text">强烈不推荐</div>
+            </li>
+            <li class="newnps-item" data-type="不推荐">
+                <div class="newnps-img-box">
+                    <img class="newnps-img active" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeel2.png" alt="">
+                    <img class="newnps-img default" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeelGrey2.png" alt="">
+                </div>
+                <div class="newnps-text">不推荐</div>
+            </li>
+            <li class="newnps-item" data-type="一般般">
+                <div class="newnps-img-box">
+                    <img class="newnps-img active" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeel3.png" alt="">
+                    <img class="newnps-img default" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeelGrey3.png" alt="">
+                </div>
+                <div class="newnps-text">一般般</div>
+            </li>
+            <li class="newnps-item" data-type="推荐">
+                <div class="newnps-img-box">
+                    <img class="newnps-img active" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeel4.png" alt="">
+                    <img class="newnps-img default" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeelGrey4.png" alt="">
+                </div>
+                <div class="newnps-text">推荐</div>
+            </li>
+            <li class="newnps-item" data-type="强烈推荐">
+                <div class="newnps-img-box">
+                    <img class="newnps-img active" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeel5.png" alt="">
+                    <img class="newnps-img default" src="https://csdnimg.cn/release/blogv2/dist/pc/img/npsFeelGrey5.png" alt="">
+                </div>
+                <div class="newnps-text">强烈推荐</div>
+            </li>
+        </ul>
+        <div class="newnps-form-box">
+        <div class="newnps-form">
+            <input type="text" placeholder="请输入建议或反馈后点击提交" class="newnps-input">
+            <span class="newnps-btn">提交</span>
+        </div>
+        </div>
+    </div>
+</div>
+<div id="asideArchive" class="aside-box" style="display:block!important; width:300px;">
+    <h3 class="aside-title">最新文章</h3>
+    <div class="aside-content">
+        <ul class="inf_list clearfix">
+            <li class="clearfix">
+            <a href="https://snu77.blog.csdn.net/article/details/136346900" target="_blank" data-report-click='{"mod":"popu_382","spm":"1001.2101.3001.4136","dest":"https://snu77.blog.csdn.net/article/details/136346900","ab":"new"}' data-report-view='{"mod":"popu_382","dest":"https://snu77.blog.csdn.net/article/details/136346900","ab":"new"}'>YOLOv8改进 | 独家创新篇 | 结合SOTA思想利用双主干网络改进YOLOv8（全网独家创新，最重磅的更新）</a>
+            </li>
+            <li class="clearfix">
+            <a href="https://snu77.blog.csdn.net/article/details/136282783" target="_blank" data-report-click='{"mod":"popu_382","spm":"1001.2101.3001.4136","dest":"https://snu77.blog.csdn.net/article/details/136282783","ab":"new"}' data-report-view='{"mod":"popu_382","dest":"https://snu77.blog.csdn.net/article/details/136282783","ab":"new"}'>YOLOv5改进 | Conv篇 | 全新的SOATA轻量化下采样操作ADown（轻量又涨点，附手撕结构图）</a>
+            </li>
+            <li class="clearfix">
+            <a href="https://snu77.blog.csdn.net/article/details/136278264" target="_blank" data-report-click='{"mod":"popu_382","spm":"1001.2101.3001.4136","dest":"https://snu77.blog.csdn.net/article/details/136278264","ab":"new"}' data-report-view='{"mod":"popu_382","dest":"https://snu77.blog.csdn.net/article/details/136278264","ab":"new"}'>YOLOv8改进 | Conv篇 | 全新的SOATA轻量化下采样操作ADown（参数量下降百分之二十，附手撕结构图）</a>
+            </li>
+        </ul>
+        <div class="archive-bar"></div>
+        <div class="archive-box">
+                <div class="archive-title">2024</div> 
+                <div class="archive-content">
+                    <div class="archive-item">
+                        <a href="https://snu77.blog.csdn.net?type=blog&amp;year=2024&amp;month=02" target="_blank" data-report-click='{"mod":"popu_538","spm":"1001.2101.3001.4138","ab":"new","dest":"https://snu77.blog.csdn.net?type=blog&amp;year=2024&amp;month=02"}'>
+                        <span class="time">02月</span>
+                        <span class="count">55篇</span>
+                        </a>
+                    </div>
+                    <div class="archive-item">
+                        <a href="https://snu77.blog.csdn.net?type=blog&amp;year=2024&amp;month=01" target="_blank" data-report-click='{"mod":"popu_538","spm":"1001.2101.3001.4138","ab":"new","dest":"https://snu77.blog.csdn.net?type=blog&amp;year=2024&amp;month=01"}'>
+                        <span class="time">01月</span>
+                        <span class="count">143篇</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="archive-list-item"><a href="https://snu77.blog.csdn.net?type=blog&amp;year=2023&amp;month=12" target="_blank" data-report-click='{"mod":"popu_538","spm":"1001.2101.3001.4138","ab":"new","dest":"https://snu77.blog.csdn.net?type=blog&amp;year=2023&amp;month=12"}'><span class="year">2023年</span><span class="num">138篇</span></a></div>
+                <div class="archive-list-item"><a href="https://snu77.blog.csdn.net?type=blog&amp;year=2022&amp;month=11" target="_blank" data-report-click='{"mod":"popu_538","spm":"1001.2101.3001.4138","ab":"new","dest":"https://snu77.blog.csdn.net?type=blog&amp;year=2022&amp;month=11"}'><span class="year">2022年</span><span class="num">1篇</span></a></div>
+        </div>
+    </div>
+</div>
+    <!-- 详情页显示目录 -->
+<!--文章目录-->
+<div id="asidedirectory" class="aside-box">
+    <div class='groupfile' id="directory">
+        <h3 class="aside-title">目录</h3>
+        <div class="align-items-stretch group_item">
+            <div class="pos-box">
+            <div class="scroll-box">
+                <div class="toc-box"></div>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+</aside>
+<script>
+	$("a.flexible-btn").click(function(){
+		$(this).parents('div.aside-box').removeClass('flexible-box');
+		$(this).parents("p.text-center").remove();
+	})
+</script>
+<script type="text/javascript"  src="https://g.csdnimg.cn/user-tooltip/2.7/user-tooltip.js"></script>
+<script type="text/javascript"  src="https://g.csdnimg.cn/user-medal/2.0.0/user-medal.js"></script>        </div>
+<div class="recommend-right align-items-stretch clearfix" id="rightAside" data-type="recommend">
+    <aside class="recommend-right_aside">
+        <div id="recommend-right" >
+                        <div class='flex-column aside-box groupfile' id="groupfile">
+                <div class="groupfile-div">
+                <h3 class="aside-title">目录</h3>
+                <div class="align-items-stretch group_item">
+                    <div class="pos-box">
+                        <div class="scroll-box">
+                            <div class="toc-box"></div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+            <div class='aside-box kind_person d-flex flex-column'>
+                    <h3 class="aside-title">分类专栏</h3>
+                    <div class="align-items-stretch kindof_item" id="kind_person_column">
+                        <div class="aside-content">
+                            <ul>
+                                <li>
+                                    <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12483754.html" data-report-click='{"mod":"popu_826","spm":"1001.2101.3001.4230","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12483754.html","ab":"new"}'>
+                                        <div class="special-column-bar "></div>
+                                        <img src="https://img-blog.csdnimg.cn/direct/d0d498bd4f0c4e17b48ff54e86b67668.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                                        <div class="img-mantle "></div>
+                                        <span class="">
+                                            YOLOv8有效涨点专栏
+                                        </span>
+                                            <span class="pay-tag">付费</span>
+                                    </a>
+                                    <span class="special-column-num">125篇</span>
+                                </li>
+                                <li>
+                                    <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12500428.html" data-report-click='{"mod":"popu_826","spm":"1001.2101.3001.4230","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12500428.html","ab":"new"}'>
+                                        <div class="special-column-bar "></div>
+                                        <img src="https://img-blog.csdnimg.cn/direct/bce35723af3f466e97009ebf18e827aa.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                                        <div class="img-mantle "></div>
+                                        <span class="">
+                                            RT-DETR有效改进专栏
+                                        </span>
+                                            <span class="pay-tag">付费</span>
+                                    </a>
+                                    <span class="special-column-num">61篇</span>
+                                </li>
+                                <li>
+                                    <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12500426.html" data-report-click='{"mod":"popu_826","spm":"1001.2101.3001.4230","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12500426.html","ab":"new"}'>
+                                        <div class="special-column-bar "></div>
+                                        <img src="https://img-blog.csdnimg.cn/direct/6029d5920130491c8f52a4b3005e5f84.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                                        <div class="img-mantle "></div>
+                                        <span class="">
+                                            YOLOv5改进有效专栏
+                                        </span>
+                                            <span class="pay-tag">付费</span>
+                                    </a>
+                                    <span class="special-column-num">106篇</span>
+                                </li>
+                                <li>
+                                    <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12583198.html" data-report-click='{"mod":"popu_537","spm":"1001.2101.3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12583198.html","ab":"new"}'>
+                                        <div class="special-column-bar "></div>
+                                        <img src="https://img-blog.csdnimg.cn/direct/ba2519e7272a4267a3ded30aaa79eb09.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                                        <div class="img-mantle "></div>
+                                        <span class="">
+                                            YOLOv9有效涨点专栏
+                                        </span>
+                                    </a>
+                                    <span class="special-column-num">2篇</span>
+                                </li>
+                                <li>
+                                    <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12464694.html" data-report-click='{"mod":"popu_537","spm":"1001.2101.3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12464694.html","ab":"new"}'>
+                                        <div class="special-column-bar "></div>
+                                        <img src="https://img-blog.csdnimg.cn/20201014180756913.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                                        <div class="img-mantle "></div>
+                                        <span class="">
+                                            数据集专栏
+                                        </span>
+                                    </a>
+                                    <span class="special-column-num">3篇</span>
+                                </li>
+                                <li>
+                                    <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12551123.html" data-report-click='{"mod":"popu_537","spm":"1001.2101.3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12551123.html","ab":"new"}'>
+                                        <div class="special-column-bar "></div>
+                                        <img src="https://img-blog.csdnimg.cn/direct/85c6dd75fec842e7a1a36ea95aa69562.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                                        <div class="img-mantle "></div>
+                                        <span class="">
+                                            YOLOv5/v7有效涨点
+                                        </span>
+                                    </a>
+                                    <span class="special-column-num">1篇</span>
+                                </li>
+                                <li>
+                                    <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12510496.html" data-report-click='{"mod":"popu_537","spm":"1001.2101.3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12510496.html","ab":"new"}'>
+                                        <div class="special-column-bar "></div>
+                                        <img src="https://img-blog.csdnimg.cn/direct/e44ee41c806043f0a3245f74fd5de1db.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                                        <div class="img-mantle "></div>
+                                        <span class="">
+                                            深度学习100题大战
+                                        </span>
+                                    </a>
+                                    <span class="special-column-num">1篇</span>
+                                </li>
+                                <li>
+                                    <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12486438.html" data-report-click='{"mod":"popu_537","spm":"1001.2101.3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12486438.html","ab":"new"}'>
+                                        <div class="special-column-bar "></div>
+                                        <img src="https://img-blog.csdnimg.cn/20201014180756738.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                                        <div class="img-mantle "></div>
+                                        <span class="">
+                                            活动专栏
+                                        </span>
+                                    </a>
+                                    <span class="special-column-num">2篇</span>
+                                </li>
+                                <li>
+                                    <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12285732.html" data-report-click='{"mod":"popu_537","spm":"1001.2101.3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12285732.html","ab":"new"}'>
+                                        <div class="special-column-bar "></div>
+                                        <img src="https://img-blog.csdnimg.cn/20201014180756919.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                                        <div class="img-mantle "></div>
+                                        <span class="">
+                                            目标检测专栏
+                                        </span>
+                                    </a>
+                                    <span class="special-column-num">3篇</span>
+                                </li>
+                                <li>
+                                    <a class="clearfix special-column-name"  href="https://blog.csdn.net/java1314777/category_12441087.html" data-report-click='{"mod":"popu_537","spm":"1001.2101.3001.4137","strategy":"pc付费专栏左侧入口","dest":"https://blog.csdn.net/java1314777/category_12441087.html","ab":"new"}'>
+                                        <div class="special-column-bar "></div>
+                                        <img src="https://img-blog.csdnimg.cn/direct/5ae08a29357d42a9b849b054be235894.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://img-blog.csdnimg.cn/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'">
+                                        <div class="img-mantle "></div>
+                                        <span class="">
+                                            时间序列预测专栏
+                                        </span>
+                                    </a>
+                                    <span class="special-column-num">35篇</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </aside>
+</div>
+
+<div class="recommend-right1  align-items-stretch clearfix" id="rightAsideConcision" data-type="recommend">
+    <aside class="recommend-right_aside">
+        <div id="recommend-right-concision" >
+            <div class='flex-column aside-box groupfile' id="groupfileConcision">
+                <div class="groupfile-div1">
+                <h3 class="aside-title">目录</h3>
+                <div class="align-items-stretch group_item">
+                    <div class="pos-box">
+                        <div class="scroll-box">
+                            <div class="toc-box"></div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </aside>
+</div>
+
+      </div>
+      <div class="mask-dark"></div>
+      <div class="skin-boxshadow"></div>
+      <div class="directory-boxshadow"></div>
+<div class="comment-side-box-shadow comment-side-tit-close" id="commentSideBoxshadow">
+<div class="comment-side-content">
+	<div class="comment-side-tit">
+		<div class="comment-side-tit-count">评论&nbsp;<span class="count">4</span></div>
+	<img class="comment-side-tit-close" src="https://csdnimg.cn/release/blogv2/dist/pc/img/closeBt.png"></div>
+	<div id="pcCommentSideBox" class="comment-box comment-box-new2 " style="display:block">
+    <div class="comment-edit-box d-flex">
+      <div class="user-img">
+        <a href="https://blog.csdn.net/DreamSun527" target="_blank">
+          <img src="https://profile-avatar.csdnimg.cn/default.jpg!1">
+        </a>
+      </div>
+      <form id="commentform">
+        <textarea class="comment-content" name="comment_content" id="comment_content" placeholder="欢迎高质量的评论，低质的评论会被折叠" maxlength="1000"></textarea>
+        <div class="comment-reward-box" style="background-image: url('https://img-home.csdnimg.cn/images/20230131025301.png');">
+          <a class="btn-remove-reward"></a>
+          <div class="form-reward-box">
+            <div class="info">
+              成就一亿技术人!
+            </div>
+            <div class="price-info">
+              拼手气红包<span class="price">6.0元</span>
+            </div>
+          </div>
+        </div>
+        <div class="comment-operate-box">
+          <div class="comment-operate-l">
+            <span id="tip_comment" class="tip">还能输入<em>1000</em>个字符</span>
+          </div>
+          <div class="comment-operate-c">
+            &nbsp;
+          </div>
+          <div class="comment-operate-r">
+            <div class="comment-operate-item comment-reward">
+              <img class="comment-operate-img" data-url="https://csdnimg.cn/release/blogv2/dist/pc/img/" src="https://csdnimg.cn/release/blogv2/dist/pc/img/commentReward.png" alt="红包">
+              <span class="comment-operate-tip">添加红包</span>
+            </div>
+            <div class="comment-operate-item comment-emoticon">
+              <img class="comment-operate-img" data-url="https://csdnimg.cn/release/blogv2/dist/pc/img/" src="https://csdnimg.cn/release/blogv2/dist/pc/img/commentEmotionIcon.png" alt="表情包">
+              <span class="comment-operate-tip">插入表情</span>
+              <div class="comment-emoticon-box comment-operate-isshow">
+                <div class="comment-emoticon-img-box"></div>
+              </div>
+            </div>
+            <div class="comment-operate-item comment-code">
+              <img class="comment-operate-img" data-url="https://csdnimg.cn/release/blogv2/dist/pc/img/" src="https://csdnimg.cn/release/blogv2/dist/pc/img/commentCodeIcon.png" alt="表情包">
+              <span class="comment-operate-tip">代码片</span>
+              <div class="comment-code-box comment-operate-isshow">
+                <ul id="commentCode">
+                  <li><a data-code="html">HTML/XML</a></li>
+                  <li><a data-code="objc">objective-c</a></li>
+                  <li><a data-code="ruby">Ruby</a></li>
+                  <li><a data-code="php">PHP</a></li>
+                  <li><a data-code="csharp">C</a></li>
+                  <li><a data-code="cpp">C++</a></li>
+                  <li><a data-code="javascript">JavaScript</a></li>
+                  <li><a data-code="python">Python</a></li>
+                  <li><a data-code="java">Java</a></li>
+                  <li><a data-code="css">CSS</a></li>
+                  <li><a data-code="sql">SQL</a></li>
+                  <li><a data-code="plain">其它</a></li>
+                </ul>
+              </div>
+            </div>
+            <div class="comment-operate-item">
+              <input type="hidden" id="comment_replyId" name="comment_replyId">
+              <input type="hidden" id="article_id" name="article_id" value="131402056">
+              <input type="hidden" id="comment_userId" name="comment_userId" value="">
+              <input type="hidden" id="commentId" name="commentId" value="">
+              <a data-report-click='{"mod":"1582594662_003","spm":"1001.2101.3001.4227","ab":"new"}'>
+              <input type="submit" class="btn-comment btn-comment-input" value="评论">
+              </a>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+		<div class="comment-list-container">
+			<div class="comment-list-box comment-operate-item">
+			</div>
+			<div id="lookGoodComment" class="look-good-comment side-look-comment">
+				<a class="look-more-comment">查看更多评论<img src="https://csdnimg.cn/release/blogv2/dist/pc/img/commentArrowDownBlack.png" alt=""></a>
+			</div>
+			<div id="lookFlodComment" class="look-flod-comment">
+					<span class="count"></span>&nbsp;条评论被折叠&nbsp;<a class="look-more-flodcomment">查看</a>
+			</div>
+			<div class="opt-box text-center">
+				<div class="btn btn-sm btn-link-blue" id="btnMoreComment"></div>
+			</div>
+		</div>
+	</div>
+	<div id="pcFlodCommentSideBox" class="pc-flodcomment-sidebox">
+		<div class="comment-fold-tit"><span id="lookUnFlodComment" class="back"><img src="https://csdnimg.cn/release/blogv2/dist/pc/img/commentArrowLeftBlack.png" alt=""></span>被折叠的&nbsp;<span class="count"></span>&nbsp;条评论
+		 <a href="https://blogdev.blog.csdn.net/article/details/122245662" class="tip" target="_blank">为什么被折叠?</a>
+		 <a href="https://bbs.csdn.net/forums/FreeZone" class="park" target="_blank">
+		 <img src="https://csdnimg.cn/release/blogv2/dist/pc/img/iconPark.png">到【灌水乐园】发言</a>                                
+		</div>
+		<div class="comment-fold-content"></div>
+		<div id="lookBadComment" class="look-bad-comment side-look-comment">
+			<a class="look-more-comment">查看更多评论<img src="https://csdnimg.cn/release/blogv2/dist/pc/img/commentArrowDownBlack.png" alt=""></a>
+		</div>
+	</div>
+</div>
+<div class="comment-rewarddialog-box">
+  <div class="form-box">
+    <div class="title-box">
+      添加红包
+      <a class="btn-form-close"></a>
+    </div>
+    <form id="commentRewardForm">
+      <div class="ipt-box">
+        <label for="txtName">祝福语</label>
+        <div class="ipt-btn-box">
+          <input type="text" name="name" id="txtName" autocomplete="off" maxlength="50">
+          <a class="btn-ipt btn-random"></a>
+        </div>
+        <p class="notice">请填写红包祝福语或标题</p>
+      </div>
+      <div class="ipt-box">
+        <label for="txtSendAmount">红包数量</label>
+        <div class="ipt-txt-box">
+          <input type="text" name="sendAmount" maxlength="4" id="txtSendAmount" placeholder="请填写红包数量(最小10个)" autocomplete="off">
+          <span class="after-txt">个</span>
+        </div>
+        <p class="notice">红包个数最小为10个</p>
+      </div>
+      <div class="ipt-box">
+        <label for="txtMoney">红包总金额</label>
+        <div class="ipt-txt-box error">
+          <input type="text" name="money" maxlength="5" id="txtMoney" placeholder="请填写总金额(最低5元)" autocomplete="off">
+          <span class="after-txt">元</span>
+        </div>
+        <p class="notice">红包金额最低5元</p>
+      </div>
+      <div class="balance-info-box">
+        <label>余额支付</label>
+        <div class="balance-info">
+          当前余额<span class="balance">3.43</span>元
+          <a href="https://i.csdn.net/#/wallet/balance/recharge" class="link-charge" target="_blank">前往充值 ></a>
+        </div>
+      </div>
+      <div class="opt-box">
+        <div class="pay-info">
+          需支付：<span class="price">10.00</span>元
+        </div>
+        <button type="button" class="ml-auto btn-cancel">取消</button>
+        <button type="button" class="ml8 btn-submit" disabled="true">确定</button>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="rr-guide-box">
+  <div class="rr-first-box">
+    <img src="https://csdnimg.cn/release/blogv2/dist/pc/img/guideRedReward02.png" alt="">
+    <button class="btn-guide-known next">下一步</button>
+  </div>
+  <div class="rr-second-box">
+    <img src="https://csdnimg.cn/release/blogv2/dist/pc/img/guideRedReward03.png" alt="">
+    <button class="btn-guide-known known">知道了</button>
+  </div>
+</div>
+</div>
+
+<div class="redEnvolope" id="redEnvolope">
+  <div class="env-box">
+    <div class="env-container">
+      <div class="pre-open" id="preOpen">
+        <div class="top">
+          <header>
+            <img class="clearTpaErr" :src="redpacketAuthor.avatar" alt="" />
+            <div class="author">成就一亿技术人!</div>
+          </header>
+          <div class="bot-icon"></div>
+        </div>
+        <footer>
+          <div class="red-openbtn open-start"></div>
+          <div class="tip">
+            领取后你会自动成为博主和红包主的粉丝
+            <a class="rule" target="_blank">规则</a>
+          </div>
+        </footer>
+      </div>
+      <div class="opened" id="opened">
+        <div class="bot-icon">
+          <header>
+            <a class="creatorUrl" href="" target="_blank">
+              <img class="clearTpaErr" src="https://profile-avatar.csdnimg.cn/default.jpg!2" alt="" />
+            </a>
+            <div class="author">
+              <div class="tt">hope_wisdom</div> 发出的红包
+            </div>
+          </header>
+        </div>
+        <div class="receive-box">
+          <header></header>
+          <div class="receive-list">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="close-btn"></div>
+  </div>
+</div>
+<div id="rewardNew" class="reward-popupbox-new">
+	<p class="rewad-title">打赏作者<span class="reward-close"><img src="https://csdnimg.cn/release/blogv2/dist/pc/img/closeBt.png"></span></p>
+	<dl class="profile-box">
+		<dd>
+		<a href="https://snu77.blog.csdn.net" data-report-click='{"mod":"popu_379","dest":"https://snu77.blog.csdn.net","ab":"new"}'>
+			<img src="https://profile-avatar.csdnimg.cn/27160f4941a54d07b535ceabcfa4a800_java1314777.jpg!1" class="avatar_pic">
+		</a>
+		</dd>
+		<dt>
+			<p class="blog-name">Snu77</p>
+			<p class="blog-discript">你的鼓励将是我创作的最大动力</p>
+		</dt>
+	</dl>
+	<div class="reward-box-new">
+			<div class="reward-content"><div class="reward-right"></div></div>
+	</div>
+	<div class="money-box">
+    <span class="choose-money choosed" data-id="1">¥1</span>
+    <span class="choose-money " data-id="2">¥2</span>
+    <span class="choose-money " data-id="4">¥4</span>
+    <span class="choose-money " data-id="6">¥6</span>
+    <span class="choose-money " data-id="10">¥10</span>
+    <span class="choose-money " data-id="20">¥20</span>
+	</div>
+	<div class="sure-box">
+		<div class="sure-box-money">
+			<div class="code-box">
+				<div class="code-num-box">
+					<span class="code-name">扫码支付：</span><span class="code-num">¥1</span>
+				</div>
+				<div class="code-img-box">
+					<div class="renovate">
+					<img src="https://csdnimg.cn/release/blogv2/dist/pc/img/pay-time-out.png">
+					<span>获取中</span>
+					</div>
+				</div>
+				<div class="code-pay-box">
+					<img src="https://csdnimg.cn/release/blogv2/dist/pc/img/newWeiXin.png" alt="">
+					<img src="https://csdnimg.cn/release/blogv2/dist/pc/img/newZhiFuBao.png" alt="">
+					<span>扫码支付</span>
+				</div>
+			</div>
+		</div>
+		<div class="sure-box-blance">
+			<p class="tip">您的余额不足，请更换扫码支付或<a target="_blank" data-report-click='{"mod":"1597646289_003","spm":"1001.2101.3001.4302"}' href="https://i.csdn.net/#/wallet/balance/recharge?utm_source=RewardVip" class="go-invest">充值</a></p>
+			<p class="is-have-money"><a class="reward-sure">打赏作者</a></p>
+		</div>
+	</div>
+</div>
+      
+      <div class="pay-code">
+      <div class="pay-money">实付<span class="pay-money-span" data-nowprice='' data-oldprice=''>元</span></div>
+      <div class="content-blance"><a class="blance-bt" href="javascript:;">使用余额支付</a></div>
+      <div class="content-code">
+        <div id="payCode" data-id="">
+          <div class="renovate">
+            <img src="https://csdnimg.cn/release/blogv2/dist/pc/img/pay-time-out.png">
+            <span>点击重新获取</span>
+          </div>
+        </div>
+        <div class="pay-style"><span><img src="https://csdnimg.cn/release/blogv2/dist/pc/img/weixin.png"></span><span><img src="https://csdnimg.cn/release/blogv2/dist/pc/img/zhifubao.png"></span><span><img src="https://csdnimg.cn/release/blogv2/dist/pc/img/jingdong.png"></span><span class="text">扫码支付</span></div>
+      </div>
+      <div class="bt-close">
+        <svg t="1567152543821" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="10924" xmlns:xlink="http://www.w3.org/1999/xlink" width="12" height="12">
+          <defs>
+            <style type="text/css"></style>
+          </defs>
+          <path d="M512 438.378667L806.506667 143.893333a52.032 52.032 0 1 1 73.6 73.621334L585.621333 512l294.485334 294.485333a52.074667 52.074667 0 0 1-73.6 73.642667L512 585.621333 217.514667 880.128a52.053333 52.053333 0 1 1-73.621334-73.642667L438.378667 512 143.893333 217.514667a52.053333 52.053333 0 1 1 73.621334-73.621334L512 438.378667z" fill="" p-id="10925"></path>
+        </svg>
+      </div>
+      <div class="pay-balance">
+        <input type="radio" class="pay-code-radio" data-type="details">
+        <span class="span">钱包余额</span>
+          <span class="balance" style="color:#FC5531;font-size:14px;">0</span>
+          <div class="pay-code-tile">
+            <img src="https://csdnimg.cn/release/blogv2/dist/pc/img/pay-help.png" alt="">
+            <div class="pay-code-content">
+              <div class="span">
+                <p class="title">抵扣说明：</p>
+                <p> 1.余额是钱包充值的虚拟货币，按照1:1的比例进行支付金额的抵扣。<br> 2.余额无法直接购买下载，可以购买VIP、付费专栏及课程。</p>
+              </div>
+            </div>
+          </div>
+      </div>
+      <a class="pay-balance-con" href="https://i.csdn.net/#/wallet/balance/recharge" target="_blank"><img src="https://csdnimg.cn/release/blogv2/dist/pc/img/recharge.png" alt=""><span>余额充值</span></a>
+    </div>
+    <div style="display:none;">
+      <img src="" onerror='setTimeout(function(){if(!/(csdn.net|iteye.com|baiducontent.com|googleusercontent.com|360webcache.com|sogoucdn.com|bingj.com|baidu.com)$/.test(window.location.hostname)){window.location.href="\x68\x74\x74\x70\x73\x3a\x2f\x2f\x77\x77\x77\x2e\x63\x73\x64\x6e\x2e\x6e\x65\x74"}},3000);'>
+    </div>
+    <div class="keyword-dec-box" id="keywordDecBox"></div>
+  </body>
+    <!-- 富文本柱状图  -->
+    <link rel="stylesheet" href="https://csdnimg.cn/release/blog_editor_html/release1.6.12/ckeditor/plugins/chart/chart.css" />
+    <script type="text/javascript" src="https://csdnimg.cn/release/blog_editor_html/release1.6.12/ckeditor/plugins/chart/lib/chart.min.js"></script>
+    <script type="text/javascript" src="https://csdnimg.cn/release/blog_editor_html/release1.6.12/ckeditor/plugins/chart/widget2chart.js"></script>
+  <script src="https://csdnimg.cn/release/blogv2/dist/components/js/axios-83fa28cedf.min.js" type="text/javascript"></script>
+  <script src="https://csdnimg.cn/release/blogv2/dist/components/js/pc_wap_highlight-8defd55d6e.min.js" type="text/javascript"></script>
+  <script src="https://csdnimg.cn/release/blogv2/dist/components/js/pc_wap_common-be82269d23.min.js" type="text/javascript"></script>
+  <script src="https://csdnimg.cn/release/blogv2/dist/components/js/edit_copy_code-27143fd02b.min.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="https://csdnimg.cn/release/blog_editor_html/release1.6.12/ckeditor/plugins/codesnippet/lib/highlight/styles/tomorrow-night.css">
+  <script src="https://g.csdnimg.cn/user-accusation/1.0.6/user-accusation.js" type="text/javascript"></script>
+  <script>
+    // 全局声明
+    if (window.csdn === undefined) {
+      window.csdn = {};
+    }
+    window.csdn.sideToolbar = {
+      options: {
+        report: {
+          isShow: true,
+        },
+        qr: {
+          isShow: false,
+        },
+        guide: {
+          isShow: true
+        }
+      }
+    }
+    $(function() {
+      $(document).on('click', "a.option-box[data-type='report']", function() {
+        window.csdn.loginBox.key({
+          biz: 'blog',
+          subBiz: 'other_service',
+          cb: function() {
+            window.csdn.feedback({
+              "type": 'blog',
+              "rtype": 'article',
+              "rid": articleId,
+              "reportedName": username,
+              "submitOptions": {
+                "title": articleTitle,
+                "contentUrl": articleDetailUrl
+              },
+              "callback": function() {
+                showToast({
+                  text: "感谢您的举报，我们会尽快审核！",
+                  bottom: '10%',
+                  zindex: 9000,
+                  speed: 500,
+                  time: 1500
+                })
+              }
+            })
+          }
+        })
+      });
+    })
+  </script>
+    <script src="https://g.csdnimg.cn/baidu-search/1.0.12/baidu-search.js" type="text/javascript"></script>
+  <script src="https://csdnimg.cn/release/download/old_static/js/qrcode.js"></script>
+  <script src="https://g.csdnimg.cn/lib/qrcode/1.0.0/qrcode.min.js"></script>
+  <script src="https://g.csdnimg.cn/user-ordercart/3.0.1/user-ordercart.js" type="text/javascript"></script>
+  <script src="https://g.csdnimg.cn/user-ordertip/5.0.3/user-ordertip.js" type="text/javascript"></script>
+  <script src="https://g.csdnimg.cn/order-payment/4.0.5/order-payment.js" type="text/javascript"></script>
+  <script src="https://csdnimg.cn/release/blogv2/dist/pc/js/common-a425354f6a.min.js" type="text/javascript"></script>
+  <script src="https://csdnimg.cn/release/blogv2/dist/pc/js/detail-0655e5d8db.min.js" type="text/javascript"></script>
+  <script src="https://csdnimg.cn/release/blogv2/dist/pc/js/column-35b87614d0.min.js" type="text/javascript"></script>
+  <script src="https://g.csdnimg.cn/side-toolbar/3.4/side-toolbar.js" type="text/javascript"></script>
+    <script>
+    window.csdn.extensionBox = window.csdn.extensionBox ? window.csdn.extensionBox : {};
+    window.csdn.extensionBox.extensionBoxParams = {
+      inited: function() {
+        var extensionBox = document.getElementById('blogExtensionBox'); // 位置dom元素
+        window.csdn.extensionBox.show({
+          isdark: true, // 是否黑皮肤
+          voteusername: "java1314777",
+          posDom: extensionBox, // 插入位置 selectorString || 位置dom元素
+          codyFn: () => {
+            //复制成功回调函数
+            showToast({
+              text: '复制成功（作者已获得对应原力分）!',
+              bottom: '10%', //toast距离页面底部的距离
+              zindex: 9000, //为了防止被其他控件遮盖，z-index默认为2
+              speed: 500, //toast的显示速度
+              time: 1500 //toast显示多久以后消失
+            });
+          }
+        });
+      }
+    }
+    </script>
+    <script src="https://g.csdnimg.cn/extension-box/1.1.7/extension-box.js" type="text/javascript"></script>
+  <script src="https://g.csdnimg.cn/copyright/1.0.4/copyright.js" type="text/javascript"></script>
+  <script>
+    $(".MathJax").remove();
+    if ($('div.markdown_views pre.prettyprint code.hljs').length > 0) {
+      $('div.markdown_views')[0].className = 'markdown_views';
+    }
+  </script>
+  <script type="text/javascript" src="https://csdnimg.cn/release/blog_mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      "HTML-CSS": {
+        linebreaks: { automatic: true, width: "94%container" },
+        imageFont: null
+      },
+      tex2jax: {
+      preview: "none",
+      ignoreClass:"title-article"
+      },
+      mml2jax: {
+      preview: 'none'
+      }
+    });
+  </script>
+<script type="text/javascript" crossorigin src="https://g.csdnimg.cn/common/csdn-login-box/csdn-login-box.js"></script></html>
